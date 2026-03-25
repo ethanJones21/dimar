@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "WebSearch",
+      "mcp__claude_ai_Context7__resolve-library-id",
+      "mcp__claude_ai_Context7__query-docs",
+      "WebFetch(domain:www.tailoy.com.pe)"
+    ]
+  },
+  "mcpServers": {
+    "context7": {
+      "type": "https",
+      "url": "https://mcp.context7.com/mcp"
+    }
+  }
+}
