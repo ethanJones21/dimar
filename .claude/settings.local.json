@@ -6,7 +6,13 @@
       "WebSearch",
       "mcp__claude_ai_Context7__resolve-library-id",
       "mcp__claude_ai_Context7__query-docs",
-      "WebFetch(domain:www.tailoy.com.pe)"
+      "WebFetch(domain:www.tailoy.com.pe)",
+      "Bash(find d:Robertovscodedimar -type f -name *.tsx -o -name *.ts -o -name *.sql -o -name *.json)",
+      "Bash(xargs grep:*)",
+      "Bash(find /d/Roberto/vscode/dimar -maxdepth 2 -name constants* -o -name config* -o -name site*)",
+      "Bash(grep -n \"grid grid-cols\" /d/Roberto/vscode/dimar/components/*.tsx)",
+      "Bash(ls d:/Roberto/vscode/dimar/*.ts d:/Roberto/vscode/dimar/*.tsx)",
+      "Bash(ls d:/Roberto/vscode/dimar/CHANGELOG* d:/Roberto/vscode/dimar/docs/)"
     ]
   },
   "mcpServers": {

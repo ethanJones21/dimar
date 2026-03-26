@@ -40,7 +40,8 @@ export default async function ProductsPage({
   }
 
   if (params.q) {
-    query = query.ilike("name", `%${params.q}%`);
+    const normalized = params.q.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    query = query.ilike("search_name", `%${normalized}%`);
   }
 
   switch (params.sort) {

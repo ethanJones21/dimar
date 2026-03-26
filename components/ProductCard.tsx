@@ -5,6 +5,7 @@ import { ShoppingCart } from "lucide-react";
 import { Product } from "@/types";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem);
@@ -37,6 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="bg-white text-slate-700 px-3 py-1 rounded-full text-sm font-medium">Agotado</span>
           </div>
         )}
+        <FavoriteButton productId={product.id} />
       </div>
 
       <div className="p-4 flex flex-col flex-1">

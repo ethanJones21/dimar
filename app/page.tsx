@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import BannerSlider from "@/components/BannerSlider";
 import PromoBanners from "@/components/PromoBanners";
 import { Product, Banner } from "@/types";
+import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
 const CATEGORY_EMOJIS: Record<string, string> = {
   electronica: "💻",
@@ -33,8 +34,34 @@ export default async function HomePage() {
       supabase.from("categories").select("*").limit(6),
     ]);
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      description: SITE_DESC,
+      contactPoint: { "@type": "ContactPoint", contactType: "customer service", email: "contacto@dimar.pe" },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: SITE_URL,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/products?q={search_term_string}` },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ];
+
   return (
     <div className="bg-slate-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* ── Hero Slider ── */}
       <BannerSlider banners={(heroBanners as Banner[]) ?? []} />
@@ -107,9 +134,8 @@ export default async function HomePage() {
         <section className="py-20 px-4 text-center">
           <div className="max-w-md mx-auto">
             <p className="text-6xl mb-4">🛍️</p>
-            <h2 className="text-2xl font-bold text-slate-700 mb-2">La tienda está casi lista</h2>
-            <p className="text-slate-500 mb-6">Agrega productos desde el panel de administración.</p>
-            <Link href="/admin" className="btn-primary">Ir al Admin</Link>
+            <h2 className="text-2xl font-bold text-slate-700 mb-2">Próximamente</h2>
+            <p className="text-slate-500 mb-6">Estamos preparando los productos. ¡Vuelve pronto!</p>
           </div>
         </section>
       )}
@@ -127,6 +153,73 @@ export default async function HomePage() {
           >
             Ver catálogo completo <ArrowRight size={18} />
           </Link>
+        </div>
+      </section>
+
+      {/* ── Banners full-width ── */}
+      <section className="max-w-7xl mx-auto px-4 py-12 flex flex-col gap-6">
+        {/* Banner 1 */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl px-10 py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[200px]">
+          <div className="absolute -right-8 -top-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
+          <div className="absolute right-16 -bottom-6 w-32 h-32 bg-white/10 rounded-full pointer-events-none" />
+          <div>
+            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">Envío express</p>
+            <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2">
+              Recíbelo en 24 horas 🚀
+            </h3>
+            <p className="text-white/90 text-sm max-w-md">
+              Pedidos antes de las 3 p.m. salen el mismo día. Cobertura en Lima Metropolitana.
+            </p>
+          </div>
+          <Link
+            href="/products"
+            className="flex-shrink-0 inline-flex items-center gap-2 bg-white text-orange-600 font-semibold px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors text-sm shadow"
+          >
+            Comprar ahora <ArrowRight size={16} />
+          </Link>
+        </div>
+
+        {/* Banner 2 */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 to-purple-800 rounded-2xl px-10 py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[200px]">
+          <div className="absolute -left-8 -bottom-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
+          <div className="absolute right-8 -top-6 w-32 h-32 bg-white/10 rounded-full pointer-events-none" />
+          <div>
+            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">Garantía total</p>
+            <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2">
+              30 días para cambios 🔄
+            </h3>
+            <p className="text-white/90 text-sm max-w-md">
+              Si no estás satisfecho, te devolvemos tu dinero sin preguntas. Tu confianza es lo primero.
+            </p>
+          </div>
+          <Link
+            href="/products"
+            className="flex-shrink-0 inline-flex items-center gap-2 bg-white text-violet-600 font-semibold px-6 py-3 rounded-xl hover:bg-violet-50 transition-colors text-sm shadow"
+          >
+            Ver productos <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Video showcase ── */}
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-blue-600 text-sm font-semibold uppercase tracking-widest mb-3">Experiencia Dimar</p>
+          <h2 className="text-slate-800 text-3xl md:text-4xl font-extrabold mb-4">
+            Compra inteligente,<br className="hidden md:block" /> vive mejor
+          </h2>
+          <p className="text-slate-500 text-base md:text-lg mb-10 max-w-2xl mx-auto">
+            Descubre cómo miles de peruanos encuentran los mejores productos al mejor precio, con envío rápido y atención personalizada.
+          </p>
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl ring-1 ring-slate-200">
+            <iframe
+              src="https://www.youtube.com/embed/YE7VzlLtp-4?rel=0&modestbranding=1"
+              title="Dimar Store — experiencia de compra"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
         </div>
       </section>
 

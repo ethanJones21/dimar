@@ -2,16 +2,31 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/Toaster";
+import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Dimar Store",
-    template: "%s | Dimar Store",
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
-  description: "Tu tienda online de confianza",
+  description: SITE_DESC,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "es_PE",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -24,12 +39,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Navbar />
         <main className="min-h-screen">{children}</main>
-        <footer className="bg-slate-800 text-slate-300 py-8 mt-16">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="font-semibold text-white text-lg mb-1">Dimar Store</p>
-            <p className="text-sm">© {new Date().getFullYear()} Todos los derechos reservados</p>
-          </div>
-        </footer>
+        <Footer />
         <Toaster />
       </body>
     </html>
