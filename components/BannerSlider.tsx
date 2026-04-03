@@ -14,7 +14,7 @@ const FALLBACK_BANNERS: Banner[] = [
     cta_text: "Ver Productos",
     cta_url: "/products",
     image_url: "",
-    bg_color: "from-blue-600 to-blue-800",
+    bg_color: "from-primary to-primary-dark",
     type: "hero",
     order_index: 0,
     active: true,

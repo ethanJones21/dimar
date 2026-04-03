@@ -11,7 +11,7 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
         <Star
           key={i}
           size={size}
-          className={i <= rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}
+          className={i <= rating ? "fill-amber-400 text-amber-400" : "text-content-subtle"}
         />
       ))}
     </div>
@@ -39,12 +39,12 @@ export default async function ReviewsSection({ productId }: { productId: string 
   return (
     <div className="max-w-3xl mt-14">
       <div className="flex items-center gap-4 mb-6">
-        <h2 className="text-xl font-bold text-slate-800">
+        <h2 className="text-xl font-bold text-content-base">
           Opiniones{total > 0 ? ` (${total})` : ""}
         </h2>
         {total > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-slate-800">{avgRating.toFixed(1)}</span>
+            <span className="text-2xl font-bold text-content-base">{avgRating.toFixed(1)}</span>
             <Stars rating={Math.round(avgRating)} />
           </div>
         )}
@@ -53,15 +53,15 @@ export default async function ReviewsSection({ productId }: { productId: string 
       {/* Formulario o mensaje */}
       {user ? (
         userAlreadyReviewed ? (
-          <div className="card p-4 mb-6 bg-blue-50 border-blue-100 text-sm text-blue-700">
+          <div className="card p-4 mb-6 bg-primary-light border-primary-light text-sm text-primary-dark">
             Ya dejaste tu opinión sobre este producto.
           </div>
         ) : (
           <ReviewForm productId={productId} userId={user.id} />
         )
       ) : (
-        <div className="card p-4 mb-6 text-center text-sm text-slate-500">
-          <Link href="/auth/login" className="text-blue-600 font-medium hover:underline">
+        <div className="card p-4 mb-6 text-center text-sm text-content-muted">
+          <Link href="/auth/login" className="text-primary font-medium hover:underline">
             Inicia sesión
           </Link>{" "}
           para dejar tu opinión.
@@ -75,21 +75,21 @@ export default async function ReviewsSection({ productId }: { productId: string 
             <div key={review.id} className="card p-5">
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex flex-col gap-1">
-                  <p className="font-semibold text-slate-800 text-sm">
+                  <p className="font-semibold text-content-base text-sm">
                     {review.profile?.full_name || "Usuario"}
                   </p>
                   <Stars rating={review.rating} />
                 </div>
-                <span className="text-xs text-slate-400 flex-shrink-0">
+                <span className="text-xs text-content-subtle flex-shrink-0">
                   {formatDate(review.created_at)}
                 </span>
               </div>
-              <p className="text-slate-600 text-sm leading-relaxed mt-2">{review.comment}</p>
+              <p className="text-content-muted text-sm leading-relaxed mt-2">{review.comment}</p>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm text-center py-10">
+        <p className="text-content-subtle text-sm text-center py-10">
           Aún no hay opiniones. ¡Sé el primero en opinar!
         </p>
       )}

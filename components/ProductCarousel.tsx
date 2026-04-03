@@ -5,49 +5,65 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductCard from "./ProductCard";
 import { Product } from "@/types";
 
-export default function ProductCarousel({ products }: { products: Product[] }) {
+export default function ProductCarousel({
+  products,
+  title,
+}: {
+  products: Product[];
+  title?: string;
+}) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const showButtons = products.length > 3;
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollBy({
-      left: dir === "left" ? -scrollRef.current.offsetWidth : scrollRef.current.offsetWidth,
+      left:
+        dir === "left"
+          ? -scrollRef.current.offsetWidth
+          : scrollRef.current.offsetWidth,
       behavior: "smooth",
     });
   };
 
   return (
-    <div className="relative group">
-      {showButtons && (
-        <button
-          onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 bg-white shadow-md border border-slate-200 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:border-blue-400 hover:text-blue-600"
-        >
-          <ChevronLeft size={20} />
-        </button>
+    <div>
+      {title && (
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-bold text-content-base">{title}</h2>
+          {showButtons && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => scroll("left")}
+                className="bg-surface-base border border-line rounded-full p-1.5 hover:border-primary hover:text-primary transition-colors"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={() => scroll("right")}
+                className="bg-surface-base border border-line rounded-full p-1.5 hover:border-primary hover:text-primary transition-colors"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-2"
+        className="flex gap-4 overflow-x-hidden pb-2"
         style={{ scrollbarWidth: "none" }}
       >
         {products.map((product) => (
-          <div key={product.id} className="flex-none w-[calc(33.333%-0.667rem)]">
+          <div
+            key={product.id}
+            className="flex-none w-[85%] min-[676px]:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.667rem)] lg:w-[calc(25%-0.75rem)]"
+          >
             <ProductCard product={product} />
           </div>
         ))}
       </div>
-
-      {showButtons && (
-        <button
-          onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 bg-white shadow-md border border-slate-200 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:border-blue-400 hover:text-blue-600"
-        >
-          <ChevronRight size={20} />
-        </button>
-      )}
     </div>
   );
 }

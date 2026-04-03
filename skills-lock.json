@@ -11,6 +11,11 @@
       "sourceType": "github",
       "computedHash": "9ee6d37669b89f87bb0b1e1f89bf06cca35d69d461786a3fb847b07c4f2c8375"
     },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "f483c304fcde060211ffae00f49bb728536e7e7613c99db45b5b924d9fc17243"
+    },
     "browser-use": {
       "source": "browser-use/browser-use",
       "sourceType": "github",

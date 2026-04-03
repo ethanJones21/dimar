@@ -23,8 +23,7 @@ export default async function SimilarProducts({
 
   return (
     <div className="mt-12">
-      <h2 className="text-xl font-bold text-slate-800 mb-5">Productos similares</h2>
-      <ProductCarousel products={products as Product[]} />
+      <ProductCarousel products={products as Product[]} title="Productos similares" />
     </div>
   );
 }

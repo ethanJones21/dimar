@@ -43,7 +43,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
       {/* Imagen principal */}
       <div
         ref={containerRef}
-        className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 mb-3 cursor-crosshair select-none"
+        className="relative aspect-square rounded-2xl overflow-hidden bg-surface-subtle mb-3 cursor-crosshair select-none"
         onMouseEnter={() => {
           lensRef.current && (lensRef.current.style.display = "block");
           zoomRef.current && (zoomRef.current.style.display = "block");
@@ -66,7 +66,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
         {/* Lente */}
         <div
           ref={lensRef}
-          className="absolute border-2 border-blue-500/50 bg-white/20 pointer-events-none"
+          className="absolute border-2 border-primary/50 bg-white/20 pointer-events-none"
           style={{ width: LENS, height: LENS, display: "none" }}
         />
       </div>
@@ -74,7 +74,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
       {/* Panel de zoom — aparece a la derecha sobre la columna de info */}
       <div
         ref={zoomRef}
-        className="absolute top-0 z-20 aspect-square rounded-2xl border border-slate-200 shadow-2xl bg-slate-100 bg-no-repeat"
+        className="absolute top-0 z-20 aspect-square rounded-2xl border border-line shadow-2xl bg-surface-subtle bg-no-repeat"
         style={{
           left: "calc(100% + 2.5rem)",
           width: "100%",
@@ -88,7 +88,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
         <div className="flex items-center gap-2">
           <button
             onClick={prev}
-            className="p-1.5 rounded-lg border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+            className="p-1.5 rounded-lg border border-line hover:border-primary hover:text-primary transition-colors flex-shrink-0"
           >
             <ChevronLeft size={16} />
           </button>
@@ -99,7 +99,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
                 key={i}
                 onClick={() => setSelected(i)}
                 className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${
-                  selected === i ? "border-blue-600" : "border-slate-200 hover:border-blue-300"
+                  selected === i ? "border-primary" : "border-line hover:border-primary-light"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -115,7 +115,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
 
           <button
             onClick={next}
-            className="p-1.5 rounded-lg border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-colors flex-shrink-0"
+            className="p-1.5 rounded-lg border border-line hover:border-primary hover:text-primary transition-colors flex-shrink-0"
           >
             <ChevronRight size={16} />
           </button>

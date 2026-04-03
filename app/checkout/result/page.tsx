@@ -10,7 +10,6 @@ export default async function CheckoutResultPage({
   const { status, order_id } = await searchParams;
   const supabase = await createClient();
 
-  // Actualizar estado de la orden según resultado
   if (order_id) {
     if (status === "success") {
       await supabase.from("orders").update({ status: "processing" }).eq("id", order_id);
@@ -47,7 +46,7 @@ export default async function CheckoutResultPage({
       <div className="card p-10 max-w-md w-full text-center">
         <div className="mb-4">{config.icon}</div>
         <h1 className={`text-2xl font-bold mb-2 ${config.color}`}>{config.title}</h1>
-        <p className="text-slate-500 mb-8">{config.desc}</p>
+        <p className="text-content-muted mb-8">{config.desc}</p>
         <div className="flex flex-col gap-3">
           {order_id && (
             <Link href={`/orders/${order_id}`} className="btn-primary">

@@ -9,7 +9,11 @@ import SimilarProducts from "./SimilarProducts";
 import { Product } from "@/types";
 import { Package } from "lucide-react";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const supabase = await createClient();
   const { data: p } = await supabase
@@ -39,12 +43,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const supabase = await createClient();
 
   const [{ data: product }, { data: reviews }] = await Promise.all([
-    supabase.from("products").select("*, category:categories(id, name, slug)").eq("id", id).single(),
+    supabase
+      .from("products")
+      .select("*, category:categories(id, name, slug)")
+      .eq("id", id)
+      .single(),
     supabase.from("reviews").select("rating").eq("product_id", id),
   ]);
 
@@ -69,49 +81,63 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       url: `${SITE_URL}/products/${p.id}`,
       priceCurrency: "COP",
       price: p.price,
-      availability: p.stock > 0
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
+      availability:
+        p.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
       seller: { "@type": "Organization", name: SITE_NAME },
     },
-    ...(avgRating && reviews?.length && {
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: avgRating.toFixed(1),
-        reviewCount: reviews.length,
-      },
-    }),
+    ...(avgRating &&
+      reviews?.length && {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: avgRating.toFixed(1),
+          reviewCount: reviews.length,
+        },
+      }),
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto mt-12 px-4 py-8 bg-white rounded-2xl dark:bg-transparent">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="grid md:grid-cols-2 gap-10">
+      <div className="grid md:grid-cols-2 gap-10 ">
         <ProductImages images={p.images} name={p.name} />
 
         <div>
-          <p className="text-sm text-blue-600 font-medium mb-2">{p.category?.name}</p>
-          <h1 className="text-3xl font-bold text-slate-800 mb-4">{p.name}</h1>
+          <p className="text-sm text-primary font-medium mb-2">
+            {p.category?.name}
+          </p>
+          <h1 className="text-3xl font-bold text-content-base mb-4">
+            {p.name}
+          </h1>
 
           <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-4xl font-bold text-blue-600">{formatPrice(p.price)}</span>
+            <span className="text-4xl font-bold text-primary">
+              {formatPrice(p.price)}
+            </span>
             {p.compare_price && p.compare_price > p.price && (
-              <span className="text-xl text-slate-400 line-through">{formatPrice(p.compare_price)}</span>
+              <span className="text-xl text-content-subtle line-through">
+                {formatPrice(p.compare_price)}
+              </span>
             )}
           </div>
 
           <div className="flex items-center gap-2 mb-6">
-            <Package size={18} className="text-slate-400" />
-            <span className={`text-sm font-medium ${p.stock > 0 ? "text-green-600" : "text-red-500"}`}>
+            <Package size={18} className="text-content-subtle" />
+            <span
+              className={`text-sm font-medium ${p.stock > 0 ? "text-green-600" : "text-red-500"}`}
+            >
               {p.stock > 0 ? `${p.stock} unidades disponibles` : "Agotado"}
             </span>
           </div>
 
-          <div className="prose prose-slate mb-8">
-            <p className="text-slate-600 leading-relaxed">{p.description}</p>
+          <div className="prose prose-slate dark:prose-invert mb-8">
+            <p className="text-content-muted leading-relaxed">
+              {p.description}
+            </p>
           </div>
 
           <AddToCartButton product={p} />
@@ -122,7 +148,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <SimilarProducts categoryId={p.category_id} excludeId={p.id} />
       )}
 
-      <hr className="my-10 border-slate-200" />
+      <hr className="my-10 border-line" />
       <ReviewsSection productId={p.id} />
     </div>
   );

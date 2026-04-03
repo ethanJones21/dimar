@@ -28,14 +28,14 @@ export default function AddToCartButton({ product }: { product: Product }) {
       <div className="flex items-center border rounded-lg flex-shrink-0">
         <button
           onClick={() => setQuantity(Math.max(1, quantity - 1))}
-          className="p-2 hover:bg-slate-50 transition-colors"
+          className="p-2 hover:bg-surface-hover transition-colors"
         >
           <Minus size={16} />
         </button>
         <span className="px-4 py-2 font-medium min-w-[3rem] text-center">{quantity}</span>
         <button
           onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-          className="p-2 hover:bg-slate-50 transition-colors"
+          className="p-2 hover:bg-surface-hover transition-colors"
         >
           <Plus size={16} />
         </button>

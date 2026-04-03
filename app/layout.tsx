@@ -29,13 +29,41 @@ export const metadata: Metadata = {
   },
 };
 
+// Normaliza el valor: acepta con o sin # (# es comentario en .env)
+function toHex(val: string, fallback: string) {
+  const v = (val ?? "").trim();
+  if (!v) return fallback;
+  return v.startsWith("#") ? v : `#${v}`;
+}
+
+const primary = toHex(process.env.NEXT_PUBLIC_COLOR_PRIMARY ?? "", "#3b82f6");
+const secondary = toHex(process.env.NEXT_PUBLIC_COLOR_SECONDARY ?? "", "#f59e0b");
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Inyectar como style inline en <html> evita hydration mismatch
+  const cssVars = {
+    "--color-primary": primary,
+    "--color-primary-dark": `color-mix(in srgb, ${primary} 80%, black)`,
+    "--color-primary-light": `color-mix(in srgb, ${primary} 12%, white)`,
+    "--color-secondary": secondary,
+    "--color-secondary-dark": `color-mix(in srgb, ${secondary} 80%, black)`,
+    "--color-secondary-light": `color-mix(in srgb, ${secondary} 12%, white)`,
+  } as React.CSSProperties;
+
   return (
-    <html lang="es" data-scroll-behavior="smooth">
+    <html lang="es" data-scroll-behavior="smooth" style={cssVars} suppressHydrationWarning>
+      <head>
+        {/* Script anti-flash: aplica el tema ANTES de que React hidrate */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <Navbar />
         <main className="min-h-screen">{children}</main>

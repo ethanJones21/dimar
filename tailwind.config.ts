@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,12 +10,32 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ── Colores de marca (desde .env) ──
         primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
+          DEFAULT: "var(--color-primary)",
+          dark: "var(--color-primary-dark)",
+          light: "var(--color-primary-light)",
+        },
+        secondary: {
+          DEFAULT: "var(--color-secondary)",
+          dark: "var(--color-secondary-dark)",
+          light: "var(--color-secondary-light)",
+        },
+        // ── Tokens semánticos de superficie ──
+        surface: {
+          page: "var(--bg-page)",
+          base: "var(--bg-surface)",
+          subtle: "var(--bg-subtle)",
+          hover: "var(--bg-hover)",
+        },
+        content: {
+          base: "var(--fg-base)",
+          muted: "var(--fg-muted)",
+          subtle: "var(--fg-subtle)",
+        },
+        line: {
+          DEFAULT: "var(--border-base)",
+          subtle: "var(--border-subtle)",
         },
       },
     },

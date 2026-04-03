@@ -12,7 +12,11 @@
       "Bash(find /d/Roberto/vscode/dimar -maxdepth 2 -name constants* -o -name config* -o -name site*)",
       "Bash(grep -n \"grid grid-cols\" /d/Roberto/vscode/dimar/components/*.tsx)",
       "Bash(ls d:/Roberto/vscode/dimar/*.ts d:/Roberto/vscode/dimar/*.tsx)",
-      "Bash(ls d:/Roberto/vscode/dimar/CHANGELOG* d:/Roberto/vscode/dimar/docs/)"
+      "Bash(ls d:/Roberto/vscode/dimar/CHANGELOG* d:/Roberto/vscode/dimar/docs/)",
+      "Bash(pnpm add:*)",
+      "Bash(npx playwright:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(f:/proyectos/dimar2.0/dimar/.agents/skills/brainstorming/scripts/start-server.sh --project-dir f:/proyectos/dimar2.0/dimar)"
     ]
   },
   "mcpServers": {

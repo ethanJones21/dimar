@@ -168,17 +168,17 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-slate-800 mb-2">Finalizar Compra</h1>
+      <h1 className="text-3xl font-bold text-content-base mb-2">Finalizar Compra</h1>
 
       {/* Steps */}
       <div className="flex items-center gap-2 mb-8 text-sm">
-        <span className={`flex items-center gap-1.5 font-medium ${step === "shipping" ? "text-blue-600" : "text-slate-400"}`}>
-          <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === "shipping" ? "bg-blue-600 text-white" : "bg-slate-200 text-slate-500"}`}>1</span>
+        <span className={`flex items-center gap-1.5 font-medium ${step === "shipping" ? "text-primary" : "text-content-subtle"}`}>
+          <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === "shipping" ? "bg-primary text-white" : "bg-surface-subtle text-content-muted"}`}>1</span>
           Envío
         </span>
-        <div className="flex-1 h-px bg-slate-200" />
-        <span className={`flex items-center gap-1.5 font-medium ${step === "payment" ? "text-blue-600" : "text-slate-400"}`}>
-          <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === "payment" ? "bg-blue-600 text-white" : "bg-slate-200 text-slate-500"}`}>2</span>
+        <div className="flex-1 h-px bg-surface-subtle" />
+        <span className={`flex items-center gap-1.5 font-medium ${step === "payment" ? "text-primary" : "text-content-subtle"}`}>
+          <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === "payment" ? "bg-primary text-white" : "bg-surface-subtle text-content-muted"}`}>2</span>
           Pago
         </span>
       </div>
@@ -190,8 +190,8 @@ export default function CheckoutPage() {
             <form onSubmit={handleShippingNext}>
               <div className="card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                    <MapPin size={20} className="text-blue-600" /> Dirección de Envío
+                  <h2 className="font-bold text-lg text-content-base flex items-center gap-2">
+                    <MapPin size={20} className="text-primary" /> Dirección de Envío
                   </h2>
                   {savedAddress && (
                     <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
@@ -201,24 +201,24 @@ export default function CheckoutPage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Dirección</label>
+                    <label className="block text-sm font-medium text-content-base mb-1">Dirección</label>
                     <input required className="input" placeholder="Av. Larco 123, Miraflores"
                       value={address.street} onChange={(e) => setAddress({ ...address, street: e.target.value })} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Ciudad</label>
+                      <label className="block text-sm font-medium text-content-base mb-1">Ciudad</label>
                       <input required className="input" placeholder="Lima"
                         value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Departamento</label>
+                      <label className="block text-sm font-medium text-content-base mb-1">Departamento</label>
                       <input required className="input" placeholder="Lima"
                         value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })} />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Código Postal</label>
+                    <label className="block text-sm font-medium text-content-base mb-1">Código Postal</label>
                     <input className="input" placeholder="15001"
                       value={address.zip} onChange={(e) => setAddress({ ...address, zip: e.target.value })} />
                   </div>
@@ -237,21 +237,21 @@ export default function CheckoutPage() {
               {/* Selección */}
               {!paymentMethod && (
                 <div className="card p-6">
-                  <h2 className="font-bold text-lg text-slate-800 mb-5 flex items-center gap-2">
-                    <CreditCard size={20} className="text-blue-600" /> Elige cómo pagar
+                  <h2 className="font-bold text-lg text-content-base mb-5 flex items-center gap-2">
+                    <CreditCard size={20} className="text-primary" /> Elige cómo pagar
                   </h2>
 
                   {/* MercadoPago (incluye Yape) */}
                   <button
                     onClick={() => setPaymentMethod("mercadopago")}
-                    className="w-full flex items-center gap-4 p-4 border-2 border-slate-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all mb-3 text-left"
+                    className="w-full flex items-center gap-4 p-4 border-2 border-line rounded-xl hover:border-primary hover:bg-primary-light transition-all mb-3 text-left"
                   >
                     <div className="w-12 h-12 bg-[#009ee3] rounded-xl flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-extrabold text-sm">MP</span>
                     </div>
                     <div>
-                      <p className="font-semibold text-slate-800">MercadoPago</p>
-                      <p className="text-xs text-slate-500">Tarjeta, Yape, transferencia y más</p>
+                      <p className="font-semibold text-content-base">MercadoPago</p>
+                      <p className="text-xs text-content-muted">Tarjeta, Yape, transferencia y más</p>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
                       <span className="text-xs bg-purple-100 text-purple-700 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -263,14 +263,14 @@ export default function CheckoutPage() {
                   {/* Culqi */}
                   <button
                     onClick={() => setPaymentMethod("culqi")}
-                    className="w-full flex items-center gap-4 p-4 border-2 border-slate-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all text-left"
+                    className="w-full flex items-center gap-4 p-4 border-2 border-line rounded-xl hover:border-primary hover:bg-primary-light transition-all text-left"
                   >
-                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
                       <CreditCard size={22} className="text-white" />
                     </div>
                     <div>
-                      <p className="font-semibold text-slate-800">Tarjeta de crédito / débito</p>
-                      <p className="text-xs text-slate-500">Visa, Mastercard, Amex — vía Culqi</p>
+                      <p className="font-semibold text-content-base">Tarjeta de crédito / débito</p>
+                      <p className="text-xs text-content-muted">Visa, Mastercard, Amex — vía Culqi</p>
                     </div>
                   </button>
                 </div>
@@ -279,17 +279,17 @@ export default function CheckoutPage() {
               {/* ── MercadoPago: confirmar y redirigir ── */}
               {paymentMethod === "mercadopago" && (
                 <div className="card p-6">
-                  <h2 className="font-bold text-lg text-slate-800 mb-1 flex items-center gap-2">
+                  <h2 className="font-bold text-lg text-content-base mb-1 flex items-center gap-2">
                     <span className="w-8 h-8 bg-[#009ee3] rounded-lg flex items-center justify-center text-white font-extrabold text-xs">MP</span>
                     Pagar con MercadoPago
                   </h2>
-                  <p className="text-sm text-slate-500 mb-6">
+                  <p className="text-sm text-content-muted mb-6">
                     Serás redirigido a MercadoPago donde podrás pagar con <strong>Yape</strong>, tarjeta o transferencia bancaria.
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-6">
                     {["Yape", "Visa", "Mastercard", "Amex", "BCP", "Interbank"].map((m) => (
-                      <span key={m} className={`text-xs font-medium px-2.5 py-1 rounded-full ${m === "Yape" ? "bg-purple-100 text-purple-700" : "bg-slate-100 text-slate-600"}`}>
+                      <span key={m} className={`text-xs font-medium px-2.5 py-1 rounded-full ${m === "Yape" ? "bg-purple-100 text-purple-700" : "bg-surface-subtle text-content-muted"}`}>
                         {m === "Yape" && <Smartphone size={10} className="inline mr-1" />}{m}
                       </span>
                     ))}
@@ -313,43 +313,43 @@ export default function CheckoutPage() {
               {paymentMethod === "culqi" && (
                 <form onSubmit={handleCulqiPay}>
                   <div className="card p-6">
-                    <h2 className="font-bold text-lg text-slate-800 mb-1 flex items-center gap-2">
-                      <CreditCard size={20} className="text-blue-600" /> Datos de la Tarjeta
+                    <h2 className="font-bold text-lg text-content-base mb-1 flex items-center gap-2">
+                      <CreditCard size={20} className="text-primary" /> Datos de la Tarjeta
                     </h2>
-                    <p className="text-xs text-slate-400 mb-5 flex items-center gap-1">
+                    <p className="text-xs text-content-subtle mb-5 flex items-center gap-1">
                       <Lock size={12} /> Conexión segura — datos cifrados por Culqi
                     </p>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Número de tarjeta</label>
+                        <label className="block text-sm font-medium text-content-base mb-1">Número de tarjeta</label>
                         <input required className="input font-mono tracking-wider" placeholder="0000 0000 0000 0000"
                           value={card.number} maxLength={19}
                           onChange={(e) => setCard({ ...card, number: formatCardNumber(e.target.value) })} />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Nombre en la tarjeta</label>
+                        <label className="block text-sm font-medium text-content-base mb-1">Nombre en la tarjeta</label>
                         <input required className="input uppercase" placeholder="JUAN PEREZ"
                           value={card.name}
                           onChange={(e) => setCard({ ...card, name: e.target.value.toUpperCase() })} />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">Vencimiento</label>
+                          <label className="block text-sm font-medium text-content-base mb-1">Vencimiento</label>
                           <input required className="input font-mono" placeholder="MM/AA"
                             value={card.expiry} maxLength={5}
                             onChange={(e) => setCard({ ...card, expiry: formatExpiry(e.target.value) })} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">CVV</label>
+                          <label className="block text-sm font-medium text-content-base mb-1">CVV</label>
                           <input required type="password" className="input font-mono" placeholder="•••"
                             value={card.cvv} maxLength={4}
                             onChange={(e) => setCard({ ...card, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })} />
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100">
+                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-line-subtle">
                       <ShieldCheck size={16} className="text-green-500" />
-                      <span className="text-xs text-slate-400">Visa · Mastercard · Amex · Diners</span>
+                      <span className="text-xs text-content-subtle">Visa · Mastercard · Amex · Diners</span>
                     </div>
                   </div>
 
@@ -376,26 +376,26 @@ export default function CheckoutPage() {
 
         {/* Resumen */}
         <div className="card p-6 h-fit sticky top-20">
-          <h2 className="font-bold text-lg text-slate-800 mb-4">Resumen del Pedido</h2>
+          <h2 className="font-bold text-lg text-content-base mb-4">Resumen del Pedido</h2>
           <div className="space-y-3 mb-4">
             {items.map(({ product, quantity }) => (
               <div key={product.id} className="flex justify-between text-sm">
-                <span className="text-slate-600 truncate max-w-[200px]">{product.name} ×{quantity}</span>
+                <span className="text-content-muted truncate max-w-[200px]">{product.name} ×{quantity}</span>
                 <span className="font-medium">{formatPrice(product.price * quantity)}</span>
               </div>
             ))}
           </div>
           <hr className="my-4" />
-          <div className="flex justify-between text-sm text-slate-600 mb-2">
+          <div className="flex justify-between text-sm text-content-muted mb-2">
             <span>Subtotal</span><span>{formatPrice(total())}</span>
           </div>
-          <div className="flex justify-between text-sm text-slate-600 mb-4">
+          <div className="flex justify-between text-sm text-content-muted mb-4">
             <span>Envío</span>
             <span className="text-green-600 font-medium">Gratis</span>
           </div>
           <div className="flex justify-between font-bold text-xl">
             <span>Total</span>
-            <span className="text-blue-600">{formatPrice(total())}</span>
+            <span className="text-primary">{formatPrice(total())}</span>
           </div>
         </div>
       </div>

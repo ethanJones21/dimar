@@ -18,6 +18,9 @@ export interface Product {
   stock: number;
   category_id: string;
   category?: Category;
+  brand?: string | null;
+  sale_format?: "unit" | "pack";
+  pack_size?: number | null;
   featured: boolean;
   active: boolean;
   created_at: string;

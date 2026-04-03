@@ -38,7 +38,7 @@ export default function ReviewForm({ productId, userId }: { productId: string; u
 
   return (
     <form onSubmit={handleSubmit} className="card p-5 mb-6">
-      <p className="font-semibold text-slate-700 mb-3">Deja tu opinión</p>
+      <p className="font-semibold text-content-base mb-3">Deja tu opinión</p>
 
       <div className="flex gap-1 mb-4">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -52,7 +52,7 @@ export default function ReviewForm({ productId, userId }: { productId: string; u
           >
             <Star
               size={28}
-              className={i <= (hover || rating) ? "fill-amber-400 text-amber-400" : "text-slate-300"}
+              className={i <= (hover || rating) ? "fill-amber-400 text-amber-400" : "text-content-subtle"}
             />
           </button>
         ))}
@@ -63,7 +63,7 @@ export default function ReviewForm({ productId, userId }: { productId: string; u
         onChange={(e) => setComment(e.target.value)}
         placeholder="¿Qué te pareció el producto?"
         rows={3}
-        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500 resize-none mb-4"
+        className="w-full border border-line rounded-xl px-4 py-3 text-sm text-content-base bg-surface-base placeholder:text-content-subtle outline-none focus:ring-2 focus:ring-primary resize-none mb-4"
       />
 
       <button type="submit" disabled={loading} className="btn-primary text-sm">

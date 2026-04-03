@@ -35,8 +35,7 @@ export default function CartSuggestions() {
 
   return (
     <div className="mt-12">
-      <h2 className="text-xl font-bold text-slate-800 mb-5">También te puede interesar</h2>
-      <ProductCarousel products={products} />
+      <ProductCarousel products={products} title="También te puede interesar" />
     </div>
   );
 }

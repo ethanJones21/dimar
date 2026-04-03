@@ -14,6 +14,20 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [0.7.0] — 2026-04-02
+
+### Añadido
+- **Panel de filtros avanzado** (`FiltersPanel`) en catálogo de productos — filtros por rango de precio, marca, porcentaje de descuento (10 %–70 %) y formato de venta; versión móvil con overlay deslizable
+- **Grid animado de productos** (`ProductsGrid`) — usa Framer Motion (`layout` + `AnimatePresence`) para transiciones suaves al aplicar o quitar filtros
+- **Modo oscuro / claro** (`ThemeToggle`) — botón sol/luna en navbar, persiste la preferencia en `localStorage` y aplica la clase `dark` en `<html>`
+- **Columna `brand`** en tabla `products` — migración `add_brand_to_products.sql`; índice parcial para filtrado eficiente
+- **Columna `sale_format`** en tabla `products` — valores `unit` | `pack` + campo `pack_size`; migración `add_sale_format_to_products.sql`
+
+### Cambiado
+- Catálogo `/products` refactorizado: `SortSelect` eliminado e integrado en `FiltersPanel`; grilla extraída a `ProductsGrid`
+
+---
+
 ## [0.6.0] — 2026-03-26
 
 ### Añadido

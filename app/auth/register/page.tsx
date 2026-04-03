@@ -71,8 +71,8 @@ export default function RegisterPage() {
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="card p-8 max-w-md w-full text-center">
           <div className="text-5xl mb-4">📧</div>
-          <h2 className="text-xl font-bold text-slate-700 mb-2">¡Revisa tu correo!</h2>
-          <p className="text-slate-500 mb-6">
+          <h2 className="text-xl font-bold text-content-base mb-2">¡Revisa tu correo!</h2>
+          <p className="text-content-muted mb-6">
             Hemos enviado un enlace de confirmación a <strong>{email}</strong>.
           </p>
           <Link href="/auth/login" className="btn-primary">Ir a Iniciar Sesión</Link>
@@ -82,25 +82,25 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-surface-page">
       <div className="card p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 text-blue-600 font-bold text-2xl mb-2">
+          <div className="flex items-center justify-center gap-2 text-primary font-bold text-2xl mb-2">
             <Store size={28} />
             Dimar Store
           </div>
-          <h1 className="text-xl font-bold text-slate-700">Crear Cuenta</h1>
+          <h1 className="text-xl font-bold text-content-base">Crear Cuenta</h1>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-4">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm mb-4">
             {error}
           </div>
         )}
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Nombre Completo</label>
+            <label className="block text-sm font-medium text-content-base mb-1">Nombre Completo</label>
             <input
               required
               className="input"
@@ -110,7 +110,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-content-base mb-1">Email</label>
             <input
               type="email"
               required
@@ -121,7 +121,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-content-base mb-1">Contraseña</label>
             <input
               type="password"
               required
@@ -137,9 +137,9 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
+        <p className="text-center text-sm text-content-muted mt-6">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/auth/login" className="text-blue-600 hover:underline font-medium">
+          <Link href="/auth/login" className="text-primary hover:underline font-medium">
             Inicia sesión
           </Link>
         </p>

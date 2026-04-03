@@ -17,22 +17,41 @@ const CATEGORY_EMOJIS: Record<string, string> = {
 };
 
 const FEATURES = [
-  { icon: Truck,       title: "Envío gratis",    desc: "En pedidos +$150.000" },
-  { icon: Shield,      title: "Compra segura",   desc: "Datos siempre protegidos" },
-  { icon: RefreshCw,   title: "30 días",         desc: "Para cambios y devoluciones" },
-  { icon: Headphones,  title: "Soporte 24/7",    desc: "Estamos para ayudarte" },
+  { icon: Truck, title: "Envío gratis", desc: "En pedidos +$150.000" },
+  { icon: Shield, title: "Compra segura", desc: "Datos siempre protegidos" },
+  { icon: RefreshCw, title: "30 días", desc: "Para cambios y devoluciones" },
+  { icon: Headphones, title: "Soporte 24/7", desc: "Estamos para ayudarte" },
 ];
 
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const [{ data: heroBanners }, { data: promoBanners }, { data: featuredProducts }, { data: categories }] =
-    await Promise.all([
-      supabase.from("banners").select("*").eq("active", true).eq("type", "hero").order("order_index"),
-      supabase.from("banners").select("*").eq("active", true).eq("type", "promo").order("order_index"),
-      supabase.from("products").select("*, category:categories(id,name,slug)").eq("featured", true).eq("active", true).limit(8),
-      supabase.from("categories").select("*").limit(6),
-    ]);
+  const [
+    { data: heroBanners },
+    { data: promoBanners },
+    { data: featuredProducts },
+    { data: categories },
+  ] = await Promise.all([
+    supabase
+      .from("banners")
+      .select("*")
+      .eq("active", true)
+      .eq("type", "hero")
+      .order("order_index"),
+    supabase
+      .from("banners")
+      .select("*")
+      .eq("active", true)
+      .eq("type", "promo")
+      .order("order_index"),
+    supabase
+      .from("products")
+      .select("*, category:categories(id,name,slug)")
+      .eq("featured", true)
+      .eq("active", true)
+      .limit(8),
+    supabase.from("categories").select("*").limit(6),
+  ]);
 
   const jsonLd = [
     {
@@ -41,7 +60,11 @@ export default async function HomePage() {
       name: SITE_NAME,
       url: SITE_URL,
       description: SITE_DESC,
-      contactPoint: { "@type": "ContactPoint", contactType: "customer service", email: "contacto@dimar.pe" },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        email: "contacto@dimar.pe",
+      },
     },
     {
       "@context": "https://schema.org",
@@ -50,14 +73,17 @@ export default async function HomePage() {
       url: SITE_URL,
       potentialAction: {
         "@type": "SearchAction",
-        target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/products?q={search_term_string}` },
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}/products?q={search_term_string}`,
+        },
         "query-input": "required name=search_term_string",
       },
     },
   ];
 
   return (
-    <div className="bg-slate-50">
+    <div className="bg-surface-page">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -67,16 +93,18 @@ export default async function HomePage() {
       <BannerSlider banners={(heroBanners as Banner[]) ?? []} />
 
       {/* ── Features strip ── */}
-      <section className="bg-white border-b">
+      <section className="bg-surface-base border-b border-line">
         <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
           {FEATURES.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="flex items-center gap-3">
-              <div className="p-2.5 bg-blue-50 rounded-xl flex-shrink-0">
-                <Icon className="text-blue-600" size={22} />
+              <div className="p-2.5 bg-primary-light rounded-xl flex-shrink-0">
+                <Icon className="text-primary" size={22} />
               </div>
               <div>
-                <p className="font-semibold text-slate-800 text-sm">{title}</p>
-                <p className="text-xs text-slate-500">{desc}</p>
+                <p className="font-semibold text-content-base text-sm">
+                  {title}
+                </p>
+                <p className="text-xs text-content-muted">{desc}</p>
               </div>
             </div>
           ))}
@@ -87,8 +115,13 @@ export default async function HomePage() {
       {categories && categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 py-12">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-800">Explora por categoría</h2>
-            <Link href="/products" className="text-blue-600 hover:text-blue-700 flex items-center gap-1 text-sm font-medium">
+            <h2 className="text-2xl font-bold text-content-base">
+              Explora por categoría
+            </h2>
+            <Link
+              href="/products"
+              className="text-primary hover:text-primary-dark flex items-center gap-1 text-sm font-medium"
+            >
               Ver todo <ArrowRight size={16} />
             </Link>
           </div>
@@ -97,12 +130,14 @@ export default async function HomePage() {
               <Link
                 key={cat.id}
                 href={`/products?category=${cat.slug}`}
-                className="card p-4 flex flex-col items-center text-center gap-2 hover:border-blue-300 hover:shadow-md transition-all group"
+                className="card p-4 flex flex-col items-center text-center gap-2 hover:border-primary-light hover:shadow-md transition-all group"
               >
                 <span className="text-3xl group-hover:scale-110 transition-transform">
                   {CATEGORY_EMOJIS[cat.slug] ?? "🏷️"}
                 </span>
-                <p className="text-xs font-medium text-slate-700 leading-tight">{cat.name}</p>
+                <p className="text-xs font-medium text-content-base leading-tight">
+                  {cat.name}
+                </p>
               </Link>
             ))}
           </div>
@@ -117,14 +152,21 @@ export default async function HomePage() {
         <section className="max-w-7xl mx-auto px-4 pb-16">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-800">Productos Destacados</h2>
-              <p className="text-slate-500 text-sm mt-1">Los favoritos de nuestros clientes</p>
+              <h2 className="text-2xl font-bold text-content-base">
+                Productos Destacados
+              </h2>
+              <p className="text-content-muted text-sm mt-1">
+                Los favoritos de nuestros clientes
+              </p>
             </div>
-            <Link href="/products" className="text-blue-600 hover:text-blue-700 flex items-center gap-1 text-sm font-medium">
+            <Link
+              href="/products"
+              className="text-primary hover:text-primary-dark flex items-center gap-1 text-sm font-medium"
+            >
               Ver todos <ArrowRight size={16} />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 min-[453px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-sm min-[453px]:max-w-none mx-auto min-[453px]:mx-0">
             {(featuredProducts as Product[]).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -134,22 +176,28 @@ export default async function HomePage() {
         <section className="py-20 px-4 text-center">
           <div className="max-w-md mx-auto">
             <p className="text-6xl mb-4">🛍️</p>
-            <h2 className="text-2xl font-bold text-slate-700 mb-2">Próximamente</h2>
-            <p className="text-slate-500 mb-6">Estamos preparando los productos. ¡Vuelve pronto!</p>
+            <h2 className="text-2xl font-bold text-content-base mb-2">
+              Próximamente
+            </h2>
+            <p className="text-content-muted mb-6">
+              Estamos preparando los productos. ¡Vuelve pronto!
+            </p>
           </div>
         </section>
       )}
 
       {/* ── CTA final ── */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16 px-4">
+      <section className="text-white py-16 px-4 dark:bg-surface-base bg-secondary-light">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-3">¿Listo para comprar?</h2>
-          <p className="text-blue-100 mb-8 text-lg">
+          <h2 className="text-3xl font-bold mb-3 text-secondary">
+            ¿Listo para comprar?
+          </h2>
+          <p className="text-slate-400 mb-8 text-lg dark:text-white/70">
             Explora todo nuestro catálogo y encuentra exactamente lo que buscas.
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 bg-white text-blue-600 font-semibold px-8 py-3 rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 bg-secondary text-white font-semibold px-8 py-3 rounded-xl hover:bg-primary-dark transition-colors shadow-lg"
           >
             Ver catálogo completo <ArrowRight size={18} />
           </Link>
@@ -163,12 +211,15 @@ export default async function HomePage() {
           <div className="absolute -right-8 -top-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
           <div className="absolute right-16 -bottom-6 w-32 h-32 bg-white/10 rounded-full pointer-events-none" />
           <div>
-            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">Envío express</p>
+            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">
+              Envío express
+            </p>
             <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2">
               Recíbelo en 24 horas 🚀
             </h3>
             <p className="text-white/90 text-sm max-w-md">
-              Pedidos antes de las 3 p.m. salen el mismo día. Cobertura en Lima Metropolitana.
+              Pedidos antes de las 3 p.m. salen el mismo día. Cobertura en Lima
+              Metropolitana.
             </p>
           </div>
           <Link
@@ -184,12 +235,15 @@ export default async function HomePage() {
           <div className="absolute -left-8 -bottom-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
           <div className="absolute right-8 -top-6 w-32 h-32 bg-white/10 rounded-full pointer-events-none" />
           <div>
-            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">Garantía total</p>
+            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">
+              Garantía total
+            </p>
             <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2">
               30 días para cambios 🔄
             </h3>
             <p className="text-white/90 text-sm max-w-md">
-              Si no estás satisfecho, te devolvemos tu dinero sin preguntas. Tu confianza es lo primero.
+              Si no estás satisfecho, te devolvemos tu dinero sin preguntas. Tu
+              confianza es lo primero.
             </p>
           </div>
           <Link
@@ -204,14 +258,18 @@ export default async function HomePage() {
       {/* ── Video showcase ── */}
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-blue-600 text-sm font-semibold uppercase tracking-widest mb-3">Experiencia Dimar</p>
-          <h2 className="text-slate-800 text-3xl md:text-4xl font-extrabold mb-4">
-            Compra inteligente,<br className="hidden md:block" /> vive mejor
-          </h2>
-          <p className="text-slate-500 text-base md:text-lg mb-10 max-w-2xl mx-auto">
-            Descubre cómo miles de peruanos encuentran los mejores productos al mejor precio, con envío rápido y atención personalizada.
+          <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-3">
+            Experiencia Dimar
           </p>
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl ring-1 ring-slate-200">
+          <h2 className="text-content-base text-3xl md:text-4xl font-extrabold mb-4">
+            Compra inteligente,
+            <br className="hidden md:block" /> vive mejor
+          </h2>
+          <p className="text-content-muted text-base md:text-lg mb-10 max-w-2xl mx-auto">
+            Descubre cómo miles de peruanos encuentran los mejores productos al
+            mejor precio, con envío rápido y atención personalizada.
+          </p>
+          <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl ring-1 ring-line">
             <iframe
               src="https://www.youtube.com/embed/YE7VzlLtp-4?rel=0&modestbranding=1"
               title="Dimar Store — experiencia de compra"
@@ -222,7 +280,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
     </div>
   );
 }

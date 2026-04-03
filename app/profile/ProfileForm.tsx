@@ -22,7 +22,7 @@ interface AddressRow {
   country?: string;
 }
 
-const inputCls = "w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-blue-500";
+const inputCls = "w-full border border-line rounded-xl px-4 py-2.5 text-sm text-content-base bg-surface-base outline-none focus:ring-2 focus:ring-primary";
 
 export default function ProfileForm({
   profile,
@@ -76,9 +76,9 @@ export default function ProfileForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Datos personales */}
       <div className="card p-6 space-y-5">
-        <h2 className="font-semibold text-slate-800">Datos personales</h2>
+        <h2 className="font-semibold text-content-base">Datos personales</h2>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1.5">Nombre completo</label>
+          <label className="block text-sm font-medium text-content-base mb-1.5">Nombre completo</label>
           <input
             type="text"
             value={fullName}
@@ -88,7 +88,7 @@ export default function ProfileForm({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1.5">Teléfono</label>
+          <label className="block text-sm font-medium text-content-base mb-1.5">Teléfono</label>
           <input
             type="tel"
             value={phone}
@@ -101,10 +101,10 @@ export default function ProfileForm({
 
       {/* Dirección de envío */}
       <div className="card p-6 space-y-5">
-        <h2 className="font-semibold text-slate-800">Dirección de envío</h2>
-        <p className="text-xs text-slate-500 -mt-3">Se usará para pre-llenar el formulario de pago.</p>
+        <h2 className="font-semibold text-content-base">Dirección de envío</h2>
+        <p className="text-xs text-content-muted -mt-3">Se usará para pre-llenar el formulario de pago.</p>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1.5">Dirección</label>
+          <label className="block text-sm font-medium text-content-base mb-1.5">Dirección</label>
           <input
             type="text"
             value={street}
@@ -115,7 +115,7 @@ export default function ProfileForm({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Ciudad</label>
+            <label className="block text-sm font-medium text-content-base mb-1.5">Ciudad</label>
             <input
               type="text"
               value={city}
@@ -125,7 +125,7 @@ export default function ProfileForm({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Departamento</label>
+            <label className="block text-sm font-medium text-content-base mb-1.5">Departamento</label>
             <input
               type="text"
               value={state}
@@ -137,7 +137,7 @@ export default function ProfileForm({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Código Postal</label>
+            <label className="block text-sm font-medium text-content-base mb-1.5">Código Postal</label>
             <input
               type="text"
               value={zip}
@@ -147,7 +147,7 @@ export default function ProfileForm({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">País</label>
+            <label className="block text-sm font-medium text-content-base mb-1.5">País</label>
             <input
               type="text"
               value={country}

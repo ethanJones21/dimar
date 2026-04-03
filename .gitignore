@@ -32,3 +32,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# testing / playwright
+/tests/
+/test-results/
+/playwright-report/
+/.playwright/
+playwright.config.ts
+
+# tools & agents (auto-generados)
+/.agents/
+/.claude/skills/
+/.superpowers/
+
+# pnpm (el proyecto usa npm como gestor principal)
+pnpm-lock.yaml

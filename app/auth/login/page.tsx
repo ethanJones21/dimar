@@ -48,25 +48,25 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-surface-page">
       <div className="card p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 text-blue-600 font-bold text-2xl mb-2">
+          <div className="flex items-center justify-center gap-2 text-primary font-bold text-2xl mb-2">
             <Store size={28} />
             Dimar Store
           </div>
-          <h1 className="text-xl font-bold text-slate-700">Iniciar Sesión</h1>
+          <h1 className="text-xl font-bold text-content-base">Iniciar Sesión</h1>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-4">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm mb-4">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-content-base mb-1">Email</label>
             <input
               type="email"
               required
@@ -77,7 +77,7 @@ function LoginForm() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-content-base mb-1">Contraseña</label>
             <input
               type="password"
               required
@@ -92,9 +92,9 @@ function LoginForm() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
+        <p className="text-center text-sm text-content-muted mt-6">
           ¿No tienes cuenta?{" "}
-          <Link href="/auth/register" className="text-blue-600 hover:underline font-medium">
+          <Link href="/auth/register" className="text-primary hover:underline font-medium">
             Regístrate
           </Link>
         </p>
