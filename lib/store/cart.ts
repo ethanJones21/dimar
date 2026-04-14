@@ -4,6 +4,9 @@ import { CartItem, Product } from "@/types";
 
 interface CartStore {
   items: CartItem[];
+  cartDrawerOpen: boolean;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
   addItem: (product: Product, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -16,6 +19,10 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      cartDrawerOpen: false,
+
+      openCartDrawer: () => set({ cartDrawerOpen: true }),
+      closeCartDrawer: () => set({ cartDrawerOpen: false }),
 
       addItem: (product, quantity = 1) => {
         const items = get().items;
@@ -63,6 +70,7 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: "dimar-cart",
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

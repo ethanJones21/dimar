@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/Toaster";
+import CartDrawer from "@/components/CartDrawer";
 import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -69,6 +70,7 @@ export default function RootLayout({
         <main className="min-h-screen">{children}</main>
         <Footer />
         <Toaster />
+        <CartDrawer />
       </body>
     </html>
   );

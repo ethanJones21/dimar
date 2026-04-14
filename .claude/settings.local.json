@@ -22,7 +22,8 @@
       "Bash(npm install:*)",
       "Bash(npm uninstall:*)",
       "Bash(npx tsc:*)",
-      "Bash(grep -n \"price\\\\|Price\\\\|formatPrice\\\\|toFixed\\\\|\\\\\\\\.00\\\\b\" f:/proyectos/dimar/components/ProductCard.tsx f:/proyectos/dimar/app/cart/page.tsx f:/proyectos/dimar/app/products/\\\\[id\\\\]/page.tsx f:/proyectos/dimar/app/page.tsx f:/proyectos/dimar/app/orders/page.tsx f:/proyectos/dimar/app/orders/\\\\[id\\\\]/page.tsx)"
+      "Bash(grep -n \"price\\\\|Price\\\\|formatPrice\\\\|toFixed\\\\|\\\\\\\\.00\\\\b\" f:/proyectos/dimar/components/ProductCard.tsx f:/proyectos/dimar/app/cart/page.tsx f:/proyectos/dimar/app/products/\\\\[id\\\\]/page.tsx f:/proyectos/dimar/app/page.tsx f:/proyectos/dimar/app/orders/page.tsx f:/proyectos/dimar/app/orders/\\\\[id\\\\]/page.tsx)",
+      "Bash(npx next:*)"
     ]
   },
   "mcpServers": {

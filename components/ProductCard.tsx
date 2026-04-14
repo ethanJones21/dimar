@@ -9,6 +9,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem);
+  const openCartDrawer = useCartStore((s) => s.openCartDrawer);
 
   const mainImage =
     product.images?.[0] || "https://placehold.co/400x400?text=Sin+imagen";
@@ -18,6 +19,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     addItem(product);
+    openCartDrawer();
   };
 
   return (

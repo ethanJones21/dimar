@@ -31,6 +31,7 @@ export default function Navbar() {
   const itemCount = useCartStore((s) =>
     s.items.reduce((sum, i) => sum + i.quantity, 0),
   );
+  const openCartDrawer = useCartStore((s) => s.openCartDrawer);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -303,8 +304,9 @@ export default function Navbar() {
               onChange={handleImageSearch}
             />
 
-            <Link
-              href="/cart"
+            <button
+              onClick={openCartDrawer}
+              aria-label="Abrir carrito"
               className="relative p-2 text-content-muted hover:text-primary transition-colors"
             >
               <ShoppingCart size={22} />
@@ -313,7 +315,7 @@ export default function Navbar() {
                   {itemCount}
                 </span>
               )}
-            </Link>
+            </button>
 
             <ThemeToggle />
 
@@ -410,8 +412,9 @@ export default function Navbar() {
             <Search size={22} />
           </button>
 
-          <Link
-            href="/cart"
+          <button
+            onClick={openCartDrawer}
+            aria-label="Abrir carrito"
             className="relative p-2 text-content-muted hover:text-primary transition-colors"
           >
             <ShoppingCart size={22} />
@@ -420,7 +423,7 @@ export default function Navbar() {
                 {itemCount}
               </span>
             )}
-          </Link>
+          </button>
 
           <ThemeToggle />
         </div>

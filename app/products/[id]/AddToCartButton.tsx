@@ -9,9 +9,11 @@ import { toast } from "@/components/ui/Toaster";
 export default function AddToCartButton({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
+  const openCartDrawer = useCartStore((s) => s.openCartDrawer);
 
   const handleAdd = () => {
     addItem(product, quantity);
+    openCartDrawer();
     toast(`"${product.name}" agregado al carrito`, "success");
   };
 

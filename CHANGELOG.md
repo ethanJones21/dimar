@@ -8,9 +8,49 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ## [Unreleased]
 
 ### Próximamente
-- Panel de administración (proyecto separado)
 - Múltiples direcciones de envío por usuario
 - Historial de cambios de estado en pedidos
+- Notificaciones push al cambiar estado de pedido
+
+---
+
+## [0.10.0] — 2026-04-14
+
+### Añadido
+- **Drawer del carrito** (`CartDrawer`) — panel deslizable desde la derecha que muestra los productos agregados, controles de cantidad, subtotal por ítem, total reactivo y dos acciones: "Proceder al Pago" y "Ver todos" (navega a `/cart`); se cierra con el botón X, el backdrop o la tecla Escape
+- **Apertura automática del drawer** al agregar productos — tanto desde `AddToCartButton` (detalle de producto) como desde `ProductCard` (catálogo y carrusel), el drawer se abre inmediatamente sin redirigir al usuario
+- **Estado `cartDrawerOpen`** en el store Zustand (`useCartStore`) con acciones `openCartDrawer` / `closeCartDrawer`; se excluye de la persistencia en `localStorage` via `partialize`
+
+### Cambiado
+- **Ícono del carrito en Navbar** — cambiado de `<Link href="/cart">` a `<button>` que abre el drawer; aplica tanto en desktop como en mobile
+- **Checkout — formulario de pago con tarjeta completo** — reemplaza el flujo de redirección externa a MercadoPago por inputs nativos de React (Core Methods): número de tarjeta con formato automático, vencimiento `MM/YY` con inserción de barra, CVV, DNI del titular y nombre; selector de cuotas poblado dinámicamente desde el SDK según el BIN de la tarjeta ingresada
+- **Guard de hidratación en checkout** — antes de redirigir al carrito vacío, se espera a que Zustand termine de hidratar (`onFinishHydration`) para evitar falsos redirects en la carga inicial
+- **SDK de MercadoPago** cargado vía `<Script>` de Next.js con `onLoad` que inicializa la instancia MP y activa el formulario
+
+### Eliminado
+- Botón "Ir a pagar con MercadoPago" que redirigía a una preferencia externa — reemplazado por el formulario de tarjeta inline con tokenización directa
+
+---
+
+## [0.9.0] — 2026-04-14
+
+### Añadido
+- **Búsqueda por voz** — icono de micrófono en la barra de búsqueda del Navbar; usa el hook `useVoiceSearch` sobre la Web Speech API; muestra estados visuales (idle / escuchando / transcribiendo) y toast de error si el navegador no tiene soporte o el usuario deniega el permiso
+- **API de transcripción** (`/api/transcribe`) — endpoint interno que recibe audio y devuelve texto; permite integración con modelos externos de speech-to-text como respaldo al reconocimiento nativo del navegador
+- **Animaciones con GSAP** — nuevos componentes `AnimatedSection` (fade-in + slide al entrar al viewport) y `AnimatedStagger` (animación escalonada de hijos); aplicados en homepage (features strip, categorías, productos destacados) y en el carrito (entrada de items y estado vacío)
+- **Panel de administración** — restaurado dentro del proyecto; incluye gestión de productos (crear, editar, eliminar con `ProductForm` y `DeleteProductButton`) y gestión de pedidos con cambio de estado en línea (`OrderStatusSelect`)
+
+### Cambiado
+- **Checkout — pago con tarjeta**: reemplazado Culqi por **MercadoPago Core Methods** como único procesador; tokenización directa de tarjeta sin iframes, con detección automática de cuotas según el BIN
+- **Campo de vencimiento unificado** en checkout — los campos separados "Mes" / "Año" se fusionaron en un único input `MM/YY` con inserción automática de la barra al escribir
+- **Validación en cliente antes del pago** — se verifica número de tarjeta, mes/año de vencimiento (detecta tarjetas vencidas), CVV, DNI y nombre del titular; cualquier error muestra un toast con mensaje claro antes de llamar al SDK
+- **Errores del SDK de MercadoPago** — los códigos internos del SDK (ej. `326` = año inválido, `E301` = número de tarjeta, `224` = CVV) se traducen a mensajes legibles en español y se muestran como toast
+- **Esquema Supabase consolidado** — los archivos de migración separados se unificaron en `supabase/setup.sql`; facilita el setup desde cero en nuevos entornos
+
+### Eliminado
+- Integración con **Culqi** — removidos `app/api/culqi/charge/route.ts` y `docs/culqi-setup.md`; MercadoPago cubre todos los métodos de pago
+
+---
 
 ---
 
