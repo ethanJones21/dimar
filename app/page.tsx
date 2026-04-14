@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import ProductCard from "@/components/ProductCard";
 import BannerSlider from "@/components/BannerSlider";
 import PromoBanners from "@/components/PromoBanners";
+import AnimatedSection from "@/components/AnimatedSection";
+import AnimatedStagger from "@/components/AnimatedStagger";
 import { Product, Banner } from "@/types";
 import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
@@ -94,7 +96,7 @@ export default async function HomePage() {
 
       {/* ── Features strip ── */}
       <section className="bg-surface-base border-b border-line">
-        <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <AnimatedStagger className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
           {FEATURES.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="flex items-center gap-3">
               <div className="p-2.5 bg-primary-light rounded-xl flex-shrink-0">
@@ -108,13 +110,13 @@ export default async function HomePage() {
               </div>
             </div>
           ))}
-        </div>
+        </AnimatedStagger>
       </section>
 
       {/* ── Categorías ── */}
       {categories && categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex items-center justify-between mb-6">
+          <AnimatedSection className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-content-base">
               Explora por categoría
             </h2>
@@ -124,8 +126,8 @@ export default async function HomePage() {
             >
               Ver todo <ArrowRight size={16} />
             </Link>
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          </AnimatedSection>
+          <AnimatedStagger className="grid grid-cols-3 md:grid-cols-6 gap-3">
             {categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -140,17 +142,19 @@ export default async function HomePage() {
                 </p>
               </Link>
             ))}
-          </div>
+          </AnimatedStagger>
         </section>
       )}
 
       {/* ── Promo banners ── */}
-      <PromoBanners banners={(promoBanners as Banner[]) ?? []} />
+      <AnimatedSection>
+        <PromoBanners banners={(promoBanners as Banner[]) ?? []} />
+      </AnimatedSection>
 
       {/* ── Productos destacados ── */}
       {featuredProducts && featuredProducts.length > 0 ? (
         <section className="max-w-7xl mx-auto px-4 pb-16">
-          <div className="flex items-center justify-between mb-6">
+          <AnimatedSection className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-content-base">
                 Productos Destacados
@@ -165,12 +169,17 @@ export default async function HomePage() {
             >
               Ver todos <ArrowRight size={16} />
             </Link>
-          </div>
-          <div className="grid grid-cols-1 min-[453px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-sm min-[453px]:max-w-none mx-auto min-[453px]:mx-0">
+          </AnimatedSection>
+          <AnimatedStagger
+            stagger={0.06}
+            className="grid grid-cols-1 min-[453px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-sm min-[453px]:max-w-none mx-auto min-[453px]:mx-0"
+          >
             {(featuredProducts as Product[]).map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <div key={product.id}>
+                <ProductCard product={product} />
+              </div>
             ))}
-          </div>
+          </AnimatedStagger>
         </section>
       ) : (
         <section className="py-20 px-4 text-center">
@@ -187,7 +196,11 @@ export default async function HomePage() {
       )}
 
       {/* ── CTA final ── */}
-      <section className="text-white py-16 px-4 dark:bg-surface-base bg-secondary-light">
+      <AnimatedSection
+        as="section"
+        className="text-white py-16 px-4 dark:bg-surface-base bg-secondary-light"
+        y={16}
+      >
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-3 text-secondary">
             ¿Listo para comprar?
@@ -202,12 +215,11 @@ export default async function HomePage() {
             Ver catálogo completo <ArrowRight size={18} />
           </Link>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* ── Banners full-width ── */}
       <section className="max-w-7xl mx-auto px-4 py-12 flex flex-col gap-6">
-        {/* Banner 1 */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl px-10 py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[200px]">
+        <AnimatedSection className="relative overflow-hidden bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl px-10 py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[200px]">
           <div className="absolute -right-8 -top-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
           <div className="absolute right-16 -bottom-6 w-32 h-32 bg-white/10 rounded-full pointer-events-none" />
           <div>
@@ -228,10 +240,12 @@ export default async function HomePage() {
           >
             Comprar ahora <ArrowRight size={16} />
           </Link>
-        </div>
+        </AnimatedSection>
 
-        {/* Banner 2 */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 to-purple-800 rounded-2xl px-10 py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[200px]">
+        <AnimatedSection
+          className="relative overflow-hidden bg-gradient-to-br from-violet-600 to-purple-800 rounded-2xl px-10 py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6 min-h-[200px]"
+          delay={0.1}
+        >
           <div className="absolute -left-8 -bottom-8 w-48 h-48 bg-white/10 rounded-full pointer-events-none" />
           <div className="absolute right-8 -top-6 w-32 h-32 bg-white/10 rounded-full pointer-events-none" />
           <div>
@@ -252,11 +266,11 @@ export default async function HomePage() {
           >
             Ver productos <ArrowRight size={16} />
           </Link>
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* ── Video showcase ── */}
-      <section className="py-20 px-4">
+      <AnimatedSection as="section" className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-3">
             Experiencia Dimar
@@ -279,7 +293,7 @@ export default async function HomePage() {
             />
           </div>
         </div>
-      </section>
+      </AnimatedSection>
     </div>
   );
 }

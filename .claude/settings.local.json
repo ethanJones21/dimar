@@ -16,13 +16,23 @@
       "Bash(pnpm add:*)",
       "Bash(npx playwright:*)",
       "WebFetch(domain:localhost)",
-      "Bash(f:/proyectos/dimar2.0/dimar/.agents/skills/brainstorming/scripts/start-server.sh --project-dir f:/proyectos/dimar2.0/dimar)"
+      "Bash(f:/proyectos/dimar2.0/dimar/.agents/skills/brainstorming/scripts/start-server.sh --project-dir f:/proyectos/dimar2.0/dimar)",
+      "Bash(find F:/proyectos/dimar2.0/dimar -type f \\\\\\(-name *.animation.* -o -name *animation* -o -name *hook* \\\\\\))",
+      "Bash(bash .claude/skills/brainstorming/scripts/start-server.sh --project-dir f:/proyectos/dimar2.0/dimar)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx tsc:*)",
+      "Bash(grep -n \"price\\\\|Price\\\\|formatPrice\\\\|toFixed\\\\|\\\\\\\\.00\\\\b\" f:/proyectos/dimar/components/ProductCard.tsx f:/proyectos/dimar/app/cart/page.tsx f:/proyectos/dimar/app/products/\\\\[id\\\\]/page.tsx f:/proyectos/dimar/app/page.tsx f:/proyectos/dimar/app/orders/page.tsx f:/proyectos/dimar/app/orders/\\\\[id\\\\]/page.tsx)"
     ]
   },
   "mcpServers": {
     "context7": {
       "type": "https",
       "url": "https://mcp.context7.com/mcp"
+    },
+    "mercadopago": {
+      "type": "https",
+      "url": "https://mcp.mercadopago.com/mcp"
     }
   }
 }

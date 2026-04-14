@@ -1,17 +1,104 @@
 "use client";
 
+import { useRef } from "react";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CartSuggestions from "./CartSuggestions";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, total } = useCartStore();
+  const emptyRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const itemsRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  // Empty state entrance
+  useGSAP(
+    () => {
+      if (items.length > 0 || !emptyRef.current) return;
+      const children = Array.from(emptyRef.current.children);
+      gsap.fromTo(
+        children,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" },
+      );
+    },
+    { dependencies: [items.length] },
+  );
+
+  // Cart entrance
+  useGSAP(
+    () => {
+      if (items.length === 0) return;
+
+      const tl = gsap.timeline();
+
+      if (titleRef.current) {
+        tl.fromTo(
+          titleRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+        );
+      }
+
+      if (itemsRef.current) {
+        const cards = Array.from(itemsRef.current.children);
+        tl.fromTo(
+          cards,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.07, ease: "power2.out" },
+          "-=0.2",
+        );
+      }
+
+      if (summaryRef.current) {
+        tl.fromTo(
+          summaryRef.current,
+          { opacity: 0, x: 16 },
+          { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" },
+          "-=0.3",
+        );
+      }
+    },
+    { dependencies: [] },
+  );
+
+  // Banner scroll reveal
+  useGSAP(
+    () => {
+      if (!bannerRef.current) return;
+      gsap.fromTo(
+        bannerRef.current,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: bannerRef.current,
+            start: "top 88%",
+          },
+        },
+      );
+    },
+    { dependencies: [] },
+  );
 
   if (items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+      <div
+        ref={emptyRef}
+        className="max-w-2xl mx-auto px-4 py-20 text-center"
+      >
         <ShoppingBag size={64} className="mx-auto text-content-subtle mb-4" />
         <h1 className="text-2xl font-bold text-content-base mb-2">
           Tu carrito está vacío
@@ -28,13 +115,16 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-content-base mb-8">
+      <h1
+        ref={titleRef}
+        className="text-3xl font-bold text-content-base mb-8"
+      >
         Carrito de Compras
       </h1>
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Items */}
-        <div className="lg:col-span-2 space-y-4">
+        <div ref={itemsRef} className="lg:col-span-2 space-y-4">
           {items.map(({ product, quantity }) => {
             const img = product.images?.[0] || "https://placehold.co/100x100";
             return (
@@ -102,7 +192,7 @@ export default function CartPage() {
         </div>
 
         {/* Summary */}
-        <div className="card p-6 h-fit sticky top-20">
+        <div ref={summaryRef} className="card p-6 h-fit sticky top-20">
           <h2 className="font-bold text-lg text-content-base mb-4">
             Resumen del Pedido
           </h2>
@@ -140,6 +230,7 @@ export default function CartPage() {
 
       {/* ── Banner ofertas ── */}
       <div
+        ref={bannerRef}
         className="mt-12 relative overflow-hidden rounded-2xl px-8 py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
         style={{ backgroundColor: "#180F29" }}
       >

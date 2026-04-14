@@ -8,6 +8,7 @@ import ReviewsSection from "./ReviewsSection";
 import SimilarProducts from "./SimilarProducts";
 import { Product } from "@/types";
 import { Package } from "lucide-react";
+import AnimatedSection from "@/components/AnimatedSection";
 
 export async function generateMetadata({
   params,
@@ -79,7 +80,7 @@ export default async function ProductPage({
     offers: {
       "@type": "Offer",
       url: `${SITE_URL}/products/${p.id}`,
-      priceCurrency: "COP",
+      priceCurrency: "PEN",
       price: p.price,
       availability:
         p.stock > 0
@@ -104,9 +105,11 @@ export default async function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="grid md:grid-cols-2 gap-10 ">
-        <ProductImages images={p.images} name={p.name} />
+        <AnimatedSection y={20}>
+          <ProductImages images={p.images} name={p.name} />
+        </AnimatedSection>
 
-        <div>
+        <AnimatedSection y={20} delay={0.1}>
           <p className="text-sm text-primary font-medium mb-2">
             {p.category?.name}
           </p>
@@ -141,15 +144,19 @@ export default async function ProductPage({
           </div>
 
           <AddToCartButton product={p} />
-        </div>
+        </AnimatedSection>
       </div>
 
       {p.category_id && (
-        <SimilarProducts categoryId={p.category_id} excludeId={p.id} />
+        <AnimatedSection>
+          <SimilarProducts categoryId={p.category_id} excludeId={p.id} />
+        </AnimatedSection>
       )}
 
       <hr className="my-10 border-line" />
-      <ReviewsSection productId={p.id} />
+      <AnimatedSection>
+        <ReviewsSection productId={p.id} />
+      </AnimatedSection>
     </div>
   );
 }

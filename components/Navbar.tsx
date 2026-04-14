@@ -22,6 +22,8 @@ import { toast } from "@/components/ui/Toaster";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Category } from "@/types";
 
@@ -36,7 +38,6 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const [query, setQuery] = useState("");
-  const [listening, setListening] = useState(false);
   const [analyzingImage, setAnalyzingImage] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
@@ -48,37 +49,38 @@ export default function Navbar() {
   const router = useRouter();
   const supabase = createClient();
 
-  const handleVoiceSearch = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const w = window as any;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const SpeechRecognition = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    const params = new URLSearchParams();
+    if (value.trim()) params.set("q", value.trim());
+    router.push(`/products${params.toString() ? `?${params}` : ""}`);
+  }, 400);
 
-    if (!SpeechRecognition) {
-      alert("Tu navegador no soporta búsqueda por voz.");
+  const { state: voiceState, supported: voiceSupported, start: startVoice, stop: stopVoice } =
+    useVoiceSearch(
+      (transcript) => {
+        setQuery(transcript);
+        setSearchOpen(false);
+        const params = new URLSearchParams();
+        if (transcript.trim()) params.set("q", transcript.trim());
+        router.push(`/products?${params}`);
+      },
+      (type) => {
+        if (type === "permission") toast("Permite el acceso al micrófono", "error");
+        else if (type === "unsupported") toast("Tu navegador no soporta búsqueda por voz", "error");
+        else toast("Error al procesar el audio. Intenta de nuevo.", "error");
+      },
+    );
+
+  const handleVoiceMic = () => {
+    if (!voiceSupported) {
+      toast("Tu navegador no soporta búsqueda por voz", "error");
       return;
     }
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = "es-PE";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    setListening(true);
-    recognition.start();
-
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const transcript = event.results[0][0].transcript;
-      setQuery(transcript);
-      setListening(false);
-      setSearchOpen(false);
-      const params = new URLSearchParams();
-      if (transcript.trim()) params.set("q", transcript.trim());
-      router.push(`/products?${params}`);
-    };
-
-    recognition.onerror = () => setListening(false);
-    recognition.onend = () => setListening(false);
+    if (voiceState === "idle") {
+      startVoice();
+    } else {
+      stopVoice();
+    }
   };
 
   useEffect(() => {
@@ -125,10 +127,17 @@ export default function Navbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    debouncedSearch.cancel();
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     router.push(`/products${params.toString() ? `?${params}` : ""}`);
     setSearchOpen(false);
+  };
+
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setQuery(val);
+    debouncedSearch(val);
   };
 
   useEffect(() => {
@@ -193,25 +202,36 @@ export default function Navbar() {
 
   const closeDrawer = () => setDrawerOpen(false);
 
+  const micButton = (
+    <button
+      type="button"
+      title={voiceState === "listening" ? "Detener" : "Buscar por voz"}
+      onClick={handleVoiceMic}
+      disabled={voiceState === "processing"}
+      className={`transition-colors ${
+        voiceState === "listening"
+          ? "text-red-500 animate-pulse"
+          : voiceState === "processing"
+            ? "text-primary animate-spin"
+            : "text-content-subtle hover:text-primary"
+      }`}
+    >
+      <Mic size={17} />
+    </button>
+  );
+
   const searchBar = (
     <form onSubmit={handleSearch} className="flex items-center w-full">
       <div className="flex w-full items-center bg-surface-subtle hover:bg-surface-subtle/80 focus-within:bg-surface-base focus-within:ring-2 focus-within:ring-primary rounded-full h-11 px-5 gap-3 transition-all">
         <Search size={17} className="text-content-subtle flex-shrink-0" />
         <input
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleQueryChange}
           placeholder="¿Qué estás buscando?"
           className="flex-1 bg-transparent outline-none text-sm text-content-base placeholder:text-content-subtle min-w-0"
         />
         <div className="flex items-center gap-2 flex-shrink-0">
-          <button
-            type="button"
-            title="Buscar por voz"
-            onClick={handleVoiceSearch}
-            className={`transition-colors ${listening ? "text-red-500 animate-pulse" : "text-content-subtle hover:text-primary"}`}
-          >
-            <Mic size={17} />
-          </button>
+          {micButton}
           <button
             type="button"
             title="Buscar por imagen"
@@ -439,19 +459,12 @@ export default function Navbar() {
               <input
                 ref={mobileInputRef}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={handleQueryChange}
                 placeholder="Busca productos, marcas..."
                 className="flex-1 bg-transparent outline-none text-sm text-content-base placeholder:text-content-subtle min-w-0"
               />
               <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  type="button"
-                  title="Buscar por voz"
-                  onClick={handleVoiceSearch}
-                  className={`transition-colors ${listening ? "text-red-500 animate-pulse" : "text-content-subtle hover:text-primary"}`}
-                >
-                  <Mic size={17} />
-                </button>
+                {micButton}
                 <input
                   ref={imageInputRef}
                   type="file"

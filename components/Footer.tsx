@@ -36,7 +36,7 @@ const SOCIAL = [
   { icon: Twitter, href: "#", label: "Twitter" },
 ];
 
-const PAYMENT_METHODS = ["Visa", "Mastercard", "Yape", "Culqi"];
+const PAYMENT_METHODS = ["Visa", "Mastercard", "Yape", "MercadoPago"];
 
 const colHeading =
   "text-white font-semibold mb-4 text-sm uppercase tracking-wide";

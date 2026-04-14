@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, SlidersHorizontal, X } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 interface Props {
   brands: string[];
@@ -135,11 +136,11 @@ export default function FiltersPanel({
             {(currentMinPrice || currentMaxPrice) && (
               <p className="text-xs text-content-muted text-center">
                 {currentMinPrice
-                  ? `$${Number(currentMinPrice).toLocaleString()}`
+                  ? formatPrice(Number(currentMinPrice))
                   : "–"}
                 {" → "}
                 {currentMaxPrice
-                  ? `$${Number(currentMaxPrice).toLocaleString()}`
+                  ? formatPrice(Number(currentMaxPrice))
                   : "∞"}
               </p>
             )}

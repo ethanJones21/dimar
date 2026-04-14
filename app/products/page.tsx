@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import FiltersPanel from "./FiltersPanel";
 import ProductsGrid from "./ProductsGrid";
+import AnimatedSection from "@/components/AnimatedSection";
+import { X } from "lucide-react";
 
 const PAGE_SIZE = 15;
 
@@ -41,12 +43,14 @@ export default async function ProductsPage({
     categoryId = cat?.id ?? null;
   }
 
-  // ── Fetch brands ──
-  const { data: brandsRaw, error: brandsError } = await supabase
+  // ── Fetch brands (scoped to category when one is active) ──
+  let brandsQuery = supabase
     .from("products")
     .select("brand")
     .eq("active", true)
     .not("brand", "is", null);
+  if (categoryId) brandsQuery = brandsQuery.eq("category_id", categoryId);
+  const { data: brandsRaw, error: brandsError } = await brandsQuery;
 
   const brands = brandsError
     ? []
@@ -115,6 +119,24 @@ export default async function ProductsPage({
 
   const { data: categories } = await supabase.from("categories").select("*");
 
+  const activeCategory = params.category
+    ? (categories ?? []).find(
+        (c: { slug: string; name: string }) => c.slug === params.category,
+      )
+    : null;
+
+  const buildClearCategoryUrl = () => {
+    const sp = new URLSearchParams();
+    if (params.q) sp.set("q", params.q);
+    if (params.min_price) sp.set("min_price", params.min_price);
+    if (params.max_price) sp.set("max_price", params.max_price);
+    if (params.brand) sp.set("brand", params.brand);
+    if (params.discount) sp.set("discount", params.discount);
+    if (params.sale_format) sp.set("sale_format", params.sale_format);
+    const qs = sp.toString();
+    return qs ? `/products?${qs}` : "/products";
+  };
+
   // Build URL preserving all params except page
   const buildPageUrl = (p: number) => {
     const sp = new URLSearchParams();
@@ -131,7 +153,9 @@ export default async function ProductsPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-content-base mb-6">Productos</h1>
+      <AnimatedSection>
+        <h1 className="text-3xl font-bold text-content-base mb-6">Productos</h1>
+      </AnimatedSection>
 
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* ── Filters sidebar ── */}
@@ -145,6 +169,20 @@ export default async function ProductsPage({
 
         {/* ── Main content ── */}
         <div className="flex-1 min-w-0">
+          {/* ── Active category chip ── */}
+          {activeCategory && (
+            <div className="flex items-center gap-2 mb-4 p-2 rounded-lg bg-white dark:bg-transparent ">
+              <span className="text-sm text-content-muted">Categoria:</span>
+              <Link
+                href={buildClearCategoryUrl()}
+                className="inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 text-sm font-medium px-3 py-1 rounded-full hover:bg-primary/20 transition-colors"
+              >
+                {activeCategory.name}
+                <X size={13} />
+              </Link>
+            </div>
+          )}
+
           {/* Grid */}
           {products.length > 0 ? (
             <>

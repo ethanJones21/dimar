@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { Banner } from "@/types";
+
+gsap.registerPlugin(useGSAP);
 
 const FALLBACK_BANNERS: Banner[] = [
   {
@@ -25,6 +29,7 @@ const FALLBACK_BANNERS: Banner[] = [
 export default function BannerSlider({ banners }: { banners: Banner[] }) {
   const slides = banners.length > 0 ? banners : FALLBACK_BANNERS;
   const [current, setCurrent] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const next = useCallback(
     () => setCurrent((c) => (c + 1) % slides.length),
@@ -37,6 +42,28 @@ export default function BannerSlider({ banners }: { banners: Banner[] }) {
     const id = setInterval(next, 5000);
     return () => clearInterval(id);
   }, [next, slides.length]);
+
+  useGSAP(
+    () => {
+      const items = contentRef.current
+        ? Array.from(contentRef.current.children)
+        : [];
+      if (!items.length) return;
+
+      gsap.fromTo(
+        items,
+        { opacity: 0, y: 14 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: "power2.out",
+        },
+      );
+    },
+    { scope: contentRef, dependencies: [current] },
+  );
 
   const slide = slides[current];
 
@@ -57,7 +84,10 @@ export default function BannerSlider({ banners }: { banners: Banner[] }) {
         />
       )}
 
-      <div className="relative max-w-7xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center gap-4">
+      <div
+        ref={contentRef}
+        className="relative max-w-7xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center gap-4"
+      >
         {slide.badge && (
           <span className="inline-block bg-white/20 backdrop-blur-sm border border-white/30 text-white text-sm font-semibold px-4 py-1 rounded-full">
             {slide.badge}
