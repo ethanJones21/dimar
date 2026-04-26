@@ -76,7 +76,7 @@ export default async function ProductsPage({
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-      q = q.ilike("search_name", `%${normalized}%`);
+      q = q.ilike("name", `%${normalized}%`);
     }
 
     const minPrice = params.min_price ? Number(params.min_price) : null;

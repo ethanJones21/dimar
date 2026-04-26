@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Shield, Truck, RefreshCw, Headphones } from "lucide-react";
+import { type LucideIcon, ArrowRight, Shield, Truck, RefreshCw, Headphones, Laptop, Shirt, Home, Dumbbell, BookOpen, Sparkles, Zap, RotateCcw, ShoppingBag, Tag } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import ProductCard from "@/components/ProductCard";
 import BannerSlider from "@/components/BannerSlider";
@@ -9,13 +9,13 @@ import AnimatedStagger from "@/components/AnimatedStagger";
 import { Product, Banner } from "@/types";
 import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
-const CATEGORY_EMOJIS: Record<string, string> = {
-  electronica: "💻",
-  ropa: "👕",
-  hogar: "🏠",
-  deportes: "⚽",
-  libros: "📚",
-  belleza: "✨",
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  electronica: Laptop,
+  ropa: Shirt,
+  hogar: Home,
+  deportes: Dumbbell,
+  libros: BookOpen,
+  belleza: Sparkles,
 };
 
 const FEATURES = [
@@ -128,20 +128,23 @@ export default async function HomePage() {
             </Link>
           </AnimatedSection>
           <AnimatedStagger className="grid grid-cols-3 md:grid-cols-6 gap-3">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/products?category=${cat.slug}`}
-                className="card p-4 flex flex-col items-center text-center gap-2 hover:border-primary-light hover:shadow-md transition-all group"
-              >
-                <span className="text-3xl group-hover:scale-110 transition-transform">
-                  {CATEGORY_EMOJIS[cat.slug] ?? "🏷️"}
-                </span>
-                <p className="text-xs font-medium text-content-base leading-tight">
-                  {cat.name}
-                </p>
-              </Link>
-            ))}
+            {categories.map((cat) => {
+              const CatIcon = CATEGORY_ICONS[cat.slug] ?? Tag;
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/products?category=${cat.slug}`}
+                  className="card p-4 flex flex-col items-center text-center gap-2 hover:border-primary-light hover:shadow-md transition-all group cursor-pointer"
+                >
+                  <div className="p-2.5 bg-primary-light rounded-xl group-hover:scale-110 transition-transform">
+                    <CatIcon size={22} className="text-primary" />
+                  </div>
+                  <p className="text-xs font-medium text-content-base leading-tight">
+                    {cat.name}
+                  </p>
+                </Link>
+              );
+            })}
           </AnimatedStagger>
         </section>
       )}
@@ -184,7 +187,7 @@ export default async function HomePage() {
       ) : (
         <section className="py-20 px-4 text-center">
           <div className="max-w-md mx-auto">
-            <p className="text-6xl mb-4">🛍️</p>
+            <ShoppingBag size={64} className="mx-auto text-content-subtle mb-4" />
             <h2 className="text-2xl font-bold text-content-base mb-2">
               Próximamente
             </h2>
@@ -198,14 +201,14 @@ export default async function HomePage() {
       {/* ── CTA final ── */}
       <AnimatedSection
         as="section"
-        className="text-white py-16 px-4 dark:bg-surface-base bg-secondary-light"
+        className="py-16 px-4 dark:bg-surface-base bg-secondary-light"
         y={16}
       >
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-3 text-secondary">
+          <h2 className="text-3xl font-bold mb-3 text-secondary dark:text-white">
             ¿Listo para comprar?
           </h2>
-          <p className="text-slate-400 mb-8 text-lg dark:text-white/70">
+          <p className="text-content-muted mb-8 text-lg dark:text-white/70">
             Explora todo nuestro catálogo y encuentra exactamente lo que buscas.
           </p>
           <Link
@@ -226,8 +229,9 @@ export default async function HomePage() {
             <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">
               Envío express
             </p>
-            <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2">
-              Recíbelo en 24 horas 🚀
+            <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2 flex items-center gap-2">
+              <Zap size={24} className="flex-shrink-0" />
+              Recíbelo en 24 horas
             </h3>
             <p className="text-white/90 text-sm max-w-md">
               Pedidos antes de las 3 p.m. salen el mismo día. Cobertura en Lima
@@ -252,8 +256,9 @@ export default async function HomePage() {
             <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-2">
               Garantía total
             </p>
-            <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2">
-              30 días para cambios 🔄
+            <h3 className="text-white text-2xl md:text-3xl font-extrabold leading-tight mb-2 flex items-center gap-2">
+              <RotateCcw size={24} className="flex-shrink-0" />
+              30 días para cambios
             </h3>
             <p className="text-white/90 text-sm max-w-md">
               Si no estás satisfecho, te devolvemos tu dinero sin preguntas. Tu

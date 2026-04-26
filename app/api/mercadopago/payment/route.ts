@@ -23,9 +23,15 @@ export async function POST(req: NextRequest) {
   );
 
   // Crear orden
+  const paymentLabel =
+    payment_method_id === "yape" ? "YAPE" :
+    payment_method_id === "visa" ? "VISA" :
+    payment_method_id === "master" ? "MASTERCARD" :
+    "TARJETA";
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
-    .insert({ user_id: user.id, status: "pending", total, shipping_address: address })
+    .insert({ user_id: user.id, status: "pending", total, shipping_address: address, payment_method: paymentLabel })
     .select()
     .single();
   if (orderError) return NextResponse.json({ error: "Error al crear orden" }, { status: 500 });
@@ -52,18 +58,27 @@ export async function POST(req: NextRequest) {
       transaction_amount: total,
       token,
       description,
-      installments: Number(installments),
       payment_method_id,
-      issuer_id,
+      installments: payment_method_id === "yape" ? 1 : Number(installments),
+      ...(payment_method_id !== "yape" ? { issuer_id } : {}),
       payer: {
         email,
-        identification: { type: docType, number: docNumber },
+        ...(docNumber ? { identification: { type: docType, number: docNumber } } : {}),
       },
       external_reference: order.id,
     }),
   });
 
   const data = await res.json();
+
+  // Log siempre para debug — muestra status_detail aunque MP devuelva 200
+  console.log("[MP payment]", {
+    status: data.status,
+    status_detail: data.status_detail,
+    error: data.error,
+    message: data.message,
+    id: data.id,
+  });
 
   if (!res.ok) {
     console.error("MercadoPago payment error:", data);

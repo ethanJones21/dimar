@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      // Hostnames de imágenes de productos externos
+      { protocol: "https", hostname: "www.wonduu.com" },
+      { protocol: "https", hostname: "wonduu.com" },
+      { protocol: "https", hostname: "**" }, // wildcard para cualquier dominio externo
     ],
     // Next.js 16: minimumCacheTTL por defecto es 4h (14400s)
     // images.domains está deprecated — usar remotePatterns (ya configurado arriba)

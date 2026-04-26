@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/Toaster";
 import { Address } from "@/types";
-import { CreditCard, MapPin, CheckCircle2 } from "lucide-react";
+import { CreditCard, MapPin, CheckCircle2, Shield, Smartphone } from "lucide-react";
 
 declare global {
   interface Window {
@@ -40,6 +40,9 @@ export default function CheckoutPage() {
   const [docNumber, setDocNumber] = useState("");
   const [installments, setInstallments] = useState(1);
   const [installmentOptions, setInstallmentOptions] = useState<{ installments: number; recommended_message: string }[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "yape">("card");
+  const [yapePhone, setYapePhone] = useState("");
+  const [yapeOtp, setYapeOtp] = useState("");
 
   useEffect(() => {
     const supabase = createClient();
@@ -148,10 +151,9 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (!mpRef.current) return;
 
-    const validationError = validateCardFields();
-    if (validationError) {
-      toast(validationError, "error");
-      return;
+    if (paymentMethod === "card") {
+      const validationError = validateCardFields();
+      if (validationError) { toast(validationError, "error"); return; }
     }
 
     setLoading(true);
@@ -160,45 +162,54 @@ export default function CheckoutPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push("/auth/login?redirect=/checkout"); return; }
 
-      const bin = cardNumber.replace(/\D/g, "").slice(0, 6);
-      const [expMonth, expYear] = expiry.split("/");
+      let tokenId: string;
+      let paymentMethodId: string;
+      let issuerId: number | undefined;
+      let payerDocNumber: string | undefined;
 
-      // Obtener payment_method_id e issuer_id desde el BIN
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const methods = await mpRef.current.getPaymentMethods({ bin }) as any;
-      const paymentMethodId: string = methods?.results?.[0]?.id ?? "";
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const issuers = await mpRef.current.getIssuers({ paymentMethodId, bin }) as any[];
-      const issuerId: number | undefined = issuers?.[0]?.id;
-
-      // Tokenizar la tarjeta
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const tokenData = await mpRef.current.createCardToken({
-        cardNumber: cardNumber.replace(/\D/g, ""),
-        cardholderName,
-        cardExpirationMonth: expMonth,
-        cardExpirationYear: expYear,
-        securityCode: cvv,
-        identificationType: "DNI",
-        identificationNumber: docNumber,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any;
-
-      if (tokenData.error || !tokenData.id) {
-        throw new Error(getMpErrorMessage(tokenData));
+      if (paymentMethod === "yape") {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const yapeResult = await (mpRef.current.yape({ otp: yapeOtp, phoneNumber: yapePhone }) as any).create();
+        if (yapeResult.error || !yapeResult.id) throw new Error(yapeResult.message ?? "Error al generar token Yape");
+        tokenId = yapeResult.id;
+        paymentMethodId = "yape";
+      } else {
+        const bin = cardNumber.replace(/\D/g, "").slice(0, 6);
+        const [expMonth, expYearShort] = expiry.split("/");
+        const expYear = expYearShort.length === 2 ? "20" + expYearShort : expYearShort;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const methods = await mpRef.current.getPaymentMethods({ bin }) as any;
+        paymentMethodId = methods?.results?.[0]?.id ?? "";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const issuers = await mpRef.current.getIssuers({ paymentMethodId, bin }) as any[];
+        issuerId = issuers?.[0]?.id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const tokenData = await mpRef.current.createCardToken({
+          cardNumber: cardNumber.replace(/\D/g, ""),
+          cardholderName,
+          cardExpirationMonth: expMonth,
+          cardExpirationYear: expYear,
+          securityCode: cvv,
+          identificationType: "DNI",
+          identificationNumber: docNumber,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any;
+        if (tokenData.error || !tokenData.id) throw new Error(getMpErrorMessage(tokenData));
+        tokenId = tokenData.id;
+        payerDocNumber = docNumber;
       }
 
       const res = await fetch("/api/mercadopago/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          token: tokenData.id,
-          installments,
+          token: tokenId,
+          installments: paymentMethod === "yape" ? 1 : installments,
           payment_method_id: paymentMethodId,
           issuer_id: issuerId,
           email: user.email,
           docType: "DNI",
-          docNumber,
+          docNumber: payerDocNumber,
           address,
           items: items.map(({ product, quantity }) => ({
             title: product.name,
@@ -245,16 +256,18 @@ export default function CheckoutPage() {
         <h1 className="text-3xl font-bold text-content-base mb-2">Finalizar Compra</h1>
 
         {/* Steps */}
-        <div className="flex items-center gap-2 mb-8 text-sm">
-          <span className={`flex items-center gap-1.5 font-medium ${step === "shipping" ? "text-primary" : "text-content-subtle"}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === "shipping" ? "bg-primary text-white" : "bg-surface-subtle text-content-muted"}`}>1</span>
-            Envío
-          </span>
-          <div className="flex-1 h-px bg-surface-subtle" />
-          <span className={`flex items-center gap-1.5 font-medium ${step === "payment" ? "text-primary" : "text-content-subtle"}`}>
-            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === "payment" ? "bg-primary text-white" : "bg-surface-subtle text-content-muted"}`}>2</span>
-            Pago
-          </span>
+        <div className="flex items-center mb-8">
+          <div className="flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm bg-primary text-white">
+              {step === "payment" ? <CheckCircle2 size={16} /> : "1"}
+            </span>
+            <span className={`font-medium text-sm ${step === "shipping" ? "text-primary" : "text-content-muted"}`}>Envío</span>
+          </div>
+          <div className={`flex-1 h-0.5 mx-3 transition-colors ${step === "payment" ? "bg-primary" : "bg-surface-subtle"}`} />
+          <div className="flex items-center gap-2">
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${step === "payment" ? "bg-primary text-white" : "bg-surface-subtle text-content-muted"}`}>2</span>
+            <span className={`font-medium text-sm ${step === "payment" ? "text-primary" : "text-content-subtle"}`}>Pago</span>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -304,107 +317,177 @@ export default function CheckoutPage() {
               </form>
             )}
 
-            {/* ── Paso 2: Checkout API (Core Methods) ── */}
+            {/* ── Paso 2: Pago ── */}
             {step === "payment" && (
               <div className="space-y-4">
-                <div className="card p-6">
-                  <h2 className="font-bold text-lg text-content-base mb-4 flex items-center gap-2">
-                    <CreditCard size={20} className="text-primary" /> Datos de tarjeta
-                  </h2>
-
-                  <form onSubmit={handlePayment} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-content-base mb-1">Número de tarjeta</label>
-                      <input
-                        className="input font-mono tracking-widest"
-                        placeholder="0000 0000 0000 0000"
-                        value={cardNumber}
-                        onChange={(e) => handleCardNumberChange(e.target.value)}
-                        maxLength={19}
-                        inputMode="numeric"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-content-base mb-1">Vencimiento</label>
-                      <input
-                        className="input font-mono"
-                        placeholder="MM/YY"
-                        value={expiry}
-                        onChange={(e) => handleExpiryChange(e.target.value)}
-                        maxLength={5}
-                        inputMode="numeric"
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-content-base mb-1">CVV</label>
-                        <input
-                          className="input"
-                          placeholder="123"
-                          value={cvv}
-                          onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                          maxLength={4}
-                          inputMode="numeric"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-content-base mb-1">DNI titular</label>
-                        <input
-                          className="input"
-                          placeholder="12345678"
-                          value={docNumber}
-                          onChange={(e) => setDocNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                          maxLength={8}
-                          inputMode="numeric"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-content-base mb-1">Nombre en la tarjeta</label>
-                      <input
-                        className="input uppercase"
-                        placeholder="NOMBRE APELLIDO"
-                        value={cardholderName}
-                        onChange={(e) => setCardholderName(e.target.value.toUpperCase())}
-                        required
-                      />
-                    </div>
-
-                    {installmentOptions.length > 0 && (
-                      <div>
-                        <label className="block text-sm font-medium text-content-base mb-1">Cuotas</label>
-                        <select
-                          className="input"
-                          value={installments}
-                          onChange={(e) => setInstallments(Number(e.target.value))}
-                        >
-                          {installmentOptions.map((opt) => (
-                            <option key={opt.installments} value={opt.installments}>
-                              {opt.recommended_message}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-
+                {/* Selector método de pago */}
+                <div className="card p-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <button
-                      type="submit"
-                      disabled={loading || !sdkReady}
-                      className="w-full py-3 bg-[#009ee3] hover:bg-[#0088cc] text-white font-bold rounded-xl transition-colors disabled:opacity-60"
+                      type="button"
+                      onClick={() => setPaymentMethod("card")}
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 font-medium text-sm transition-colors cursor-pointer ${paymentMethod === "card" ? "border-primary bg-primary/5 text-primary" : "border-surface-subtle text-content-muted hover:border-content-muted"}`}
                     >
-                      {loading ? "Procesando..." : `Pagar ${formatPrice(total())}`}
+                      <CreditCard size={18} /> Tarjeta
                     </button>
-                  </form>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("yape")}
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl border-2 font-medium text-sm transition-colors cursor-pointer ${paymentMethod === "yape" ? "border-[#6C2FD8] bg-[#6C2FD8]/5 text-[#6C2FD8]" : "border-surface-subtle text-content-muted hover:border-content-muted"}`}
+                    >
+                      <Smartphone size={18} /> Yape
+                    </button>
+                  </div>
                 </div>
 
-                <button onClick={() => setStep("shipping")} className="btn-secondary w-full">
+                {/* ── Formulario Tarjeta ── */}
+                {paymentMethod === "card" && (
+                  <div className="card p-6">
+                    <h2 className="font-bold text-lg text-content-base mb-4 flex items-center gap-2">
+                      <CreditCard size={20} className="text-primary" /> Datos de tarjeta
+                    </h2>
+                    <form onSubmit={handlePayment} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-content-base mb-1">Número de tarjeta</label>
+                        <input
+                          className="input font-mono tracking-widest"
+                          placeholder="0000 0000 0000 0000"
+                          value={cardNumber}
+                          onChange={(e) => handleCardNumberChange(e.target.value)}
+                          maxLength={19}
+                          inputMode="numeric"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-content-base mb-1">Vencimiento</label>
+                        <input
+                          className="input font-mono"
+                          placeholder="MM/YY"
+                          value={expiry}
+                          onChange={(e) => handleExpiryChange(e.target.value)}
+                          maxLength={5}
+                          inputMode="numeric"
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-content-base mb-1">CVV</label>
+                          <input
+                            className="input"
+                            placeholder="123"
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                            maxLength={4}
+                            inputMode="numeric"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-content-base mb-1">DNI titular</label>
+                          <input
+                            className="input"
+                            placeholder="12345678"
+                            value={docNumber}
+                            onChange={(e) => setDocNumber(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                            maxLength={8}
+                            inputMode="numeric"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-content-base mb-1">Nombre en la tarjeta</label>
+                        <input
+                          className="input uppercase"
+                          placeholder="NOMBRE APELLIDO"
+                          value={cardholderName}
+                          onChange={(e) => setCardholderName(e.target.value.toUpperCase())}
+                          required
+                        />
+                      </div>
+                      {installmentOptions.length > 0 && (
+                        <div>
+                          <label className="block text-sm font-medium text-content-base mb-1">Cuotas</label>
+                          <select
+                            className="input"
+                            value={installments}
+                            onChange={(e) => setInstallments(Number(e.target.value))}
+                          >
+                            {installmentOptions.map((opt) => (
+                              <option key={opt.installments} value={opt.installments}>
+                                {opt.recommended_message}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                      <button
+                        type="submit"
+                        disabled={loading || !sdkReady}
+                        className="w-full py-3 bg-[#009ee3] hover:bg-[#0088cc] text-white font-bold rounded-xl transition-colors disabled:opacity-60 cursor-pointer"
+                      >
+                        {loading ? "Procesando..." : `Pagar ${formatPrice(total())}`}
+                      </button>
+                      <div className="flex items-center justify-center gap-1.5 mt-3 text-xs text-content-muted">
+                        <Shield size={13} className="text-green-500" />
+                        <span>Pago 100% seguro · Datos cifrados SSL</span>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* ── Formulario Yape ── */}
+                {paymentMethod === "yape" && (
+                  <div className="card p-6">
+                    <h2 className="font-bold text-lg text-content-base mb-4 flex items-center gap-2">
+                      <Smartphone size={20} className="text-[#6C2FD8]" /> Pago con Yape
+                    </h2>
+                    <form onSubmit={handlePayment} className="space-y-4">
+                      <p className="text-sm text-content-muted bg-surface-subtle rounded-lg p-3">
+                        Ingresa tu número Yape y el código OTP de 6 dígitos que aparece en la app.
+                      </p>
+                      <div>
+                        <label className="block text-sm font-medium text-content-base mb-1">Número de teléfono Yape</label>
+                        <input
+                          className="input"
+                          placeholder="987654321"
+                          value={yapePhone}
+                          onChange={(e) => setYapePhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                          inputMode="numeric"
+                          maxLength={9}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-content-base mb-1">Código OTP (de la app Yape)</label>
+                        <input
+                          className="input font-mono tracking-widest"
+                          placeholder="123456"
+                          value={yapeOtp}
+                          onChange={(e) => setYapeOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          inputMode="numeric"
+                          maxLength={6}
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={loading || !sdkReady || yapePhone.length < 9 || yapeOtp.length < 6}
+                        className="w-full py-3 bg-[#6C2FD8] hover:bg-[#5a27b5] text-white font-bold rounded-xl transition-colors disabled:opacity-60 cursor-pointer"
+                      >
+                        {loading ? "Procesando..." : `Pagar con Yape ${formatPrice(total())}`}
+                      </button>
+                      <div className="flex items-center justify-center gap-1.5 mt-3 text-xs text-content-muted">
+                        <Shield size={13} className="text-green-500" />
+                        <span>Pago 100% seguro · Datos cifrados SSL</span>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                <button onClick={() => setStep("shipping")} className="btn-secondary w-full cursor-pointer">
                   Volver a envío
                 </button>
               </div>

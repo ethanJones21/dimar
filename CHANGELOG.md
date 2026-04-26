@@ -14,6 +14,24 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [0.11.0] — 2026-04-26
+
+### Añadido
+- **Pago con Yape** en checkout — selector de método "Tarjeta / Yape"; al elegir Yape se muestran campos de teléfono y OTP; tokenización vía `mpRef.current.yape()`; installments fijo en 1 sin issuer_id
+- **`payment_method` en órdenes** — columna guardada al crear la orden con etiqueta legible: `YAPE`, `VISA`, `MASTERCARD` o `TARJETA`
+- **Dominios externos de imágenes** en `next.config.ts` — `remotePatterns` ampliado con `wonduu.com` y wildcard `**` para cualquier hostname HTTPS externo
+
+### Cambiado
+- **Indicador de pasos en checkout** — barra de progreso entre paso 1 y 2 se colorea al avanzar; paso completado muestra ícono `CheckCircle2`; dimensiones de número de paso aumentadas a 8×8
+- **Botones +/− en carrito** — tamaño aumentado a `w-11 h-11` con `overflow-hidden` en el contenedor; `cursor-pointer` explícito en todos los botones interactivos; contador con `min-w-[2rem] text-center`
+- **Íconos de categorías en homepage** — emojis reemplazados por componentes Lucide (`Laptop`, `Shirt`, `Home`, `Dumbbell`, `BookOpen`, `Sparkles`) envueltos en `div` con fondo `bg-primary-light rounded-xl`
+- **Emojis decorativos en homepage** — 🛍️ → `<ShoppingBag>`, 🚀 → `<Zap>`, 🔄 → `<RotateCcw>`, 🔥 en carrito → `<Flame>`; eliminada dependencia de emojis del sistema en toda la UI principal
+- **Búsqueda de productos** — query cambia de columna generada `search_name` a `name` directo con `.ilike()`
+- **Año de vencimiento en tokenización** — se expande año corto `YY` a `YYYY` antes de enviarlo al SDK de MercadoPago (`"20" + expYearShort`)
+- **Log de debug en API de pago** — se registra siempre `status`, `status_detail`, `error` e `id` de la respuesta de MercadoPago para facilitar diagnóstico en producción
+
+---
+
 ## [0.10.0] — 2026-04-14
 
 ### Añadido

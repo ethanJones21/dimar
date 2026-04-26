@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Flame } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -152,14 +152,14 @@ export default function CartPage() {
                     {formatPrice(product.price)}
                   </p>
                   <div className="flex items-center gap-3 mt-2">
-                    <div className="flex items-center border border-line rounded-lg">
+                    <div className="flex items-center border border-line rounded-lg overflow-hidden">
                       <button
                         onClick={() => updateQuantity(product.id, quantity - 1)}
-                        className="p-1.5 hover:bg-surface-hover transition-colors"
+                        className="w-11 h-11 flex items-center justify-center hover:bg-surface-hover transition-colors cursor-pointer"
                       >
                         <Minus size={14} />
                       </button>
-                      <span className="px-3 text-sm font-medium">
+                      <span className="px-3 text-sm font-medium min-w-[2rem] text-center">
                         {quantity}
                       </span>
                       <button
@@ -169,7 +169,7 @@ export default function CartPage() {
                             Math.min(product.stock, quantity + 1),
                           )
                         }
-                        className="p-1.5 hover:bg-surface-hover transition-colors"
+                        className="w-11 h-11 flex items-center justify-center hover:bg-surface-hover transition-colors cursor-pointer"
                       >
                         <Plus size={14} />
                       </button>
@@ -180,7 +180,7 @@ export default function CartPage() {
                     </span>
                     <button
                       onClick={() => removeItem(product.id)}
-                      className="ml-auto p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                      className="ml-auto p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors cursor-pointer"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -240,8 +240,9 @@ export default function CartPage() {
           <p className="text-primary text-xs font-semibold uppercase tracking-widest mb-2">
             Ofertas exclusivas
           </p>
-          <h3 className="text-white text-2xl font-extrabold leading-tight mb-1">
-            ¡Descuentos de hasta 70% OFF! 🔥
+          <h3 className="text-white text-2xl font-extrabold leading-tight mb-1 flex items-center gap-2">
+            <Flame size={22} className="text-orange-400 flex-shrink-0" />
+            ¡Descuentos de hasta 70% OFF!
           </h3>
           <p className="text-slate-400 text-sm max-w-md">
             Mientras finalizas tu compra, no te pierdas nuestras mejores

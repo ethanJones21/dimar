@@ -23,7 +23,14 @@
       "Bash(npm uninstall:*)",
       "Bash(npx tsc:*)",
       "Bash(grep -n \"price\\\\|Price\\\\|formatPrice\\\\|toFixed\\\\|\\\\\\\\.00\\\\b\" f:/proyectos/dimar/components/ProductCard.tsx f:/proyectos/dimar/app/cart/page.tsx f:/proyectos/dimar/app/products/\\\\[id\\\\]/page.tsx f:/proyectos/dimar/app/page.tsx f:/proyectos/dimar/app/orders/page.tsx f:/proyectos/dimar/app/orders/\\\\[id\\\\]/page.tsx)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"luxury ecommerce high-end exclusive elegant sophisticated\" --design-system -p \"DIMAR Luxury Store\")",
+      "Bash(py --version)",
+      "Bash(where python*)",
+      "Bash(/c/Users/User/.local/bin/python3.14.exe skills/ui-ux-pro-max/scripts/search.py \"luxury ecommerce high-end exclusive elegant sophisticated\" --design-system -p \"DIMAR Luxury Store\")",
+      "Bash(/c/Users/User/.local/bin/python3.14.exe .claude/skills/ui-ux-pro-max/scripts/search.py \"luxury ecommerce high-end exclusive elegant sophisticated\" --design-system -p \"DIMAR Luxury Store\")",
+      "Bash(/c/Users/User/.local/bin/python3.14.exe .claude/skills/ui-ux-pro-max/scripts/search.py \"liquid glass morphing iridescent luxury\" --domain style)",
+      "Bash(/c/Users/User/.local/bin/python3.14.exe .claude/skills/ui-ux-pro-max/scripts/search.py \"elegant luxury serif high-end\" --domain typography)"
     ]
   },
   "mcpServers": {
