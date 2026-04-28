@@ -56,21 +56,27 @@ export default function Navbar() {
     router.push(`/products${params.toString() ? `?${params}` : ""}`);
   }, 400);
 
-  const { state: voiceState, supported: voiceSupported, start: startVoice, stop: stopVoice } =
-    useVoiceSearch(
-      (transcript) => {
-        setQuery(transcript);
-        setSearchOpen(false);
-        const params = new URLSearchParams();
-        if (transcript.trim()) params.set("q", transcript.trim());
-        router.push(`/products?${params}`);
-      },
-      (type) => {
-        if (type === "permission") toast("Permite el acceso al micrófono", "error");
-        else if (type === "unsupported") toast("Tu navegador no soporta búsqueda por voz", "error");
-        else toast("Error al procesar el audio. Intenta de nuevo.", "error");
-      },
-    );
+  const {
+    state: voiceState,
+    supported: voiceSupported,
+    start: startVoice,
+    stop: stopVoice,
+  } = useVoiceSearch(
+    (transcript) => {
+      setQuery(transcript);
+      setSearchOpen(false);
+      const params = new URLSearchParams();
+      if (transcript.trim()) params.set("q", transcript.trim());
+      router.push(`/products?${params}`);
+    },
+    (type) => {
+      if (type === "permission")
+        toast("Permite el acceso al micrófono", "error");
+      else if (type === "unsupported")
+        toast("Tu navegador no soporta búsqueda por voz", "error");
+      else toast("Error al procesar el audio. Intenta de nuevo.", "error");
+    },
+  );
 
   const handleVoiceMic = () => {
     if (!voiceSupported) {
@@ -81,7 +87,9 @@ export default function Navbar() {
     else stopVoice();
   };
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -94,7 +102,9 @@ export default function Navbar() {
   useEffect(() => {
     if (drawerOpen || searchOpen) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [drawerOpen, searchOpen]);
 
   useEffect(() => {
@@ -102,7 +112,9 @@ export default function Navbar() {
   }, [searchOpen]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setSearchOpen(false); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSearchOpen(false);
+    };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
@@ -123,15 +135,20 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    supabase.from("categories").select("id,name,slug").order("name").then(({ data }) => {
-      if (data) setCategories(data as Category[]);
-    });
+    supabase
+      .from("categories")
+      .select("id,name,slug")
+      .order("name")
+      .then(({ data }) => {
+        if (data) setCategories(data as Category[]);
+      });
   }, []);
 
   const closeCat = useCallback(() => setCatOpen(false), []);
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (catRef.current && !catRef.current.contains(e.target as Node)) closeCat();
+      if (catRef.current && !catRef.current.contains(e.target as Node))
+        closeCat();
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -145,14 +162,20 @@ export default function Navbar() {
     try {
       const formData = new FormData();
       formData.append("image", file);
-      const res = await fetch("/api/image-search", { method: "POST", body: formData });
+      const res = await fetch("/api/image-search", {
+        method: "POST",
+        body: formData,
+      });
       const data = await res.json();
       if (data.keywords) {
         setQuery(data.keywords);
         router.push(`/products?q=${encodeURIComponent(data.keywords)}`);
         setSearchOpen(false);
       } else if (res.status === 429) {
-        toast("No encontramos lo que buscabas. Intenta con otra imagen.", "error");
+        toast(
+          "Demasiadas búsquedas por imagen. Espera unos segundos e intenta de nuevo.",
+          "error",
+        );
       } else {
         toast("No se pudo analizar la imagen. Intenta de nuevo.", "error");
       }
@@ -223,11 +246,9 @@ export default function Navbar() {
       <MarqueeBar />
 
       {/* ── Main nav ── */}
-      <nav className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.7)] sticky top-0 z-50">
-
+      <nav className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.7)] sticky top-0 z-50">
         {/* ══ Desktop ══ */}
         <div className="hidden md:grid grid-cols-[auto_1fr_auto] items-center h-16 max-w-7xl mx-auto px-4 gap-4">
-
           {/* Logo */}
           <Link
             href="/"
@@ -246,7 +267,11 @@ export default function Navbar() {
               >
                 <Menu size={16} strokeWidth={2.5} />
                 CATEGORÍAS
-                <ChevronDown size={14} strokeWidth={2.5} className={`transition-transform ${catOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  size={14}
+                  strokeWidth={2.5}
+                  className={`transition-transform ${catOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {catOpen && (
@@ -270,7 +295,13 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-1 flex-shrink-0">
-            <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSearch} />
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageSearch}
+            />
 
             {/* Cart */}
             <button
@@ -292,19 +323,19 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-1 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:border-primary transition-colors cursor-pointer"
+                  className="p-1 transition-colors cursor-pointer"
                   aria-label="Menú de usuario"
                 >
                   <Avatar className="w-7 h-7">
                     <AvatarImage src={undefined} />
-                    <AvatarFallback className="text-xs font-mono font-bold bg-primary text-white">
+                    <AvatarFallback className="text-xs font-mono font-bold bg-[#2563EB] text-white dark:bg-white dark:text-black">
                       {user.email?.[0].toUpperCase() ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 mt-0 w-52 bg-[#FAFAFA] dark:bg-[#111111] border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] py-0 z-50">
+                  <div className="absolute right-0 mt-0 w-52 bg-[#FAFAFA] dark:bg-[#111111] py-0 z-50 border border-1 border-black">
                     <div className="px-4 py-3 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
                       <p className="text-[10px] font-mono text-[#888888] truncate uppercase tracking-widest">
                         {user.email}
@@ -336,10 +367,16 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-2 ml-1">
-                <Link href="/auth/login" className="btn-secondary text-xs py-2 px-4">
+                <Link
+                  href="/auth/login"
+                  className="btn-secondary text-xs py-2 px-4"
+                >
                   INGRESAR
                 </Link>
-                <Link href="/auth/register" className="btn-primary text-xs py-2 px-4">
+                <Link
+                  href="/auth/register"
+                  className="btn-primary text-xs py-2 px-4"
+                >
                   REGISTRO
                 </Link>
               </div>
@@ -398,10 +435,15 @@ export default function Navbar() {
       ══════════════════════════════════════ */}
       <div
         className={`fixed inset-0 z-[80] md:hidden flex flex-col transition-opacity duration-200 ${
-          searchOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          searchOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
       >
-        <div className="absolute inset-0 bg-black/70" onClick={() => setSearchOpen(false)} />
+        <div
+          className="absolute inset-0 bg-black/70"
+          onClick={() => setSearchOpen(false)}
+        />
 
         <div className="relative bg-[#FAFAFA] dark:bg-[#111111] border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] px-4 pt-4 pb-6">
           <div className="flex items-center justify-between mb-4">
@@ -429,7 +471,13 @@ export default function Navbar() {
               />
               <div className="flex items-center gap-2 flex-shrink-0">
                 {micButton}
-                <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSearch} />
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageSearch}
+                />
                 <button
                   type="button"
                   disabled={analyzingImage}
@@ -465,7 +513,9 @@ export default function Navbar() {
       <div
         onClick={closeDrawer}
         className={`fixed inset-0 bg-black/60 z-[60] md:hidden transition-opacity duration-300 ${
-          drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          drawerOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
       />
 
@@ -507,10 +557,18 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="px-4 py-4 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] flex flex-col gap-2">
-              <Link href="/auth/login" className="btn-secondary text-xs py-2 text-center" onClick={closeDrawer}>
+              <Link
+                href="/auth/login"
+                className="btn-secondary text-xs py-2 text-center"
+                onClick={closeDrawer}
+              >
                 INGRESAR
               </Link>
-              <Link href="/auth/register" className="btn-primary text-xs py-2 text-center" onClick={closeDrawer}>
+              <Link
+                href="/auth/register"
+                className="btn-primary text-xs py-2 text-center"
+                onClick={closeDrawer}
+              >
                 REGISTRARSE
               </Link>
             </div>
@@ -554,7 +612,10 @@ export default function Navbar() {
               ))}
               <hr className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] my-1" />
               <button
-                onClick={() => { closeDrawer(); handleSignOut(); }}
+                onClick={() => {
+                  closeDrawer();
+                  handleSignOut();
+                }}
                 className="flex items-center gap-3 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
               >
                 <LogOut size={15} />
@@ -565,7 +626,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex-shrink-0 px-4 py-3 border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] flex items-center justify-between">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888]">TEMA</span>
+          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888]">
+            TEMA
+          </span>
           <ThemeToggle />
         </div>
       </aside>

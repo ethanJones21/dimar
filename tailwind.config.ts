@@ -25,6 +25,11 @@ export default {
           dark: "var(--color-secondary-dark)",
           light: "var(--color-secondary-light)",
         },
+        third: {
+          DEFAULT: "var(--color-third)",
+          dark: "var(--color-third-dark)",
+          light: "var(--color-third-light)",
+        },
         // ── Tokens semánticos de superficie ──
         surface: {
           page: "var(--bg-page)",

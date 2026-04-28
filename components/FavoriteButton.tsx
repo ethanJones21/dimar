@@ -31,7 +31,7 @@ export default function FavoriteButton({ productId }: { productId: string }) {
     <button
       onClick={handleClick}
       title={isFav ? "Quitar de favoritos" : "Guardar en favoritos"}
-      className={`absolute top-2 right-2 w-7 h-7 flex items-center justify-center bg-white dark:bg-[#0A0A0A] border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors cursor-pointer ${loaded ? "opacity-100" : "opacity-0"}`}
+      className={`absolute top-2 right-2 w-7 h-7 flex items-center hover:text-red-500 text-black justify-center bg-white border-2 border-[#0A0A0A] transition-colors cursor-pointer ${loaded ? "opacity-100" : "opacity-0"}`}
     >
       <Heart
         size={13}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Banner } from "@/types";
+import { bannerUrl } from "@/lib/media";
 
 export default function PromoBanners({ banners }: { banners: Banner[] }) {
   if (banners.length === 0) return null;
@@ -15,10 +16,10 @@ export default function PromoBanners({ banners }: { banners: Banner[] }) {
             key={banner.id}
             className={`relative bg-gradient-to-br ${banner.bg_color} rounded-2xl overflow-hidden text-white min-h-[180px] flex items-end`}
           >
-            {banner.image_url && (
+            {bannerUrl(banner.image_url) && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={banner.image_url}
+                src={bannerUrl(banner.image_url)}
                 alt={banner.title}
                 className="absolute inset-0 w-full h-full object-cover opacity-25"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}

@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { formatPrice, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import { CheckCircle, Package, Truck, Home } from "lucide-react";
+import { imgUrl, DEFAULT_IMAGE } from "@/lib/media";
 
 export const metadata = { title: "Detalle del Pedido" };
 
@@ -72,9 +73,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           {order.items?.map((item: any) => (
             <div key={item.id} className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-lg bg-surface-subtle flex-shrink-0 overflow-hidden">
-                {item.product?.images?.[0] && (
-                  <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={imgUrl(item.product?.images?.[0])} alt={item.product?.name ?? ""} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMAGE; }} />
               </div>
               <div className="flex-1">
                 <p className="font-medium text-content-base">{item.product?.name}</p>

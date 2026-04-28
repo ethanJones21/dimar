@@ -48,7 +48,11 @@ function toHex(val: string, fallback: string) {
 }
 
 const primary = toHex(process.env.NEXT_PUBLIC_COLOR_PRIMARY ?? "", "#3b82f6");
-const secondary = toHex(process.env.NEXT_PUBLIC_COLOR_SECONDARY ?? "", "#f59e0b");
+const secondary = toHex(
+  process.env.NEXT_PUBLIC_COLOR_SECONDARY ?? "",
+  "#f59e0b",
+);
+const third = toHex(process.env.NEXT_PUBLIC_COLOR_THIRD ?? "", "#EB9626");
 
 export default function RootLayout({
   children,
@@ -63,10 +67,18 @@ export default function RootLayout({
     "--color-secondary": secondary,
     "--color-secondary-dark": `color-mix(in srgb, ${secondary} 80%, black)`,
     "--color-secondary-light": `color-mix(in srgb, ${secondary} 12%, white)`,
+    "--color-third": third,
+    "--color-third-dark": `color-mix(in srgb, ${third} 80%, black)`,
+    "--color-third-light": `color-mix(in srgb, ${third} 12%, white)`,
   } as React.CSSProperties;
 
   return (
-    <html lang="es" data-scroll-behavior="smooth" style={cssVars} suppressHydrationWarning>
+    <html
+      lang="es"
+      data-scroll-behavior="smooth"
+      style={cssVars}
+      suppressHydrationWarning
+    >
       <head>
         {/* Script anti-flash: aplica el tema ANTES de que React hidrate */}
         <script
@@ -75,7 +87,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-display antialiased`}>
+      <body
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-display antialiased`}
+      >
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />

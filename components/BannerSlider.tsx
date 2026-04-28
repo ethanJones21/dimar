@@ -6,6 +6,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Banner } from "@/types";
+import { bannerUrl } from "@/lib/media";
 
 gsap.registerPlugin(useGSAP);
 
@@ -29,7 +30,7 @@ const FALLBACK_BANNERS: Banner[] = [
 const SLIDE_BG = [
   { bg: "#2563EB", accent: "#FAFAFA" },
   { bg: "#7C3AED", accent: "#FAFAFA" },
-  { bg: "#0A0A0A", accent: "#FAFAFA" },
+  { bg: "#EB9626", accent: "#FAFAFA" },
   { bg: "#FAFAFA", accent: "#0A0A0A" },
 ];
 
@@ -88,10 +89,10 @@ export default function BannerSlider({ banners }: { banners: Banner[] }) {
       }}
     >
       {/* Background image — raw, no overlay softening */}
-      {slide.image_url && (
+      {bannerUrl(slide.image_url) && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
-          src={slide.image_url}
+          src={bannerUrl(slide.image_url)}
           alt={slide.title}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: 0.15, mixBlendMode: "multiply" }}
@@ -116,14 +117,18 @@ export default function BannerSlider({ banners }: { banners: Banner[] }) {
         className="absolute top-6 right-8 font-mono text-xs font-bold tracking-widest pointer-events-none select-none"
         style={{ color: palette.accent, opacity: 0.4 }}
       >
-        {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+        {String(current + 1).padStart(2, "0")} /{" "}
+        {String(slides.length).padStart(2, "0")}
       </div>
 
       {/* Content */}
       <div
         ref={contentRef}
         className="relative max-w-7xl mx-auto px-6 md:px-12 h-full flex flex-col justify-center gap-6"
-        style={{ paddingTop: "clamp(64px, 10vh, 120px)", paddingBottom: "clamp(64px, 10vh, 120px)" }}
+        style={{
+          paddingTop: "clamp(64px, 10vh, 120px)",
+          paddingBottom: "clamp(64px, 10vh, 120px)",
+        }}
       >
         {slide.badge && (
           <div
@@ -170,8 +175,10 @@ export default function BannerSlider({ banners }: { banners: Banner[] }) {
                 borderColor: palette.accent,
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.transform = "translate(-3px,-3px)";
-                (e.currentTarget as HTMLElement).style.boxShadow = `5px 5px 0px ${isDark ? palette.accent : "#0A0A0A"}`;
+                (e.currentTarget as HTMLElement).style.transform =
+                  "translate(-3px,-3px)";
+                (e.currentTarget as HTMLElement).style.boxShadow =
+                  `5px 5px 0px ${isDark ? palette.accent : "#0A0A0A"}`;
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLElement).style.transform = "";

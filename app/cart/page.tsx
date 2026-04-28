@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Flame } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { imgUrl, DEFAULT_IMAGE } from "@/lib/media";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CartSuggestions from "./CartSuggestions";
 
@@ -107,7 +108,7 @@ export default function CartPage() {
           {/* Items */}
           <div ref={itemsRef} className="lg:col-span-2 space-y-0 border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
             {items.map(({ product, quantity }) => {
-              const img = product.images?.[0] || "https://placehold.co/100x100";
+              const img = imgUrl(product.images?.[0]);
               return (
                 <div key={product.id} className="flex gap-4 p-5 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
                   {/* Image */}
@@ -117,7 +118,7 @@ export default function CartPage() {
                       src={img}
                       alt={product.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://placehold.co/100x100?text=Sin+imagen"; }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_IMAGE; }}
                     />
                   </div>
 

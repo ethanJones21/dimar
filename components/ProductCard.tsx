@@ -6,13 +6,13 @@ import { Product } from "@/types";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import FavoriteButton from "@/components/FavoriteButton";
+import { imgUrl, DEFAULT_IMAGE } from "@/lib/media";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem);
   const openCartDrawer = useCartStore((s) => s.openCartDrawer);
 
-  const mainImage =
-    product.images?.[0] || "https://placehold.co/400x400?text=Sin+imagen";
+  const mainImage = imgUrl(product.images?.[0]);
   const hasDiscount =
     product.compare_price && product.compare_price > product.price;
 
@@ -25,7 +25,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className="group flex flex-row sm:flex-col w-full bg-white dark:bg-[#111111] border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] overflow-hidden transition-all duration-150 ease-out hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_#0A0A0A] dark:hover:shadow-[5px_5px_0px_rgba(255,255,255,0.4)] cursor-pointer"
+      className="group flex flex-row sm:flex-col w-full bg-white border-2 border-[#0A0A0A] overflow-hidden transition-all duration-150 ease-out hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_#0A0A0A] dark:hover:shadow-[5px_5px_0px_rgba(255,255,255,0.4)] cursor-pointer"
     >
       {/* Image */}
       <div className="relative w-32 shrink-0 sm:w-auto aspect-square overflow-hidden bg-[#F0F0F0] dark:bg-[#1A1A1A]">
@@ -35,7 +35,7 @@ export default function ProductCard({ product }: { product: Product }) {
           alt={product.name}
           className="size-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = "https://placehold.co/400x400?text=Sin+imagen";
+            (e.target as HTMLImageElement).src = DEFAULT_IMAGE;
           }}
         />
 
@@ -43,7 +43,13 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="absolute top-2 left-2 flex flex-col gap-1 items-start">
           {hasDiscount && (
             <span className="bg-primary text-white text-[10px] font-mono font-bold px-2 py-0.5 border border-[#0A0A0A]">
-              -{Math.round(((product.compare_price! - product.price) / product.compare_price!) * 100)}%
+              -
+              {Math.round(
+                ((product.compare_price! - product.price) /
+                  product.compare_price!) *
+                  100,
+              )}
+              %
             </span>
           )}
           {product.sale_format === "pack" && (
@@ -71,7 +77,7 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.category.name}
           </p>
         )}
-        <h3 className="font-display font-semibold text-sm text-[#0A0A0A] dark:text-[#FAFAFA] line-clamp-2 leading-snug mb-3 flex-1">
+        <h3 className="font-display font-semibold text-sm text-[#0A0A0A] line-clamp-2 leading-snug mb-3 flex-1">
           {product.name}
         </h3>
 
@@ -89,7 +95,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <button
           onClick={handleAdd}
           disabled={product.stock === 0}
-          className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 bg-[#0A0A0A] dark:bg-[#FAFAFA] text-[#FAFAFA] dark:text-[#0A0A0A] text-[10px] font-mono font-bold tracking-widest uppercase border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-primary hover:border-primary hover:text-white dark:hover:bg-primary dark:hover:border-primary dark:hover:text-white transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 bg-[#0A0A0A] text-[#FAFAFA] text-[10px] font-mono font-bold tracking-widest uppercase border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-primary hover:border-primary hover:text-white dark:hover:bg-primary dark:hover:border-primary dark:hover:text-white transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ShoppingCart size={13} strokeWidth={2.5} />
           AGREGAR

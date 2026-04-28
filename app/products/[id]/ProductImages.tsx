@@ -2,8 +2,9 @@
 
 import { useState, useRef } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { DEFAULT_IMAGE } from "@/lib/media";
 
-const FALLBACK = "https://placehold.co/600x600?text=Sin+imagen";
+const FALLBACK = DEFAULT_IMAGE;
 const LENS = 130;
 
 export default function ProductImages({ images, name }: { images: string[]; name: string }) {

@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
 const LINKS = {
   tienda: [
@@ -30,7 +37,13 @@ const SOCIAL = [
 
 const PAYMENT_METHODS = ["VISA", "MASTERCARD", "YAPE", "MERCADOPAGO"];
 
-function LinkColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+function LinkColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+}) {
   return (
     <div>
       <p className="text-[10px] font-mono font-bold text-[#666666] uppercase tracking-widest mb-4 pb-2 border-b border-[rgba(255,255,255,0.12)]">
@@ -55,7 +68,6 @@ function LinkColumn({ title, links }: { title: string; links: { label: string; h
 export default function Footer() {
   return (
     <footer className="bg-[#0A0A0A] text-[#FAFAFA] mt-0 border-t-4 border-[#0A0A0A]">
-
       {/* ── Top editorial strip ── */}
       <div className="border-b border-[rgba(255,255,255,0.1)]">
         <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
@@ -65,13 +77,17 @@ export default function Footer() {
             </p>
             <div
               className="font-display font-bold text-[#FAFAFA] leading-none"
-              style={{ fontSize: "clamp(3rem, 8vw, 6rem)", letterSpacing: "-0.04em" }}
+              style={{
+                fontSize: "clamp(3rem, 8vw, 6rem)",
+                letterSpacing: "-0.04em",
+              }}
             >
               DIMAR
             </div>
           </div>
-          <p className="text-xs font-mono text-[#666666] max-w-xs leading-relaxed">
-            Tu tienda online de confianza. Productos de calidad con envío rápido a todo el país.
+          <p className="text-xs font-mono text-white/70 max-w-xs leading-relaxed">
+            Tu tienda online de confianza. Productos de calidad con envío rápido
+            a todo el país.
           </p>
         </div>
       </div>
@@ -137,8 +153,9 @@ export default function Footer() {
       {/* ── Bottom bar ── */}
       <div className="border-t border-[rgba(255,255,255,0.1)]">
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[10px] font-mono text-[#444444]">
-            © {new Date().getFullYear()} DIMAR STORE — TODOS LOS DERECHOS RESERVADOS
+          <p className="text-[10px] font-mono text-white/50">
+            © {new Date().getFullYear()} DIMAR STORE — TODOS LOS DERECHOS
+            RESERVADOS
           </p>
           <div className="flex items-center gap-6">
             {["Privacidad", "Términos", "Cookies"].map((label) => (

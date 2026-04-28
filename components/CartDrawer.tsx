@@ -5,6 +5,7 @@ import { X, ShoppingBag, Minus, Plus, Trash2, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { useEffect } from "react";
+import { imgUrl, DEFAULT_IMAGE } from "@/lib/media";
 
 export default function CartDrawer() {
   const items = useCartStore((s) => s.items);
@@ -91,7 +92,7 @@ export default function CartDrawer() {
           ) : (
             <div className="divide-y-2 divide-[#0A0A0A] dark:divide-[rgba(255,255,255,0.2)]">
               {items.map(({ product, quantity }) => {
-                const img = product.images?.[0] || "https://placehold.co/80x80?text=Sin+imagen";
+                const img = imgUrl(product.images?.[0]);
                 return (
                   <div key={product.id} className="flex gap-3 p-4">
                     {/* Image */}
@@ -102,7 +103,7 @@ export default function CartDrawer() {
                         alt={product.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://placehold.co/80x80?text=Sin+imagen";
+                          (e.target as HTMLImageElement).src = DEFAULT_IMAGE;
                         }}
                       />
                     </div>

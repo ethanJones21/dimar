@@ -43,6 +43,7 @@ export function useVoiceSearch(
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const onResultRef = useRef(onResult);
   const onErrorRef = useRef(onError);
+  const startWhisperRef = useRef<() => Promise<void>>(async () => {});
   onResultRef.current = onResult;
   onErrorRef.current = onError;
 
@@ -75,8 +76,16 @@ export function useVoiceSearch(
 
     recognition.onerror = (e: SpeechRecognitionErrorEvent) => {
       setState("idle");
-      if (e.error === "not-allowed") {
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
         onErrorRef.current?.("permission");
+      } else if (e.error === "network") {
+        if (typeof MediaRecorder !== "undefined") {
+          startWhisperRef.current();
+        } else {
+          onErrorRef.current?.("network");
+        }
+      } else if (e.error !== "aborted" && e.error !== "no-speech") {
+        onErrorRef.current?.("unsupported");
       }
     };
 
@@ -137,6 +146,7 @@ export function useVoiceSearch(
       }
     }, 8000);
   }, []);
+  startWhisperRef.current = startWhisper;
 
   const start = useCallback(async () => {
     if (state !== "idle") return;

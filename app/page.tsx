@@ -71,7 +71,11 @@ export default async function HomePage() {
       name: SITE_NAME,
       url: SITE_URL,
       description: SITE_DESC,
-      contactPoint: { "@type": "ContactPoint", contactType: "customer service", email: "contacto@dimar.pe" },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        email: "contacto@dimar.pe",
+      },
     },
     {
       "@context": "https://schema.org",
@@ -80,7 +84,10 @@ export default async function HomePage() {
       url: SITE_URL,
       potentialAction: {
         "@type": "SearchAction",
-        target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/products?q={search_term_string}` },
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}/products?q={search_term_string}`,
+        },
         "query-input": "required name=search_term_string",
       },
     },
@@ -97,16 +104,22 @@ export default async function HomePage() {
       <BannerSlider banners={(heroBanners as Banner[]) ?? []} />
 
       {/* ── Features strip ── */}
-      <section className="bg-[#0A0A0A] border-b-2 border-[#0A0A0A]">
+      <section className="bg-[#0A0A0A] border-b-2 border-[#0A0A0A] dark:bg-white">
         <AnimatedStagger className="max-w-7xl mx-auto px-4 py-0 grid grid-cols-2 md:grid-cols-4 divide-x-2 divide-[rgba(255,255,255,0.12)]">
           {FEATURES.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="flex items-center gap-4 px-6 py-5">
-              <Icon className="text-primary flex-shrink-0" size={20} strokeWidth={2} />
+              <Icon
+                className="text-primary flex-shrink-0"
+                size={20}
+                strokeWidth={2}
+              />
               <div>
-                <p className="font-mono font-bold text-[10px] text-[#FAFAFA] uppercase tracking-widest">
+                <p className="font-mono font-bold text-[10px] text-[#FAFAFA] dark:text-black uppercase tracking-widest">
                   {title}
                 </p>
-                <p className="text-[10px] font-mono text-[#666666] mt-0.5">{desc}</p>
+                <p className="text-[10px] font-mono text-[#666666] mt-0.5">
+                  {desc}
+                </p>
               </div>
             </div>
           ))}
@@ -121,8 +134,14 @@ export default async function HomePage() {
               <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-2">
                 NAVEGAR POR
               </p>
-              <h2 className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
-                  style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: 1, letterSpacing: "-0.02em" }}>
+              <h2
+                className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
+                style={{
+                  fontSize: "clamp(1.75rem, 4vw, 3rem)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                }}
+              >
                 CATEGORÍAS
               </h2>
             </div>
@@ -157,7 +176,10 @@ export default async function HomePage() {
       )}
 
       {/* ── Manifesto strip ── */}
-      <AnimatedSection as="section" className="bg-primary border-y-4 border-[#0A0A0A] overflow-hidden">
+      <AnimatedSection
+        as="section"
+        className="bg-primary border-y-4 border-[#0A0A0A] overflow-hidden"
+      >
         <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
           <div className="flex-1">
             <p className="text-[10px] font-mono text-white/60 uppercase tracking-widest mb-4">
@@ -165,15 +187,22 @@ export default async function HomePage() {
             </p>
             <h2
               className="font-display font-bold text-white"
-              style={{ fontSize: "clamp(1.75rem, 4vw, 3.5rem)", lineHeight: 1.0, letterSpacing: "-0.02em" }}
+              style={{
+                fontSize: "clamp(1.75rem, 4vw, 3.5rem)",
+                lineHeight: 1.0,
+                letterSpacing: "-0.02em",
+              }}
             >
-              CALIDAD SIN<br />COMPROMISO.
+              CALIDAD SIN
+              <br />
+              COMPROMISO.
             </h2>
           </div>
           <div className="md:max-w-sm">
             <p className="text-sm font-mono text-white/75 leading-relaxed mb-6">
-              En Dimar creemos que acceder a buenos productos no debería ser complicado.
-              Por eso, cubrimos desde la selección hasta la entrega en tu puerta.
+              En Dimar creemos que acceder a buenos productos no debería ser
+              complicado. Por eso, cubrimos desde la selección hasta la entrega
+              en tu puerta.
             </p>
             <Link
               href="/products"
@@ -195,7 +224,11 @@ export default async function HomePage() {
               </p>
               <h2
                 className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
-                style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+                style={{
+                  fontSize: "clamp(1.75rem, 4vw, 3rem)",
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                }}
               >
                 DESTACADOS
               </h2>
@@ -222,10 +255,17 @@ export default async function HomePage() {
       ) : (
         <section className="py-24 px-4">
           <div className="max-w-7xl mx-auto border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] p-16 text-center">
-            <ShoppingBag size={48} className="mx-auto text-[#888888] mb-6" strokeWidth={1.5} />
+            <ShoppingBag
+              size={48}
+              className="mx-auto text-[#888888] mb-6"
+              strokeWidth={1.5}
+            />
             <h2
               className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA] mb-3"
-              style={{ fontSize: "clamp(1.5rem, 3vw, 2rem)", letterSpacing: "-0.02em" }}
+              style={{
+                fontSize: "clamp(1.5rem, 3vw, 2rem)",
+                letterSpacing: "-0.02em",
+              }}
             >
               PRÓXIMAMENTE
             </h2>
@@ -238,55 +278,76 @@ export default async function HomePage() {
 
       {/* ── Promo blocks ── */}
       <section className="max-w-7xl mx-auto px-4 pb-16 grid md:grid-cols-2 gap-4">
-        <AnimatedSection className="bg-[#0A0A0A] border-2 border-[#0A0A0A] p-10 flex flex-col gap-6 relative overflow-hidden">
+        <AnimatedSection className="bg-third border-2 border-[#0A0A0A] p-10 flex flex-col gap-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 border-2 border-[rgba(255,255,255,0.06)] pointer-events-none" />
           <div>
-            <p className="text-[10px] font-mono text-[#666666] uppercase tracking-widest mb-3">
+            <p className="text-[10px] font-mono text-[rgba(255,255,255,0.5)] uppercase tracking-widest mb-3">
               ENVÍO EXPRESS
             </p>
             <div className="flex items-start gap-3">
-              <Zap size={28} className="text-primary flex-shrink-0 mt-1" strokeWidth={2} />
+              <Zap
+                size={28}
+                className="text-white flex-shrink-0 mt-1"
+                strokeWidth={2}
+              />
               <h3
                 className="font-display font-bold text-white"
-                style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
+                style={{
+                  fontSize: "clamp(1.25rem, 3vw, 1.75rem)",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.1,
+                }}
               >
                 RECÍBELO EN 24 HORAS
               </h3>
             </div>
-            <p className="text-xs font-mono text-[#666666] mt-4 leading-relaxed">
-              Pedidos antes de las 3 p.m. salen el mismo día. Cobertura en Lima Metropolitana.
+            <p className="text-xs font-mono text-[rgba(255,255,255,0.5)] mt-4 leading-relaxed">
+              Pedidos antes de las 3 p.m. salen el mismo día. Cobertura en Lima
+              Metropolitana.
             </p>
           </div>
           <Link
             href="/products"
-            className="self-start inline-flex items-center gap-2 px-5 py-3 bg-primary text-white font-mono font-bold text-xs uppercase tracking-widest border-2 border-primary hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_rgba(255,255,255,0.3)] transition-all duration-150 cursor-pointer"
+            className="self-start inline-flex items-center gap-2 px-5 py-3 bg-white text-third font-mono font-bold text-xs uppercase tracking-widest border-[1.5px] border-[#0A0A0A] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_rgba(255,255,255,0.3)] transition-all duration-150 cursor-pointer"
           >
             COMPRAR AHORA <ArrowRight size={13} strokeWidth={2.5} />
           </Link>
         </AnimatedSection>
 
-        <AnimatedSection delay={0.1} className="bg-secondary border-2 border-[#0A0A0A] p-10 flex flex-col gap-6 relative overflow-hidden">
+        <AnimatedSection
+          delay={0.1}
+          className="bg-secondary border-2 border-[#0A0A0A] p-10 flex flex-col gap-6 relative overflow-hidden"
+        >
           <div className="absolute bottom-0 left-0 w-32 h-32 border-2 border-[rgba(255,255,255,0.06)] pointer-events-none" />
           <div>
             <p className="text-[10px] font-mono text-[rgba(255,255,255,0.5)] uppercase tracking-widest mb-3">
               GARANTÍA TOTAL
             </p>
             <div className="flex items-start gap-3">
-              <RotateCcw size={28} className="text-white flex-shrink-0 mt-1" strokeWidth={2} />
+              <RotateCcw
+                size={28}
+                className="text-white flex-shrink-0 mt-1"
+                strokeWidth={2}
+              />
               <h3
                 className="font-display font-bold text-white"
-                style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
+                style={{
+                  fontSize: "clamp(1.25rem, 3vw, 1.75rem)",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.1,
+                }}
               >
                 30 DÍAS PARA CAMBIOS
               </h3>
             </div>
             <p className="text-xs font-mono text-[rgba(255,255,255,0.55)] mt-4 leading-relaxed">
-              Si no estás satisfecho, te devolvemos tu dinero sin preguntas. Tu confianza es lo primero.
+              Si no estás satisfecho, te devolvemos tu dinero sin preguntas. Tu
+              confianza es lo primero.
             </p>
           </div>
           <Link
             href="/products"
-            className="self-start inline-flex items-center gap-2 px-5 py-3 bg-white text-secondary font-mono font-bold text-xs uppercase tracking-widest border-2 border-[#0A0A0A] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_#0A0A0A] transition-all duration-150 cursor-pointer"
+            className="self-start inline-flex items-center gap-2 px-5 py-3 bg-white text-secondary font-mono font-bold text-xs uppercase tracking-widest border-[1.5px] border-[#0A0A0A] hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_#0A0A0A] transition-all duration-150 cursor-pointer"
           >
             VER PRODUCTOS <ArrowRight size={13} strokeWidth={2.5} />
           </Link>
@@ -294,17 +355,26 @@ export default async function HomePage() {
       </section>
 
       {/* ── Video showcase ── */}
-      <AnimatedSection as="section" className="bg-[#0A0A0A] border-t-4 border-b-4 border-[#0A0A0A] py-20 px-4">
+      <AnimatedSection
+        as="section"
+        className="bg-primary border-4 border-[#0A0A0A] py-20 px-4"
+      >
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <p className="text-[10px] font-mono text-[#666666] uppercase tracking-widest mb-3">
+            <p className="text-[10px] font-mono text-[rgba(255,255,255,0.55)] uppercase tracking-widest mb-3">
               EXPERIENCIA DIMAR
             </p>
             <h2
               className="font-display font-bold text-[#FAFAFA]"
-              style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+              style={{
+                fontSize: "clamp(1.75rem, 4vw, 3rem)",
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+              }}
             >
-              COMPRA INTELIGENTE,<br />VIVE MEJOR.
+              COMPRA INTELIGENTE,
+              <br />
+              VIVE MEJOR.
             </h2>
           </div>
           <div className="relative w-full aspect-video border-2 border-[rgba(255,255,255,0.2)] overflow-hidden">
@@ -328,7 +398,11 @@ export default async function HomePage() {
             </p>
             <h2
               className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
-              style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: 1, letterSpacing: "-0.02em" }}
+              style={{
+                fontSize: "clamp(1.75rem, 4vw, 3rem)",
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+              }}
             >
               ¿LISTO PARA COMPRAR?
             </h2>
