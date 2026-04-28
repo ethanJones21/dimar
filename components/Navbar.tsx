@@ -3,20 +3,20 @@
 import Link from "next/link";
 import {
   ShoppingCart,
-  Store,
   LogOut,
   Search,
   Mic,
   Camera,
   Menu,
-  ChevronRight,
   X,
   Heart,
   Package,
   User,
+  ChevronDown,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import ThemeToggle from "@/components/ThemeToggle";
+import MarqueeBar from "@/components/MarqueeBar";
 import { useCartStore } from "@/lib/store/cart";
 import { toast } from "@/components/ui/Toaster";
 import { createClient } from "@/lib/supabase/client";
@@ -77,51 +77,32 @@ export default function Navbar() {
       toast("Tu navegador no soporta búsqueda por voz", "error");
       return;
     }
-    if (voiceState === "idle") {
-      startVoice();
-    } else {
-      stopVoice();
-    }
+    if (voiceState === "idle") startVoice();
+    else stopVoice();
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
-    });
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null);
     });
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  // Block body scroll when drawer or search modal is open
   useEffect(() => {
-    if (drawerOpen || searchOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (drawerOpen || searchOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
   }, [drawerOpen, searchOpen]);
 
-  // Focus input when search modal opens
   useEffect(() => {
-    if (searchOpen) {
-      setTimeout(() => mobileInputRef.current?.focus(), 50);
-    }
+    if (searchOpen) setTimeout(() => mobileInputRef.current?.focus(), 50);
   }, [searchOpen]);
 
-  // Close search modal on Escape
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSearchOpen(false);
-    };
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setSearchOpen(false); };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
@@ -142,20 +123,15 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    supabase
-      .from("categories")
-      .select("id,name,slug")
-      .order("name")
-      .then(({ data }) => {
-        if (data) setCategories(data as Category[]);
-      });
+    supabase.from("categories").select("id,name,slug").order("name").then(({ data }) => {
+      if (data) setCategories(data as Category[]);
+    });
   }, []);
 
   const closeCat = useCallback(() => setCatOpen(false), []);
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (catRef.current && !catRef.current.contains(e.target as Node))
-        closeCat();
+      if (catRef.current && !catRef.current.contains(e.target as Node)) closeCat();
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -165,22 +141,15 @@ export default function Navbar() {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
-
     setAnalyzingImage(true);
     try {
       const formData = new FormData();
       formData.append("image", file);
-
-      const res = await fetch("/api/image-search", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch("/api/image-search", { method: "POST", body: formData });
       const data = await res.json();
-
       if (data.keywords) {
         setQuery(data.keywords);
-        const params = new URLSearchParams({ q: data.keywords });
-        router.push(`/products?${params}`);
+        router.push(`/products?q=${encodeURIComponent(data.keywords)}`);
         setSearchOpen(false);
       } else if (res.status === 429) {
         toast("No encontramos lo que buscabas. Intenta con otra imagen.", "error");
@@ -209,27 +178,28 @@ export default function Navbar() {
       title={voiceState === "listening" ? "Detener" : "Buscar por voz"}
       onClick={handleVoiceMic}
       disabled={voiceState === "processing"}
-      className={`transition-colors ${
+      className={`p-1 cursor-pointer transition-colors ${
         voiceState === "listening"
           ? "text-red-500 animate-pulse"
           : voiceState === "processing"
             ? "text-primary animate-spin"
-            : "text-content-subtle hover:text-primary"
+            : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA]"
       }`}
     >
-      <Mic size={17} />
+      <Mic size={16} />
     </button>
   );
 
+  /* ─────────── Search bar (desktop) ─────────── */
   const searchBar = (
     <form onSubmit={handleSearch} className="flex items-center w-full">
-      <div className="flex w-full items-center bg-surface-subtle hover:bg-surface-subtle/80 focus-within:bg-surface-base focus-within:ring-2 focus-within:ring-primary rounded-full h-11 px-5 gap-3 transition-all">
-        <Search size={17} className="text-content-subtle flex-shrink-0" />
+      <div className="flex w-full items-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] bg-white dark:bg-[#1A1A1A] h-11 px-4 gap-3 transition-colors focus-within:border-primary">
+        <Search size={16} className="text-[#888888] flex-shrink-0" />
         <input
           value={query}
           onChange={handleQueryChange}
-          placeholder="¿Qué estás buscando?"
-          className="flex-1 bg-transparent outline-none text-sm text-content-base placeholder:text-content-subtle min-w-0"
+          placeholder="BUSCAR PRODUCTOS..."
+          className="flex-1 bg-transparent outline-none text-xs font-mono font-medium tracking-wider text-[#0A0A0A] dark:text-[#FAFAFA] placeholder:text-[#888888] min-w-0 uppercase"
         />
         <div className="flex items-center gap-2 flex-shrink-0">
           {micButton}
@@ -238,9 +208,9 @@ export default function Navbar() {
             title="Buscar por imagen"
             disabled={analyzingImage}
             onClick={() => imageInputRef.current?.click()}
-            className={`transition-colors ${analyzingImage ? "text-primary animate-pulse" : "text-content-subtle hover:text-primary"}`}
+            className={`p-1 cursor-pointer transition-colors ${analyzingImage ? "text-primary animate-pulse" : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA]"}`}
           >
-            <Camera size={17} />
+            <Camera size={16} />
           </button>
         </div>
       </div>
@@ -249,42 +219,46 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-surface-base border-b border-line sticky top-0 z-50">
+      {/* ── Marquee announcement bar ── */}
+      <MarqueeBar />
 
-        {/* ══ Desktop row ══ */}
+      {/* ── Main nav ── */}
+      <nav className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.7)] sticky top-0 z-50">
+
+        {/* ══ Desktop ══ */}
         <div className="hidden md:grid grid-cols-[auto_1fr_auto] items-center h-16 max-w-7xl mx-auto px-4 gap-4">
-          {/* Left: logo */}
+
+          {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl text-primary flex-shrink-0"
+            className="font-display font-bold text-2xl tracking-[-0.05em] text-[#0A0A0A] dark:text-[#FAFAFA] uppercase leading-none flex-shrink-0 hover:text-primary transition-colors duration-150 cursor-pointer"
           >
-            <Store size={24} />
-            <span>Dimar</span>
+            DIMAR
           </Link>
 
-          {/* Center: categories + search inline */}
+          {/* Center: categories + search */}
           <div className="flex items-center gap-0 w-full max-w-2xl mx-auto">
             <div ref={catRef} className="relative flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setCatOpen((o) => !o)}
-                className="flex items-center gap-2 px-4 h-11 text-content-muted dark:text-white dark:hover:text-white/70 font-bold text-sm tracking-wide transition-colors whitespace-nowrap"
+                className="flex items-center gap-2 px-4 h-11 text-[#0A0A0A] dark:text-[#FAFAFA] font-bold text-xs tracking-widest uppercase transition-colors hover:text-primary cursor-pointer border-r-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]"
               >
-                <Menu size={18} />
+                <Menu size={16} strokeWidth={2.5} />
                 CATEGORÍAS
+                <ChevronDown size={14} strokeWidth={2.5} className={`transition-transform ${catOpen ? "rotate-180" : ""}`} />
               </button>
 
               {catOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 bg-surface-base rounded-2xl shadow-xl border border-line-subtle py-2 z-50">
+                <div className="absolute top-full left-0 mt-0 w-56 bg-[#FAFAFA] dark:bg-[#111111] border-2 border-t-0 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] py-1 z-50">
                   {categories.map((cat) => (
                     <a
                       key={cat.id}
                       href={`/products?category=${cat.slug}`}
                       onClick={closeCat}
-                      className="flex items-center justify-between px-4 py-2.5 text-sm text-content-base hover:bg-primary-light hover:text-primary transition-colors"
+                      className="flex items-center px-4 py-2.5 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white transition-colors cursor-pointer"
                     >
                       {cat.name}
-                      <ChevronRight size={14} className="text-content-subtle" />
                     </a>
                   ))}
                 </div>
@@ -294,24 +268,19 @@ export default function Navbar() {
             <div className="flex-1 min-w-0">{searchBar}</div>
           </div>
 
-          {/* Right: actions */}
+          {/* Right actions */}
           <div className="flex items-center gap-1 flex-shrink-0">
-            <input
-              ref={imageInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageSearch}
-            />
+            <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSearch} />
 
+            {/* Cart */}
             <button
               onClick={openCartDrawer}
               aria-label="Abrir carrito"
-              className="relative p-2 text-content-muted hover:text-primary transition-colors"
+              className="relative p-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
             >
-              <ShoppingCart size={22} />
+              <ShoppingCart size={22} strokeWidth={2} />
               {mounted && itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-mono font-bold w-5 h-5 flex items-center justify-center border-2 border-[#0A0A0A]">
                   {itemCount}
                 </span>
               )}
@@ -323,82 +292,77 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-1 rounded-full hover:ring-2 hover:ring-primary transition-all"
+                  className="p-1 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:border-primary transition-colors cursor-pointer"
+                  aria-label="Menú de usuario"
                 >
-                  <Avatar>
+                  <Avatar className="w-7 h-7">
                     <AvatarImage src={undefined} />
-                    <AvatarFallback>
+                    <AvatarFallback className="text-xs font-mono font-bold bg-primary text-white">
                       {user.email?.[0].toUpperCase() ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                 </button>
+
                 {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-52 bg-surface-base rounded-xl shadow-lg border border-line-subtle py-1">
-                    <div className="px-4 py-2.5 border-b border-line-subtle">
-                      <p className="text-xs text-content-subtle truncate">
+                  <div className="absolute right-0 mt-0 w-52 bg-[#FAFAFA] dark:bg-[#111111] border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] py-0 z-50">
+                    <div className="px-4 py-3 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
+                      <p className="text-[10px] font-mono text-[#888888] truncate uppercase tracking-widest">
                         {user.email}
                       </p>
                     </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-content-base hover:bg-surface-hover"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      Mi Perfil
-                    </Link>
-                    <Link
-                      href="/favorites"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-content-base hover:bg-surface-hover"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      Mis Favoritos
-                    </Link>
-                    <Link
-                      href="/orders"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-content-base hover:bg-surface-hover"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      Mis Pedidos
-                    </Link>
-                    <hr className="my-1 border-line-subtle" />
+                    {[
+                      { href: "/profile", label: "MI PERFIL" },
+                      { href: "/favorites", label: "MIS FAVORITOS" },
+                      { href: "/orders", label: "MIS PEDIDOS" },
+                    ].map(({ href, label }) => (
+                      <Link
+                        key={href}
+                        href={href}
+                        className="flex items-center px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                    ))}
+                    <hr className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]" />
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      className="flex items-center gap-2 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
                     >
-                      <LogOut size={14} /> Cerrar sesión
+                      <LogOut size={14} /> SALIR
                     </button>
                   </div>
                 )}
               </div>
             ) : (
               <div className="flex items-center gap-2 ml-1">
-                <Link href="/auth/login" className="btn-secondary text-sm">
-                  Ingresar
+                <Link href="/auth/login" className="btn-secondary text-xs py-2 px-4">
+                  INGRESAR
                 </Link>
-                <Link href="/auth/register" className="btn-primary text-sm">
-                  Registrarse
+                <Link href="/auth/register" className="btn-primary text-xs py-2 px-4">
+                  REGISTRO
                 </Link>
               </div>
             )}
           </div>
         </div>
 
-        {/* ══ Mobile row ══ */}
-        <div className="md:hidden flex items-center h-16 px-4 gap-2">
+        {/* ══ Mobile ══ */}
+        <div className="md:hidden flex items-center h-14 px-4 gap-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]">
           <button
             type="button"
             aria-label="Abrir menú"
             onClick={() => setDrawerOpen(true)}
-            className="p-2 -ml-2 text-content-muted hover:text-primary transition-colors"
+            className="p-2 -ml-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
           >
-            <Menu size={22} />
+            <Menu size={22} strokeWidth={2} />
           </button>
 
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl text-primary flex-shrink-0"
+            className="font-display font-bold text-xl tracking-[-0.05em] text-[#0A0A0A] dark:text-[#FAFAFA] uppercase flex-shrink-0 cursor-pointer"
           >
-            <Store size={24} />
+            DIMAR
           </Link>
 
           <div className="flex-1" />
@@ -407,19 +371,19 @@ export default function Navbar() {
             type="button"
             aria-label="Buscar"
             onClick={() => setSearchOpen(true)}
-            className="p-2 text-content-muted hover:text-primary transition-colors"
+            className="p-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
           >
-            <Search size={22} />
+            <Search size={20} strokeWidth={2} />
           </button>
 
           <button
             onClick={openCartDrawer}
             aria-label="Abrir carrito"
-            className="relative p-2 text-content-muted hover:text-primary transition-colors"
+            className="relative p-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
           >
-            <ShoppingCart size={22} />
+            <ShoppingCart size={20} strokeWidth={2} />
             {mounted && itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+              <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-mono font-bold w-4 h-4 flex items-center justify-center border border-[#0A0A0A]">
                 {itemCount}
               </span>
             )}
@@ -437,58 +401,47 @@ export default function Navbar() {
           searchOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
-        {/* Backdrop */}
-        <div
-          className="absolute inset-0 bg-black/60"
-          onClick={() => setSearchOpen(false)}
-        />
+        <div className="absolute inset-0 bg-black/70" onClick={() => setSearchOpen(false)} />
 
-        {/* Panel */}
-        <div className="relative bg-surface-base px-4 pt-4 pb-6 shadow-xl">
-          <div className="flex items-center gap-3 mb-4">
-            <p className="text-sm font-semibold text-content-base flex-1">¿Qué estás buscando?</p>
+        <div className="relative bg-[#FAFAFA] dark:bg-[#111111] border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] px-4 pt-4 pb-6">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA]">
+              BUSCAR
+            </p>
             <button
               type="button"
               onClick={() => setSearchOpen(false)}
-              className="p-1.5 rounded-lg text-content-subtle hover:text-content-base hover:bg-surface-subtle transition-colors"
+              className="p-2 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] text-[#0A0A0A] dark:text-[#FAFAFA] transition-colors cursor-pointer"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
 
           <form onSubmit={handleSearch} className="flex items-center w-full">
-            <div className="flex w-full items-center bg-surface-subtle focus-within:bg-surface-base focus-within:ring-2 focus-within:ring-primary rounded-full h-12 px-5 gap-3 transition-all">
-              <Search size={17} className="text-content-subtle flex-shrink-0" />
+            <div className="flex w-full items-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] bg-white dark:bg-[#1A1A1A] h-12 px-4 gap-3 focus-within:border-primary">
+              <Search size={16} className="text-[#888888] flex-shrink-0" />
               <input
                 ref={mobileInputRef}
                 value={query}
                 onChange={handleQueryChange}
-                placeholder="Busca productos, marcas..."
-                className="flex-1 bg-transparent outline-none text-sm text-content-base placeholder:text-content-subtle min-w-0"
+                placeholder="BUSCA PRODUCTOS..."
+                className="flex-1 bg-transparent outline-none text-xs font-mono font-bold tracking-wider uppercase text-[#0A0A0A] dark:text-[#FAFAFA] placeholder:text-[#888888] min-w-0"
               />
               <div className="flex items-center gap-2 flex-shrink-0">
                 {micButton}
-                <input
-                  ref={imageInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageSearch}
-                />
+                <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSearch} />
                 <button
                   type="button"
-                  title="Buscar por imagen"
                   disabled={analyzingImage}
                   onClick={() => imageInputRef.current?.click()}
-                  className={`transition-colors ${analyzingImage ? "text-primary animate-pulse" : "text-content-subtle hover:text-primary"}`}
+                  className={`p-1 cursor-pointer ${analyzingImage ? "text-primary animate-pulse" : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-white"}`}
                 >
-                  <Camera size={17} />
+                  <Camera size={16} />
                 </button>
               </div>
             </div>
           </form>
 
-          {/* Categorías rápidas */}
           {categories.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {categories.map((cat) => (
@@ -496,7 +449,7 @@ export default function Navbar() {
                   key={cat.id}
                   href={`/products?category=${cat.slug}`}
                   onClick={() => setSearchOpen(false)}
-                  className="text-xs px-3 py-1.5 rounded-full border border-line text-content-muted hover:border-primary hover:text-primary transition-colors"
+                  className="text-[10px] font-mono font-bold tracking-widest uppercase px-3 py-1.5 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:border-primary hover:text-white transition-colors cursor-pointer"
                 >
                   {cat.name}
                 </a>
@@ -509,142 +462,110 @@ export default function Navbar() {
       {/* ══════════════════════════════════════
           LEFT DRAWER (mobile)
       ══════════════════════════════════════ */}
-
-      {/* Backdrop */}
       <div
         onClick={closeDrawer}
-        className={`fixed inset-0 bg-black/50 z-[60] md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/60 z-[60] md:hidden transition-opacity duration-300 ${
           drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       />
 
-      {/* Drawer panel */}
       <aside
-        className={`fixed top-0 left-0 h-full w-72 bg-surface-base z-[70] shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-full w-72 bg-[#FAFAFA] dark:bg-[#0A0A0A] z-[70] border-r-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Drawer header */}
-        <div className="flex items-center justify-between px-4 h-16 border-b border-line-subtle flex-shrink-0">
+        <div className="flex items-center justify-between px-4 h-14 border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] flex-shrink-0">
           <Link
             href="/"
             onClick={closeDrawer}
-            className="flex items-center gap-2 font-bold text-xl text-primary"
+            className="font-display font-bold text-xl tracking-[-0.05em] uppercase text-[#0A0A0A] dark:text-[#FAFAFA] cursor-pointer"
           >
-            <Store size={22} />
-            Dimar
+            DIMAR
           </Link>
           <button
             onClick={closeDrawer}
             aria-label="Cerrar menú"
-            className="p-2 text-content-subtle hover:text-content-base transition-colors rounded-lg hover:bg-surface-subtle"
+            className="p-1.5 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] text-[#0A0A0A] dark:text-[#FAFAFA] transition-colors cursor-pointer"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Drawer body – scrollable */}
         <div className="flex-1 overflow-y-auto">
-          {/* Auth section */}
           {user ? (
-            <div className="px-4 py-4 border-b border-line-subtle">
+            <div className="px-4 py-4 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
               <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={undefined} />
-                  <AvatarFallback>
+                <div className="w-8 h-8 bg-primary flex items-center justify-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]">
+                  <span className="text-white font-mono font-bold text-sm">
                     {user.email?.[0].toUpperCase() ?? "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <p className="text-sm text-content-muted truncate">
+                  </span>
+                </div>
+                <p className="text-[10px] font-mono text-[#888888] truncate uppercase tracking-widest">
                   {user.email}
                 </p>
               </div>
             </div>
           ) : (
-            <div className="px-4 py-4 border-b border-line-subtle flex flex-col gap-2">
-              <Link
-                href="/auth/login"
-                className="btn-secondary text-sm text-center"
-                onClick={closeDrawer}
-              >
-                Ingresar
+            <div className="px-4 py-4 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] flex flex-col gap-2">
+              <Link href="/auth/login" className="btn-secondary text-xs py-2 text-center" onClick={closeDrawer}>
+                INGRESAR
               </Link>
-              <Link
-                href="/auth/register"
-                className="btn-primary text-sm text-center"
-                onClick={closeDrawer}
-              >
-                Registrarse
+              <Link href="/auth/register" className="btn-primary text-xs py-2 text-center" onClick={closeDrawer}>
+                REGISTRARSE
               </Link>
             </div>
           )}
 
-          {/* Categories */}
           <div className="py-2">
-            <p className="px-4 pt-2 pb-1 text-xs font-semibold text-content-subtle uppercase tracking-wider">
-              Categorías
+            <p className="px-4 pt-3 pb-1 text-[10px] font-mono font-bold text-[#888888] uppercase tracking-widest">
+              CATEGORÍAS
             </p>
             {categories.map((cat) => (
               <a
                 key={cat.id}
                 href={`/products?category=${cat.slug}`}
                 onClick={closeDrawer}
-                className="flex items-center justify-between px-4 py-3 text-sm text-content-base hover:bg-primary-light hover:text-primary transition-colors"
+                className="flex items-center px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white border-b border-[rgba(0,0,0,0.06)] dark:border-[rgba(255,255,255,0.06)] transition-colors cursor-pointer"
               >
                 {cat.name}
-                <ChevronRight size={14} className="text-content-subtle" />
               </a>
             ))}
           </div>
 
-          {/* Account links – only when logged in */}
           {user && (
-            <div className="border-t border-line-subtle py-2">
-              <p className="px-4 pt-2 pb-1 text-xs font-semibold text-content-subtle uppercase tracking-wider">
-                Mi cuenta
+            <div className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] py-2">
+              <p className="px-4 pt-3 pb-1 text-[10px] font-mono font-bold text-[#888888] uppercase tracking-widest">
+                MI CUENTA
               </p>
-              <Link
-                href="/profile"
-                onClick={closeDrawer}
-                className="flex items-center gap-3 px-4 py-3 text-sm text-content-base hover:bg-surface-hover transition-colors"
-              >
-                <User size={16} className="text-content-subtle" />
-                Mi Perfil
-              </Link>
-              <Link
-                href="/favorites"
-                onClick={closeDrawer}
-                className="flex items-center gap-3 px-4 py-3 text-sm text-content-base hover:bg-surface-hover transition-colors"
-              >
-                <Heart size={16} className="text-content-subtle" />
-                Mis Favoritos
-              </Link>
-              <Link
-                href="/orders"
-                onClick={closeDrawer}
-                className="flex items-center gap-3 px-4 py-3 text-sm text-content-base hover:bg-surface-hover transition-colors"
-              >
-                <Package size={16} className="text-content-subtle" />
-                Mis Pedidos
-              </Link>
-              <hr className="my-1 border-line-subtle" />
+              {[
+                { href: "/profile", label: "MI PERFIL", Icon: User },
+                { href: "/favorites", label: "MIS FAVORITOS", Icon: Heart },
+                { href: "/orders", label: "MIS PEDIDOS", Icon: Package },
+              ].map(({ href, label, Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={closeDrawer}
+                  className="flex items-center gap-3 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                >
+                  <Icon size={15} />
+                  {label}
+                </Link>
+              ))}
+              <hr className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] my-1" />
               <button
-                onClick={() => {
-                  closeDrawer();
-                  handleSignOut();
-                }}
-                className="flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 w-full text-left transition-colors"
+                onClick={() => { closeDrawer(); handleSignOut(); }}
+                className="flex items-center gap-3 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
               >
-                <LogOut size={16} />
-                Cerrar sesión
+                <LogOut size={15} />
+                CERRAR SESIÓN
               </button>
             </div>
           )}
         </div>
 
-        {/* Drawer footer – theme toggle */}
-        <div className="flex-shrink-0 px-4 py-3 border-t border-line-subtle flex items-center justify-between">
-          <span className="text-sm text-content-muted">Tema</span>
+        <div className="flex-shrink-0 px-4 py-3 border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] flex items-center justify-between">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888]">TEMA</span>
           <ThemeToggle />
         </div>
       </aside>

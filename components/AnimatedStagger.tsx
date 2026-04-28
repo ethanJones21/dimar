@@ -18,13 +18,15 @@ export default function AnimatedStagger({
   children,
   className,
   stagger = 0.07,
-  y = 20,
+  y = 28,
   as: Tag = "div",
 }: Props) {
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
       const items = ref.current ? Array.from(ref.current.children) : [];
       if (!items.length) return;
 
@@ -34,7 +36,7 @@ export default function AnimatedStagger({
         {
           opacity: 1,
           y: 0,
-          duration: 0.45,
+          duration: 0.5,
           stagger,
           ease: "power2.out",
           scrollTrigger: {

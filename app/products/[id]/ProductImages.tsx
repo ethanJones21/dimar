@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 const FALLBACK = "https://placehold.co/600x600?text=Sin+imagen";
-const LENS = 130; // tamaño del cuadro lente en px
+const LENS = 130;
 
 export default function ProductImages({ images, name }: { images: string[]; name: string }) {
   const [selected, setSelected] = useState(0);
@@ -39,11 +39,10 @@ export default function ProductImages({ images, name }: { images: string[]; name
 
   return (
     <div className="relative">
-
-      {/* Imagen principal */}
+      {/* Main image */}
       <div
         ref={containerRef}
-        className="relative aspect-square rounded-2xl overflow-hidden bg-surface-subtle mb-3 cursor-crosshair select-none"
+        className="relative aspect-square overflow-hidden bg-[#F0F0F0] dark:bg-[#1A1A1A] mb-3 cursor-crosshair select-none border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]"
         onMouseEnter={() => {
           lensRef.current && (lensRef.current.style.display = "block");
           zoomRef.current && (zoomRef.current.style.display = "block");
@@ -63,18 +62,18 @@ export default function ProductImages({ images, name }: { images: string[]; name
           onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
         />
 
-        {/* Lente */}
+        {/* Lens */}
         <div
           ref={lensRef}
-          className="absolute border-2 border-primary/50 bg-white/20 pointer-events-none"
+          className="absolute border-2 border-primary bg-white/10 pointer-events-none"
           style={{ width: LENS, height: LENS, display: "none" }}
         />
       </div>
 
-      {/* Panel de zoom — aparece a la derecha sobre la columna de info */}
+      {/* Zoom panel */}
       <div
         ref={zoomRef}
-        className="absolute top-0 z-20 aspect-square rounded-2xl border border-line shadow-2xl bg-surface-subtle bg-no-repeat"
+        className="absolute top-0 z-20 aspect-square border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] bg-[#F0F0F0] dark:bg-[#1A1A1A] bg-no-repeat"
         style={{
           left: "calc(100% + 2.5rem)",
           width: "100%",
@@ -83,14 +82,15 @@ export default function ProductImages({ images, name }: { images: string[]; name
         }}
       />
 
-      {/* Miniaturas */}
+      {/* Thumbnails */}
       {imgs.length > 1 && (
         <div className="flex items-center gap-2">
           <button
             onClick={prev}
-            className="p-1.5 rounded-lg border border-line hover:border-primary hover:text-primary transition-colors flex-shrink-0"
+            className="w-9 h-9 flex items-center justify-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors flex-shrink-0 cursor-pointer"
+            aria-label="Anterior imagen"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={15} strokeWidth={2.5} />
           </button>
 
           <div className="flex gap-2 overflow-x-auto pb-0.5">
@@ -98,8 +98,10 @@ export default function ProductImages({ images, name }: { images: string[]; name
               <button
                 key={i}
                 onClick={() => setSelected(i)}
-                className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-colors ${
-                  selected === i ? "border-primary" : "border-line hover:border-primary-light"
+                className={`flex-shrink-0 w-16 h-16 overflow-hidden border-2 transition-all duration-150 cursor-pointer ${
+                  selected === i
+                    ? "border-primary shadow-[3px_3px_0px_#2563EB]"
+                    : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.4)] hover:border-primary"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -115,9 +117,10 @@ export default function ProductImages({ images, name }: { images: string[]; name
 
           <button
             onClick={next}
-            className="p-1.5 rounded-lg border border-line hover:border-primary hover:text-primary transition-colors flex-shrink-0"
+            className="w-9 h-9 flex items-center justify-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors flex-shrink-0 cursor-pointer"
+            aria-label="Siguiente imagen"
           >
-            <ChevronRight size={16} />
+            <ChevronRight size={15} strokeWidth={2.5} />
           </button>
         </div>
       )}
@@ -125,29 +128,32 @@ export default function ProductImages({ images, name }: { images: string[]; name
       {/* Lightbox */}
       {lightbox && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-6"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-6"
           onClick={() => setLightbox(false)}
         >
           <button
-            className="absolute top-4 right-4 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-[#0A0A0A] transition-colors cursor-pointer"
             onClick={() => setLightbox(false)}
+            aria-label="Cerrar"
           >
-            <X size={20} />
+            <X size={18} strokeWidth={2.5} />
           </button>
 
           {imgs.length > 1 && (
             <>
               <button
-                className="absolute left-4 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+                className="absolute left-4 w-10 h-10 flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-[#0A0A0A] transition-colors cursor-pointer"
                 onClick={(e) => { e.stopPropagation(); prev(); }}
+                aria-label="Anterior"
               >
-                <ChevronLeft size={22} />
+                <ChevronLeft size={18} strokeWidth={2.5} />
               </button>
               <button
-                className="absolute right-4 bg-black/40 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+                className="absolute right-4 w-10 h-10 flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-[#0A0A0A] transition-colors cursor-pointer"
                 onClick={(e) => { e.stopPropagation(); next(); }}
+                aria-label="Siguiente"
               >
-                <ChevronRight size={22} />
+                <ChevronRight size={18} strokeWidth={2.5} />
               </button>
             </>
           )}
@@ -156,7 +162,7 @@ export default function ProductImages({ images, name }: { images: string[]; name
           <img
             src={imgs[selected]}
             alt={name}
-            className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl cursor-default"
+            className="max-w-full max-h-[90vh] object-contain cursor-default"
             onClick={(e) => e.stopPropagation()}
             onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
           />

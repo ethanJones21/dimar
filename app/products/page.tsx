@@ -1,11 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { Product } from "@/types";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Search } from "lucide-react";
 import FiltersPanel from "./FiltersPanel";
 import ProductsGrid from "./ProductsGrid";
 import AnimatedSection from "@/components/AnimatedSection";
-import { X } from "lucide-react";
 
 const PAGE_SIZE = 15;
 
@@ -43,7 +42,7 @@ export default async function ProductsPage({
     categoryId = cat?.id ?? null;
   }
 
-  // ── Fetch brands (scoped to category when one is active) ──
+  // ── Fetch brands scoped to category ──
   let brandsQuery = supabase
     .from("products")
     .select("brand")
@@ -62,7 +61,7 @@ export default async function ProductsPage({
         ),
       ].sort() as string[]);
 
-  // ── Build base query (for count) ──
+  // ── Build query ──
   const buildQuery = () => {
     let q = supabase
       .from("products")
@@ -74,7 +73,7 @@ export default async function ProductsPage({
     if (params.q) {
       const normalized = params.q
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[̀-ͯ]/g, "")
         .toLowerCase();
       q = q.ilike("name", `%${normalized}%`);
     }
@@ -83,8 +82,7 @@ export default async function ProductsPage({
     const maxPrice = params.max_price ? Number(params.max_price) : null;
     if (minPrice !== null && !isNaN(minPrice)) q = q.gte("price", minPrice);
     if (maxPrice !== null && !isNaN(maxPrice)) q = q.lte("price", maxPrice);
-    if (params.brand && brands.includes(params.brand))
-      q = q.eq("brand", params.brand);
+    if (params.brand && brands.includes(params.brand)) q = q.eq("brand", params.brand);
     if (params.sale_format === "unit" || params.sale_format === "pack")
       q = q.eq("sale_format", params.sale_format);
 
@@ -94,15 +92,9 @@ export default async function ProductsPage({
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const {
-    data: rawProducts,
-    count,
-    error: productsError,
-  } = await buildQuery().range(from, to);
-  if (productsError)
-    console.error("[products] query error:", productsError.message);
+  const { data: rawProducts, count, error: productsError } = await buildQuery().range(from, to);
+  if (productsError) console.error("[products] query error:", productsError.message);
 
-  // ── Client-side discount filter ──
   let products = (rawProducts ?? []) as Product[];
   if (params.discount) {
     const minRatio = parseInt(params.discount, 10) / 100;
@@ -137,7 +129,6 @@ export default async function ProductsPage({
     return qs ? `/products?${qs}` : "/products";
   };
 
-  // Build URL preserving all params except page
   const buildPageUrl = (p: number) => {
     const sp = new URLSearchParams();
     if (params.category) sp.set("category", params.category);
@@ -152,98 +143,158 @@ export default async function ProductsPage({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <AnimatedSection>
-        <h1 className="text-3xl font-bold text-content-base mb-6">Productos</h1>
-      </AnimatedSection>
+    <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] min-h-screen">
+      {/* ── Page header ── */}
+      <div className="border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+        <div className="max-w-7xl mx-auto px-4 py-10">
+          <AnimatedSection>
+            {activeCategory ? (
+              <div>
+                <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-2">
+                  CATEGORÍA
+                </p>
+                <h1
+                  className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
+                  style={{ fontSize: "clamp(2rem, 6vw, 4.5rem)", letterSpacing: "-0.03em", lineHeight: 0.95 }}
+                >
+                  {activeCategory.name.toUpperCase()}
+                </h1>
+              </div>
+            ) : params.q ? (
+              <div>
+                <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-2">
+                  RESULTADOS PARA
+                </p>
+                <h1
+                  className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
+                  style={{ fontSize: "clamp(2rem, 6vw, 4.5rem)", letterSpacing: "-0.03em", lineHeight: 0.95 }}
+                >
+                  "{params.q.toUpperCase()}"
+                </h1>
+              </div>
+            ) : (
+              <div>
+                <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-2">
+                  CATÁLOGO COMPLETO
+                </p>
+                <h1
+                  className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
+                  style={{ fontSize: "clamp(2rem, 6vw, 4.5rem)", letterSpacing: "-0.03em", lineHeight: 0.95 }}
+                >
+                  TODOS LOS PRODUCTOS
+                </h1>
+              </div>
+            )}
+          </AnimatedSection>
+        </div>
+      </div>
 
-      <div className="flex flex-col md:flex-row gap-6 items-start">
-        {/* ── Filters sidebar ── */}
-        <FiltersPanel
-          brands={brands}
-          categories={
-            (categories ?? []) as { id: string; name: string; slug: string }[]
-          }
-          currentCategory={params.category ?? ""}
-        />
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
 
-        {/* ── Main content ── */}
-        <div className="flex-1 min-w-0">
-          {/* ── Active category chip ── */}
-          {activeCategory && (
-            <div className="flex items-center gap-2 mb-4 p-2 rounded-lg bg-white dark:bg-transparent ">
-              <span className="text-sm text-content-muted">Categoria:</span>
-              <Link
-                href={buildClearCategoryUrl()}
-                className="inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 text-sm font-medium px-3 py-1 rounded-full hover:bg-primary/20 transition-colors"
-              >
-                {activeCategory.name}
-                <X size={13} />
-              </Link>
-            </div>
-          )}
+          {/* ── Filters sidebar ── */}
+          <FiltersPanel
+            brands={brands}
+            categories={(categories ?? []) as { id: string; name: string; slug: string }[]}
+            currentCategory={params.category ?? ""}
+          />
 
-          {/* Grid */}
-          {products.length > 0 ? (
-            <>
-              <ProductsGrid products={products} />
+          {/* ── Main content ── */}
+          <div className="flex-1 min-w-0">
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-10">
-                  <Link
-                    href={buildPageUrl(page - 1)}
-                    aria-disabled={page === 1}
-                    className={`p-2 rounded-lg border transition-colors ${
-                      page === 1
-                        ? "pointer-events-none border-line text-content-subtle opacity-40"
-                        : "border-line text-content-muted hover:border-primary hover:text-primary"
-                    }`}
-                  >
-                    <ChevronLeft size={18} />
-                  </Link>
+            {/* Active category chip */}
+            {activeCategory && (
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-[10px] font-mono text-[#888888] uppercase tracking-widest">
+                  CATEGORÍA:
+                </span>
+                <Link
+                  href={buildClearCategoryUrl()}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-primary text-primary text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                >
+                  {activeCategory.name.toUpperCase()}
+                  <X size={11} strokeWidth={2.5} />
+                </Link>
+              </div>
+            )}
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (p) => (
+            {/* Count */}
+            {total > 0 && (
+              <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-5">
+                {total} PRODUCTO{total !== 1 ? "S" : ""}
+                {page > 1 && ` — PÁGINA ${page} DE ${totalPages}`}
+              </p>
+            )}
+
+            {/* Grid */}
+            {products.length > 0 ? (
+              <>
+                <ProductsGrid products={products} />
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-12">
+                    <Link
+                      href={buildPageUrl(page - 1)}
+                      aria-disabled={page === 1}
+                      className={`w-10 h-10 flex items-center justify-center border-2 transition-all duration-150 ${
+                        page === 1
+                          ? "pointer-events-none border-[#D4D4D4] text-[#D4D4D4] opacity-40"
+                          : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)] cursor-pointer"
+                      }`}
+                    >
+                      <ChevronLeft size={16} strokeWidth={2.5} />
+                    </Link>
+
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                       <Link
                         key={p}
                         href={buildPageUrl(p)}
-                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium border transition-colors ${
+                        className={`w-10 h-10 flex items-center justify-center border-2 text-xs font-mono font-bold transition-all duration-150 cursor-pointer ${
                           p === page
-                            ? "bg-primary border-primary text-white"
-                            : "border-line text-content-muted hover:border-primary hover:text-primary"
+                            ? "bg-primary border-primary text-white shadow-[3px_3px_0px_#0A0A0A]"
+                            : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)]"
                         }`}
                       >
                         {p}
                       </Link>
-                    ),
-                  )}
+                    ))}
 
-                  <Link
-                    href={buildPageUrl(page + 1)}
-                    aria-disabled={page === totalPages}
-                    className={`p-2 rounded-lg border transition-colors ${
-                      page === totalPages
-                        ? "pointer-events-none border-line text-content-subtle opacity-40"
-                        : "border-line text-content-muted hover:border-primary hover:text-primary"
-                    }`}
-                  >
-                    <ChevronRight size={18} />
-                  </Link>
+                    <Link
+                      href={buildPageUrl(page + 1)}
+                      aria-disabled={page === totalPages}
+                      className={`w-10 h-10 flex items-center justify-center border-2 transition-all duration-150 ${
+                        page === totalPages
+                          ? "pointer-events-none border-[#D4D4D4] text-[#D4D4D4] opacity-40"
+                          : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)] cursor-pointer"
+                      }`}
+                    >
+                      <ChevronRight size={16} strokeWidth={2.5} />
+                    </Link>
+                  </div>
+                )}
+              </>
+            ) : (
+              /* Empty state */
+              <div className="py-24 text-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
+                <div className="w-16 h-16 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] flex items-center justify-center mx-auto mb-6">
+                  <Search size={28} className="text-[#888888]" strokeWidth={1.5} />
                 </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center py-20">
-              <p className="text-5xl mb-4">🔍</p>
-              <p className="text-xl font-semibold text-content-base mb-2">
-                No hay productos
-              </p>
-              <p className="text-content-muted">
-                Intenta con otros filtros o busca otro término
-              </p>
-            </div>
-          )}
+                <p
+                  className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA] mb-3"
+                  style={{ fontSize: "clamp(1.25rem, 3vw, 2rem)", letterSpacing: "-0.02em" }}
+                >
+                  SIN RESULTADOS
+                </p>
+                <p className="text-xs font-mono text-[#888888] mb-8">
+                  Intenta con otros filtros o busca otro término
+                </p>
+                <Link href="/products" className="btn-secondary text-[10px] py-2 px-6">
+                  VER TODO
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -16,23 +16,14 @@ export default function CartDrawer() {
     s.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
   );
 
-  // Bloquear scroll del body cuando el drawer está abierto
   useEffect(() => {
-    if (cartDrawerOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (cartDrawerOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
   }, [cartDrawerOpen]);
 
-  // Cerrar con Escape
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeCartDrawer();
-    };
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeCartDrawer(); };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [closeCartDrawer]);
@@ -43,10 +34,8 @@ export default function CartDrawer() {
       <div
         onClick={closeCartDrawer}
         aria-hidden="true"
-        className={`fixed inset-0 bg-black/50 z-[90] transition-opacity duration-300 ${
-          cartDrawerOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+        className={`fixed inset-0 bg-black/60 z-[90] transition-opacity duration-300 ${
+          cartDrawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       />
 
@@ -55,63 +44,65 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Carrito de compras"
-        className={`fixed top-0 right-0 h-full w-96 max-w-[92vw] bg-surface-base z-[100] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-96 max-w-[92vw] bg-[#FAFAFA] dark:bg-[#111111] z-[100] border-l-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] flex flex-col transition-transform duration-300 ease-in-out ${
           cartDrawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Cabecera */}
-        <div className="flex items-center justify-between px-5 h-16 border-b border-line-subtle flex-shrink-0">
-          <h2 className="font-bold text-lg text-content-base">
-            Carrito
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 h-14 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.3)] flex-shrink-0">
+          <div className="flex items-baseline gap-3">
+            <h2 className="font-display font-bold text-base uppercase tracking-widest text-[#0A0A0A] dark:text-[#FAFAFA]">
+              CARRITO
+            </h2>
             {items.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-content-subtle">
-                ({items.reduce((s, i) => s + i.quantity, 0)} productos)
+              <span className="text-[10px] font-mono text-[#888888]">
+                ({items.reduce((s, i) => s + i.quantity, 0)})
               </span>
             )}
-          </h2>
+          </div>
           <button
             onClick={closeCartDrawer}
             aria-label="Cerrar carrito"
-            className="p-2 rounded-lg text-content-subtle hover:text-content-base hover:bg-surface-subtle transition-colors"
+            className="p-1.5 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors cursor-pointer"
           >
-            <X size={20} />
+            <X size={16} strokeWidth={2.5} />
           </button>
         </div>
 
-        {/* Cuerpo scrolleable */}
+        {/* Body */}
         <div className="flex-1 overflow-y-auto">
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
-              <ShoppingBag size={52} className="text-content-subtle" />
-              <p className="text-content-muted font-medium">
-                Tu carrito está vacío
-              </p>
-              <Link
-                href="/products"
-                onClick={closeCartDrawer}
-                className="btn-primary text-sm"
-              >
-                Ver Productos
+            <div className="flex flex-col items-center justify-center h-full gap-6 px-6 text-center">
+              <div className="w-16 h-16 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] flex items-center justify-center">
+                <ShoppingBag size={32} className="text-[#888888]" />
+              </div>
+              <div>
+                <p className="font-display font-bold text-sm uppercase tracking-widest text-[#0A0A0A] dark:text-[#FAFAFA] mb-1">
+                  CARRITO VACÍO
+                </p>
+                <p className="text-xs font-mono text-[#888888]">
+                  Agrega productos para continuar
+                </p>
+              </div>
+              <Link href="/products" onClick={closeCartDrawer} className="btn-primary text-xs py-2">
+                VER PRODUCTOS
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-line-subtle">
+            <div className="divide-y-2 divide-[#0A0A0A] dark:divide-[rgba(255,255,255,0.2)]">
               {items.map(({ product, quantity }) => {
-                const img =
-                  product.images?.[0] ||
-                  "https://placehold.co/80x80?text=Sin+imagen";
+                const img = product.images?.[0] || "https://placehold.co/80x80?text=Sin+imagen";
                 return (
                   <div key={product.id} className="flex gap-3 p-4">
-                    {/* Imagen */}
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-surface-subtle flex-shrink-0">
+                    {/* Image */}
+                    <div className="w-16 h-16 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.4)] overflow-hidden flex-shrink-0 bg-[#F0F0F0] dark:bg-[#1A1A1A]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={img}
                         alt={product.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "https://placehold.co/80x80?text=Sin+imagen";
+                          (e.target as HTMLImageElement).src = "https://placehold.co/80x80?text=Sin+imagen";
                         }}
                       />
                     </div>
@@ -121,50 +112,43 @@ export default function CartDrawer() {
                       <Link
                         href={`/products/${product.id}`}
                         onClick={closeCartDrawer}
-                        className="text-sm font-medium text-content-base hover:text-primary line-clamp-2 leading-snug"
+                        className="text-xs font-display font-semibold text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary line-clamp-2 leading-snug cursor-pointer"
                       >
                         {product.name}
                       </Link>
-                      <p className="text-primary font-bold text-sm mt-0.5">
-                        {/* {formatPrice(product.price)} */}
+                      <p className="font-mono font-bold text-sm text-primary mt-0.5">
                         {formatPrice(product.price * quantity)}
                       </p>
+
                       <div className="flex items-center gap-2 mt-2">
-                        {/* Control de cantidad */}
-                        <div className="flex items-center border border-line rounded-lg">
+                        {/* Quantity control */}
+                        <div className="flex items-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
                           <button
-                            onClick={() =>
-                              updateQuantity(product.id, quantity - 1)
-                            }
-                            className="p-1 hover:bg-surface-hover transition-colors rounded-l-lg"
+                            onClick={() => updateQuantity(product.id, quantity - 1)}
+                            className="px-2 py-1 hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors cursor-pointer text-[#0A0A0A] dark:text-[#FAFAFA]"
                             aria-label="Reducir cantidad"
                           >
-                            <Minus size={12} />
+                            <Minus size={11} strokeWidth={2.5} />
                           </button>
-                          <span className="px-2.5 text-xs font-semibold min-w-[1.75rem] text-center">
+                          <span className="px-3 text-xs font-mono font-bold text-[#0A0A0A] dark:text-[#FAFAFA] min-w-[2rem] text-center border-x-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
                             {quantity}
                           </span>
                           <button
-                            onClick={() =>
-                              updateQuantity(
-                                product.id,
-                                Math.min(product.stock, quantity + 1),
-                              )
-                            }
-                            className="p-1 hover:bg-surface-hover transition-colors rounded-r-lg"
+                            onClick={() => updateQuantity(product.id, Math.min(product.stock, quantity + 1))}
+                            className="px-2 py-1 hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors cursor-pointer text-[#0A0A0A] dark:text-[#FAFAFA]"
                             aria-label="Aumentar cantidad"
                           >
-                            <Plus size={12} />
+                            <Plus size={11} strokeWidth={2.5} />
                           </button>
                         </div>
 
-                        {/* Eliminar */}
+                        {/* Remove */}
                         <button
                           onClick={() => removeItem(product.id)}
-                          className="ml-auto p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                          className="ml-auto p-1.5 text-red-500 hover:bg-red-600 hover:text-white border border-transparent hover:border-red-600 transition-colors cursor-pointer"
                           aria-label="Eliminar producto"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={13} strokeWidth={2} />
                         </button>
                       </div>
                     </div>
@@ -175,12 +159,14 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Pie: total + botones */}
+        {/* Footer */}
         {items.length > 0 && (
-          <div className="flex-shrink-0 p-5 border-t border-line-subtle space-y-3 bg-surface-base">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-content-base">Total</span>
-              <span className="font-bold text-xl text-primary">
+          <div className="flex-shrink-0 p-5 border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.3)] space-y-3 bg-[#FAFAFA] dark:bg-[#111111]">
+            <div className="flex justify-between items-baseline">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#888888]">
+                TOTAL
+              </span>
+              <span className="font-mono font-bold text-2xl text-[#0A0A0A] dark:text-[#FAFAFA]">
                 {formatPrice(total)}
               </span>
             </div>
@@ -188,18 +174,18 @@ export default function CartDrawer() {
             <Link
               href="/checkout"
               onClick={closeCartDrawer}
-              className="btn-primary w-full text-center flex items-center justify-center gap-2"
+              className="btn-primary w-full text-center py-4 gap-3"
             >
-              Proceder al Pago
-              <ArrowRight size={16} />
+              PROCEDER AL PAGO
+              <ArrowRight size={16} strokeWidth={2.5} />
             </Link>
 
             <Link
               href="/cart"
               onClick={closeCartDrawer}
-              className="btn-secondary w-full text-center block"
+              className="btn-secondary w-full text-center block py-3"
             >
-              Ver todos
+              VER CARRITO
             </Link>
           </div>
         )}

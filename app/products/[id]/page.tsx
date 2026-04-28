@@ -7,14 +7,10 @@ import ProductImages from "./ProductImages";
 import ReviewsSection from "./ReviewsSection";
 import SimilarProducts from "./SimilarProducts";
 import { Product } from "@/types";
-import { Package } from "lucide-react";
+import { Package, Tag } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
   const { data: p } = await supabase
@@ -35,20 +31,10 @@ export async function generateMetadata({
       type: "website",
       images: image ? [{ url: image, alt: p.name }] : [],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: p.name,
-      description: p.description?.slice(0, 155) ?? p.name,
-      images: image ? [image] : [],
-    },
   };
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
 
@@ -68,6 +54,11 @@ export default async function ProductPage({
   const avgRating = reviews?.length
     ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
     : null;
+
+  const hasDiscount = p.compare_price && p.compare_price > p.price;
+  const discountPct = hasDiscount
+    ? Math.round(((p.compare_price! - p.price) / p.compare_price!) * 100)
+    : 0;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,64 +90,138 @@ export default async function ProductPage({
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-12 px-4 py-8 bg-white rounded-2xl dark:bg-transparent">
+    <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="grid md:grid-cols-2 gap-10 ">
-        <AnimatedSection y={20}>
-          <ProductImages images={p.images} name={p.name} />
-        </AnimatedSection>
 
-        <AnimatedSection y={20} delay={0.1}>
-          <p className="text-sm text-primary font-medium mb-2">
-            {p.category?.name}
-          </p>
-          <h1 className="text-3xl font-bold text-content-base mb-4">
-            {p.name}
-          </h1>
+      {/* ── Main product section ── */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
 
-          <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-4xl font-bold text-primary">
-              {formatPrice(p.price)}
-            </span>
-            {p.compare_price && p.compare_price > p.price && (
-              <span className="text-xl text-content-subtle line-through">
-                {formatPrice(p.compare_price)}
-              </span>
-            )}
-          </div>
+          {/* Images */}
+          <AnimatedSection y={20} className="relative z-10">
+            <ProductImages images={p.images} name={p.name} />
+          </AnimatedSection>
 
-          <div className="flex items-center gap-2 mb-6">
-            <Package size={18} className="text-content-subtle" />
-            <span
-              className={`text-sm font-medium ${p.stock > 0 ? "text-green-600" : "text-red-500"}`}
+          {/* Info */}
+          <AnimatedSection y={20} delay={0.1}>
+            {/* Category + badges */}
+            <div className="flex items-center gap-2 flex-wrap mb-4">
+              {p.category?.name && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[10px] font-mono font-bold uppercase tracking-widest text-[#0A0A0A] dark:text-[#FAFAFA]">
+                  <Tag size={10} strokeWidth={2.5} />
+                  {p.category.name}
+                </span>
+              )}
+              {hasDiscount && (
+                <span className="px-3 py-1 bg-primary text-white border-2 border-[#0A0A0A] text-[10px] font-mono font-bold uppercase tracking-widest">
+                  -{discountPct}% OFF
+                </span>
+              )}
+              {p.sale_format === "pack" && (
+                <span className="px-3 py-1 bg-secondary text-white border-2 border-[#0A0A0A] text-[10px] font-mono font-bold uppercase tracking-widest">
+                  {p.pack_size ? `PACK ×${p.pack_size}` : "PACK"}
+                </span>
+              )}
+            </div>
+
+            {/* Product name — oversized */}
+            <h1
+              className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA] mb-6"
+              style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
             >
-              {p.stock > 0 ? `${p.stock} unidades disponibles` : "Agotado"}
-            </span>
-          </div>
+              {p.name}
+            </h1>
 
-          <div className="prose prose-slate dark:prose-invert mb-8">
-            <p className="text-content-muted leading-relaxed">
-              {p.description}
-            </p>
-          </div>
+            {/* Price — statement */}
+            <div className="mb-6 pb-6 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.3)]">
+              <div className="flex items-baseline gap-4">
+                <span
+                  className="font-mono font-bold text-primary"
+                  style={{ fontSize: "clamp(2rem, 5vw, 3rem)", letterSpacing: "-0.02em" }}
+                >
+                  {formatPrice(p.price)}
+                </span>
+                {hasDiscount && (
+                  <span className="font-mono text-lg text-[#888888] line-through">
+                    {formatPrice(p.compare_price!)}
+                  </span>
+                )}
+              </div>
+            </div>
 
-          <AddToCartButton product={p} />
-        </AnimatedSection>
+            {/* Stock */}
+            <div className="flex items-center gap-3 mb-6">
+              <div
+                className={`w-2 h-2 flex-shrink-0 ${p.stock > 0 ? "bg-green-500" : "bg-red-500"}`}
+              />
+              <div className="flex items-center gap-2">
+                <Package size={15} strokeWidth={2} className="text-[#888888]" />
+                <span
+                  className={`text-xs font-mono font-bold uppercase tracking-widest ${p.stock > 0 ? "text-green-600 dark:text-green-400" : "text-red-500"}`}
+                >
+                  {p.stock > 0 ? `${p.stock} UNIDADES DISPONIBLES` : "AGOTADO"}
+                </span>
+              </div>
+            </div>
+
+            {/* Description */}
+            {p.description && (
+              <div className="mb-8">
+                <p className="text-sm font-mono text-[#444444] dark:text-[#AAAAAA] leading-relaxed">
+                  {p.description}
+                </p>
+              </div>
+            )}
+
+            {/* Specs table (brand, sku, format) */}
+            {(p.brand || p.sale_format) && (
+              <div className="mb-8 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
+                {p.brand && (
+                  <div className="flex border-b border-[#0A0A0A]/20 dark:border-[rgba(255,255,255,0.1)]">
+                    <span className="w-28 shrink-0 px-4 py-3 text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888] border-r-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.3)]">
+                      MARCA
+                    </span>
+                    <span className="px-4 py-3 text-xs font-mono text-[#0A0A0A] dark:text-[#FAFAFA]">
+                      {p.brand}
+                    </span>
+                  </div>
+                )}
+                {p.sale_format && (
+                  <div className="flex">
+                    <span className="w-28 shrink-0 px-4 py-3 text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888] border-r-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.3)]">
+                      FORMATO
+                    </span>
+                    <span className="px-4 py-3 text-xs font-mono text-[#0A0A0A] dark:text-[#FAFAFA]">
+                      {p.sale_format === "pack"
+                        ? `PACK ${p.pack_size ? `×${p.pack_size}` : ""}`
+                        : "UNIDAD"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <AddToCartButton product={p} />
+          </AnimatedSection>
+        </div>
+
+        {/* ── Similar products ── */}
+        {p.category_id && (
+          <AnimatedSection className="mt-16 pt-12 border-t-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
+            <SimilarProducts categoryId={p.category_id} excludeId={p.id} />
+          </AnimatedSection>
+        )}
+
+        {/* ── Reviews ── */}
+        <div className="mt-12 pt-12 border-t-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]">
+          <AnimatedSection>
+            <ReviewsSection productId={p.id} />
+          </AnimatedSection>
+        </div>
       </div>
-
-      {p.category_id && (
-        <AnimatedSection>
-          <SimilarProducts categoryId={p.category_id} excludeId={p.id} />
-        </AnimatedSection>
-      )}
-
-      <hr className="my-10 border-line" />
-      <AnimatedSection>
-        <ReviewsSection productId={p.id} />
-      </AnimatedSection>
     </div>
   );
 }

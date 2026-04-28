@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { Store } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 
 function translateAuthError(msg: string): string {
   const m = msg.toLowerCase();
@@ -40,7 +40,6 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -50,99 +49,124 @@ export default function RegisterPage() {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
-
-    if (error) {
-      setError(translateAuthError(error.message));
-      setLoading(false);
-      return;
-    }
-
-    if (data.user && !data.session) {
-      setSuccess(true);
-    } else {
-      router.push("/");
-      router.refresh();
-    }
+    if (error) { setError(translateAuthError(error.message)); setLoading(false); return; }
+    if (data.user && !data.session) setSuccess(true);
+    else { router.push("/"); router.refresh(); }
     setLoading(false);
   };
 
+  const Label = ({ children }: { children: React.ReactNode }) => (
+    <label className="block text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888] mb-2">
+      {children}
+    </label>
+  );
+
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="card p-8 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">📧</div>
-          <h2 className="text-xl font-bold text-content-base mb-2">¡Revisa tu correo!</h2>
-          <p className="text-content-muted mb-6">
-            Hemos enviado un enlace de confirmación a <strong>{email}</strong>.
+      <div className="min-h-screen flex items-center justify-center px-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+        <div className="max-w-sm w-full text-center">
+          <div className="w-16 h-16 border-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] flex items-center justify-center mx-auto mb-8">
+            <Mail size={28} className="text-primary" strokeWidth={2} />
+          </div>
+          <h2
+            className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA] mb-4"
+            style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", letterSpacing: "-0.03em", lineHeight: 0.95 }}
+          >
+            REVISA<br />TU CORREO
+          </h2>
+          <p className="text-xs font-mono text-[#888888] mb-2 uppercase tracking-widest">
+            ENLACE ENVIADO A
           </p>
-          <Link href="/auth/login" className="btn-primary">Ir a Iniciar Sesión</Link>
+          <p className="text-sm font-mono font-bold text-[#0A0A0A] dark:text-[#FAFAFA] mb-8 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] px-4 py-2">
+            {email}
+          </p>
+          <Link href="/auth/login" className="btn-primary py-4 px-8">
+            IR A INICIAR SESIÓN
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-surface-page">
-      <div className="card p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 text-primary font-bold text-2xl mb-2">
-            <Store size={28} />
-            Dimar Store
-          </div>
-          <h1 className="text-xl font-bold text-content-base">Crear Cuenta</h1>
+    <div className="min-h-screen flex bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+      {/* Left — branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-primary flex-col justify-between p-12 border-r-4 border-[#0A0A0A]">
+        <Link href="/" className="font-display font-bold text-white text-2xl tracking-[-0.05em] uppercase cursor-pointer">
+          DIMAR
+        </Link>
+        <div>
+          <p className="text-[10px] font-mono text-[rgba(255,255,255,0.5)] uppercase tracking-widest mb-4">
+            ÚNETE HOY
+          </p>
+          <h2
+            className="font-display font-bold text-white"
+            style={{ fontSize: "clamp(2.5rem, 5vw, 5rem)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
+          >
+            CREA TU<br />CUENTA.
+          </h2>
         </div>
-
-        {error && (
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm mb-4">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-content-base mb-1">Nombre Completo</label>
-            <input
-              required
-              className="input"
-              placeholder="Juan Pérez"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-content-base mb-1">Email</label>
-            <input
-              type="email"
-              required
-              className="input"
-              placeholder="tu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-content-base mb-1">Contraseña</label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              className="input"
-              placeholder="Mínimo 6 caracteres"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
-            {loading ? "Creando cuenta..." : "Crear Cuenta"}
-          </button>
-        </form>
-
-        <p className="text-center text-sm text-content-muted mt-6">
-          ¿Ya tienes cuenta?{" "}
-          <Link href="/auth/login" className="text-primary hover:underline font-medium">
-            Inicia sesión
-          </Link>
+        <p className="text-[10px] font-mono text-[rgba(255,255,255,0.3)] uppercase tracking-widest">
+          © {new Date().getFullYear()} DIMAR STORE
         </p>
+      </div>
+
+      {/* Right — form */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm">
+          <Link href="/" className="lg:hidden block font-display font-bold text-xl tracking-[-0.05em] uppercase text-[#0A0A0A] dark:text-[#FAFAFA] mb-10 cursor-pointer">
+            DIMAR
+          </Link>
+
+          <div className="mb-8">
+            <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-2">REGISTRO</p>
+            <h1
+              className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
+              style={{ fontSize: "clamp(2rem, 5vw, 3rem)", letterSpacing: "-0.03em", lineHeight: 0.95 }}
+            >
+              CREAR<br />CUENTA
+            </h1>
+          </div>
+
+          {error && (
+            <div className="border-2 border-red-500 bg-red-50 dark:bg-red-950/20 px-4 py-3 mb-5">
+              <p className="text-[10px] font-mono font-bold text-red-600 uppercase tracking-widest">
+                {error}
+              </p>
+            </div>
+          )}
+
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <Label>Nombre Completo</Label>
+              <input required className="input" placeholder="Juan Pérez"
+                value={fullName} onChange={(e) => setFullName(e.target.value)} />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <input type="email" required className="input" placeholder="tu@email.com"
+                value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <Label>Contraseña (mín. 6 caracteres)</Label>
+              <input type="password" required minLength={6} className="input" placeholder="••••••••"
+                value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <button type="submit" disabled={loading} className="btn-primary w-full py-4 gap-3 mt-2">
+              {loading ? "CREANDO CUENTA..." : "CREAR CUENTA"}
+              {!loading && <ArrowRight size={15} strokeWidth={2.5} />}
+            </button>
+          </form>
+
+          <div className="mt-8 pt-6 border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
+            <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest text-center">
+              ¿Ya tienes cuenta?{" "}
+              <Link href="/auth/login" className="text-primary hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA] font-bold transition-colors cursor-pointer">
+                INICIA SESIÓN
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

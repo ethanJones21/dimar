@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,7 +7,17 @@ import { Toaster } from "@/components/ui/Toaster";
 import CartDrawer from "@/components/CartDrawer";
 import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
-const inter = Inter({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "500", "700"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -65,7 +75,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-display antialiased`}>
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />

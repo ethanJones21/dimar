@@ -30,84 +30,91 @@ export default async function FavoritesPage({
     .order("created_at", { ascending: false })
     .range(from, to);
 
-  const products = (data ?? [])
-    .map((f) => f.product)
-    .filter(Boolean) as Product[];
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const products = ((data ?? []) as any[]).map((f) => f.product).filter(Boolean) as Product[];
   const total = count ?? 0;
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-8">
-        <Heart size={28} className="text-red-500 fill-red-500" />
-        <h1 className="text-3xl font-bold text-content-base">Mis Favoritos</h1>
+    <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] min-h-screen">
+      {/* ── Page header ── */}
+      <div className="border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]">
+        <div className="max-w-7xl mx-auto px-4 py-10">
+          <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-2">MI CUENTA</p>
+          <h1
+            className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA] flex items-center gap-4"
+            style={{ fontSize: "clamp(2rem, 6vw, 4rem)", letterSpacing: "-0.03em", lineHeight: 0.95 }}
+          >
+            MIS FAVORITOS
+            <Heart size={32} className="text-red-500 fill-red-500 flex-shrink-0" strokeWidth={2} />
+          </h1>
+        </div>
       </div>
 
-      {total > 0 ? (
-        <>
-          <p className="text-sm text-content-muted mb-6">
-            {total} {total === 1 ? "producto guardado" : "productos guardados"}
-          </p>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {total > 0 ? (
+          <>
+            <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mb-6">
+              {total} {total === 1 ? "PRODUCTO GUARDADO" : "PRODUCTOS GUARDADOS"}
+              {totalPages > 1 && ` — PÁGINA ${page} DE ${totalPages}`}
+            </p>
 
-          <div className="grid grid-cols-1 min-[453px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-sm min-[453px]:max-w-none mx-auto min-[453px]:mx-0">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-10">
-              <Link
-                href={`/favorites?page=${page - 1}`}
-                aria-disabled={page === 1}
-                className={`p-2 rounded-lg border transition-colors ${
-                  page === 1
-                    ? "pointer-events-none border-line text-content-subtle opacity-40"
-                    : "border-line text-content-muted hover:border-primary hover:text-primary"
-                }`}
-              >
-                <ChevronLeft size={18} />
-              </Link>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Link
-                  key={p}
-                  href={`/favorites?page=${p}`}
-                  className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium border transition-colors ${
-                    p === page
-                      ? "bg-primary border-primary text-white"
-                      : "border-line text-content-muted hover:border-primary hover:text-primary"
-                  }`}
-                >
-                  {p}
-                </Link>
+            <div className="grid grid-cols-1 min-[453px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-sm min-[453px]:max-w-none mx-auto min-[453px]:mx-0">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
               ))}
-
-              <Link
-                href={`/favorites?page=${page + 1}`}
-                aria-disabled={page === totalPages}
-                className={`p-2 rounded-lg border transition-colors ${
-                  page === totalPages
-                    ? "pointer-events-none border-line text-content-subtle opacity-40"
-                    : "border-line text-content-muted hover:border-primary hover:text-primary"
-                }`}
-              >
-                <ChevronRight size={18} />
-              </Link>
             </div>
-          )}
-        </>
-      ) : (
-        <div className="text-center py-20">
-          <Heart size={64} className="mx-auto text-content-subtle mb-4" />
-          <p className="text-xl font-semibold text-content-base mb-2">No tienes favoritos aún</p>
-          <p className="text-content-muted mb-8">
-            Guarda los productos que te gusten con el ícono ❤️
-          </p>
-          <Link href="/products" className="btn-primary">Explorar productos</Link>
-        </div>
-      )}
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-12">
+                <Link
+                  href={`/favorites?page=${page - 1}`}
+                  aria-disabled={page === 1}
+                  className={`w-10 h-10 flex items-center justify-center border-2 transition-all duration-150 ${page === 1 ? "pointer-events-none border-[#D4D4D4] opacity-40" : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)] cursor-pointer"}`}
+                >
+                  <ChevronLeft size={16} strokeWidth={2.5} />
+                </Link>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <Link
+                    key={p}
+                    href={`/favorites?page=${p}`}
+                    className={`w-10 h-10 flex items-center justify-center border-2 text-xs font-mono font-bold transition-all duration-150 cursor-pointer ${p === page ? "bg-primary border-primary text-white shadow-[3px_3px_0px_#0A0A0A]" : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)]"}`}
+                  >
+                    {p}
+                  </Link>
+                ))}
+
+                <Link
+                  href={`/favorites?page=${page + 1}`}
+                  aria-disabled={page === totalPages}
+                  className={`w-10 h-10 flex items-center justify-center border-2 transition-all duration-150 ${page === totalPages ? "pointer-events-none border-[#D4D4D4] opacity-40" : "border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)] cursor-pointer"}`}
+                >
+                  <ChevronRight size={16} strokeWidth={2.5} />
+                </Link>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] py-24 text-center">
+            <div className="w-16 h-16 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] flex items-center justify-center mx-auto mb-6">
+              <Heart size={28} className="text-[#888888]" strokeWidth={1.5} />
+            </div>
+            <p
+              className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA] mb-3"
+              style={{ fontSize: "clamp(1.25rem, 3vw, 2rem)", letterSpacing: "-0.02em" }}
+            >
+              AÚN SIN FAVORITOS
+            </p>
+            <p className="text-xs font-mono text-[#888888] mb-8 uppercase tracking-widest">
+              Guarda los productos que te gusten con el ícono de corazón
+            </p>
+            <Link href="/products" className="btn-primary text-[10px] py-3 px-8">
+              EXPLORAR PRODUCTOS
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

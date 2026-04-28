@@ -25,63 +25,74 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/products/${product.id}`}
-      className="card group hover:shadow-md transition-shadow flex flex-row sm:flex-col w-full"
+      className="group flex flex-row sm:flex-col w-full bg-white dark:bg-[#111111] border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] overflow-hidden transition-all duration-150 ease-out hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[5px_5px_0px_#0A0A0A] dark:hover:shadow-[5px_5px_0px_rgba(255,255,255,0.4)] cursor-pointer"
     >
-      <div className="relative w-32 shrink-0 sm:w-auto aspect-square overflow-hidden bg-surface-subtle rounded-l-[inherit] sm:rounded-l-none sm:rounded-t-[inherit]">
+      {/* Image */}
+      <div className="relative w-32 shrink-0 sm:w-auto aspect-square overflow-hidden bg-[#F0F0F0] dark:bg-[#1A1A1A]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={mainImage}
           alt={product.name}
           className="size-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              "https://placehold.co/400x400?text=Sin+imagen";
+            (e.target as HTMLImageElement).src = "https://placehold.co/400x400?text=Sin+imagen";
           }}
         />
+
+        {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 items-start">
           {hasDiscount && (
-            <span className="bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+            <span className="bg-primary text-white text-[10px] font-mono font-bold px-2 py-0.5 border border-[#0A0A0A]">
               -{Math.round(((product.compare_price! - product.price) / product.compare_price!) * 100)}%
             </span>
           )}
           {product.sale_format === "pack" && (
-            <span className="bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-              {product.pack_size ? `Pack x${product.pack_size}` : "Pack"}
+            <span className="bg-secondary text-white text-[10px] font-mono font-bold px-2 py-0.5 border border-[#0A0A0A]">
+              {product.pack_size ? `PACK×${product.pack_size}` : "PACK"}
             </span>
           )}
         </div>
+
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-surface-base text-content-base px-3 py-1 rounded-full text-sm font-medium">
-              Agotado
+          <div className="absolute inset-0 bg-[#0A0A0A]/60 flex items-center justify-center">
+            <span className="bg-white text-[#0A0A0A] px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest border border-[#0A0A0A]">
+              AGOTADO
             </span>
           </div>
         )}
+
         <FavoriteButton productId={product.id} />
       </div>
 
+      {/* Info */}
       <div className="p-3 sm:p-4 flex flex-col flex-1 min-w-0">
-        <p className="text-xs text-content-muted mb-1">{product.category?.name}</p>
-        <h3 className="font-medium text-content-base line-clamp-2 h-[3em] mb-2">
+        {product.category?.name && (
+          <p className="text-[10px] font-mono text-[#888888] mb-1 uppercase tracking-widest">
+            {product.category.name}
+          </p>
+        )}
+        <h3 className="font-display font-semibold text-sm text-[#0A0A0A] dark:text-[#FAFAFA] line-clamp-2 leading-snug mb-3 flex-1">
           {product.name}
         </h3>
+
         <div className="mb-3">
-          <span className="font-bold text-primary text-lg">
+          <span className="font-mono font-bold text-lg text-primary">
             {formatPrice(product.price)}
           </span>
           {hasDiscount && (
-            <span className="text-content-subtle text-sm line-through ml-2">
+            <span className="text-[#888888] text-xs font-mono line-through ml-2">
               {formatPrice(product.compare_price!)}
             </span>
           )}
         </div>
+
         <button
           onClick={handleAdd}
           disabled={product.stock === 0}
-          className="mt-auto flex items-center justify-center gap-2 w-full py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 bg-[#0A0A0A] dark:bg-[#FAFAFA] text-[#FAFAFA] dark:text-[#0A0A0A] text-[10px] font-mono font-bold tracking-widest uppercase border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-primary hover:border-primary hover:text-white dark:hover:bg-primary dark:hover:border-primary dark:hover:text-white transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <ShoppingCart size={16} />
-          Agregar
+          <ShoppingCart size={13} strokeWidth={2.5} />
+          AGREGAR
         </button>
       </div>
     </Link>

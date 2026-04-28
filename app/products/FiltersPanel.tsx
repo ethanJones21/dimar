@@ -13,11 +13,7 @@ interface Props {
 
 const DISCOUNT_OPTIONS = [70, 60, 50, 40, 30, 20, 10];
 
-export default function FiltersPanel({
-  brands,
-  categories,
-  currentCategory,
-}: Props) {
+export default function FiltersPanel({ brands, categories, currentCategory }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -36,7 +32,6 @@ export default function FiltersPanel({
   const [minPrice, setMinPrice] = useState(currentMinPrice);
   const [maxPrice, setMaxPrice] = useState(currentMaxPrice);
 
-  // Sync inputs when URL params change (back/forward navigation, clear filters)
   useEffect(() => {
     setMinPrice(currentMinPrice);
     setMaxPrice(currentMaxPrice);
@@ -67,9 +62,7 @@ export default function FiltersPanel({
 
   const clearAll = () => {
     const params = new URLSearchParams(searchParams.toString());
-    ["min_price", "max_price", "brand", "discount", "sale_format"].forEach(
-      (k) => params.delete(k),
-    );
+    ["min_price", "max_price", "brand", "discount", "sale_format"].forEach((k) => params.delete(k));
     setMinPrice("");
     setMaxPrice("");
     router.push(`/products?${params.toString()}`);
@@ -78,70 +71,75 @@ export default function FiltersPanel({
   const toggle = (key: string, value: string, current: string) =>
     updateParam(key, current === value ? "" : value);
 
+  /* ── Shared section header ── */
+  const SectionHeader = ({
+    label,
+    open,
+    onToggle,
+  }: {
+    label: string;
+    open: boolean;
+    onToggle: () => void;
+  }) => (
+    <button
+      type="button"
+      onClick={onToggle}
+      className="w-full flex items-center justify-between px-0 py-3 text-[10px] font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)]"
+    >
+      {label}
+      {open ? <ChevronUp size={14} strokeWidth={2.5} /> : <ChevronDown size={14} strokeWidth={2.5} />}
+    </button>
+  );
+
   const filterContent = (
-    <div className="space-y-3">
-      {/* Title row */}
-      <div className="flex items-center justify-between">
-        <span className="font-semibold text-content-base text-sm">Filtros</span>
+    <div className="space-y-0">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-3 border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] mb-4">
+        <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA]">
+          FILTROS {activeCount > 0 && <span className="text-primary">({activeCount})</span>}
+        </span>
         {activeCount > 0 && (
           <button
             onClick={clearAll}
-            className="text-xs text-primary hover:text-primary-dark flex items-center gap-1"
+            className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors cursor-pointer"
           >
-            <X size={12} /> Limpiar
+            <X size={11} strokeWidth={2.5} /> LIMPIAR
           </button>
         )}
       </div>
 
       {/* ── Precio ── */}
-      <div className="border border-line rounded-xl overflow-hidden bg-white dark:bg-transparent">
-        <button
-          type="button"
-          onClick={() => setPriceOpen((o) => !o)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-content-base hover:bg-surface-hover transition-colors"
-        >
-          Precio
-          {priceOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-        </button>
-
+      <div>
+        <SectionHeader label="PRECIO" open={priceOpen} onToggle={() => setPriceOpen((o) => !o)} />
         {priceOpen && (
-          <div className="px-4 pb-4 pt-3 border-t border-line-subtle space-y-3 bg-white dark:bg-transparent">
+          <div className="py-4 space-y-3">
             <div className="flex gap-2">
               <input
                 type="number"
-                placeholder="Mín"
+                placeholder="MÍN"
                 value={minPrice}
                 min={0}
                 onChange={(e) => setMinPrice(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && applyPrice()}
-                className="input w-full text-sm"
+                className="input w-full text-xs"
               />
               <input
                 type="number"
-                placeholder="Máx"
+                placeholder="MÁX"
                 value={maxPrice}
                 min={0}
                 onChange={(e) => setMaxPrice(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && applyPrice()}
-                className="input w-full text-sm"
+                className="input w-full text-xs"
               />
             </div>
-            <button
-              type="button"
-              onClick={applyPrice}
-              className="btn-primary w-full text-sm py-1.5"
-            >
-              Aplicar
+            <button type="button" onClick={applyPrice} className="btn-primary w-full py-2 text-[10px]">
+              APLICAR
             </button>
             {(currentMinPrice || currentMaxPrice) && (
-              <p className="text-xs text-content-muted text-center">
-                {currentMinPrice
-                  ? formatPrice(Number(currentMinPrice))
-                  : "–"}
-                {" → "}
-                {currentMaxPrice
-                  ? formatPrice(Number(currentMaxPrice))
-                  : "∞"}
+              <p className="text-[10px] font-mono text-[#888888] text-center">
+                {currentMinPrice ? formatPrice(Number(currentMinPrice)) : "–"}{" → "}
+                {currentMaxPrice ? formatPrice(Number(currentMaxPrice)) : "∞"}
               </p>
             )}
           </div>
@@ -150,27 +148,19 @@ export default function FiltersPanel({
 
       {/* ── Marca ── */}
       {brands.length > 0 && (
-        <div className="border border-line rounded-xl overflow-hidden bg-white dark:bg-transparent">
-          <button
-            type="button"
-            onClick={() => setBrandOpen((o) => !o)}
-            className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-content-base hover:bg-surface-hover transition-colors"
-          >
-            Marca
-            {brandOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
-
+        <div>
+          <SectionHeader label="MARCA" open={brandOpen} onToggle={() => setBrandOpen((o) => !o)} />
           {brandOpen && (
-            <div className="px-4 pb-4 pt-3 border-t border-line-subtle space-y-1.5">
+            <div className="py-3 space-y-1">
               {brands.map((brand) => (
                 <button
                   key={brand}
                   type="button"
                   onClick={() => toggle("brand", brand, currentBrand)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                  className={`w-full text-left px-3 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-colors cursor-pointer border-2 ${
                     currentBrand === brand
-                      ? "bg-primary text-white font-medium"
-                      : "text-content-base hover:bg-surface-subtle"
+                      ? "bg-primary text-white border-primary"
+                      : "bg-transparent text-[#0A0A0A] dark:text-[#FAFAFA] border-transparent hover:border-[#0A0A0A] dark:hover:border-[rgba(255,255,255,0.5)]"
                   }`}
                 >
                   {brand}
@@ -181,62 +171,46 @@ export default function FiltersPanel({
         </div>
       )}
 
-      {/* ── Formato de venta ── */}
-      <div className="border border-line rounded-xl overflow-hidden bg-white dark:bg-transparent">
-        <button
-          type="button"
-          onClick={() => setFormatOpen((o) => !o)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-content-base hover:bg-surface-hover transition-colors"
-        >
-          Formato
-          {formatOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-        </button>
-
+      {/* ── Formato ── */}
+      <div>
+        <SectionHeader label="FORMATO" open={formatOpen} onToggle={() => setFormatOpen((o) => !o)} />
         {formatOpen && (
-          <div className="px-4 pb-4 pt-3 border-t border-line-subtle flex gap-2">
+          <div className="py-3 flex gap-2">
             {(["unit", "pack"] as const).map((fmt) => (
               <button
                 key={fmt}
                 type="button"
                 onClick={() => toggle("sale_format", fmt, currentFormat)}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                className={`flex-1 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-all duration-150 border-2 cursor-pointer ${
                   currentFormat === fmt
                     ? "bg-primary text-white border-primary"
-                    : "text-content-base border-line hover:bg-surface-subtle"
+                    : "bg-transparent text-[#0A0A0A] dark:text-[#FAFAFA] border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)]"
                 }`}
               >
-                {fmt === "unit" ? "Unidad" : "Pack"}
+                {fmt === "unit" ? "UNIDAD" : "PACK"}
               </button>
             ))}
           </div>
         )}
       </div>
 
-      {/* ── Ofertas ── */}
-      <div className="border border-line rounded-xl overflow-hidden bg-white dark:bg-transparent">
-        <button
-          type="button"
-          onClick={() => setDiscountOpen((o) => !o)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-content-base hover:bg-surface-hover transition-colors"
-        >
-          Descuentos
-          {discountOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-        </button>
-
+      {/* ── Descuentos ── */}
+      <div>
+        <SectionHeader label="DESCUENTOS" open={discountOpen} onToggle={() => setDiscountOpen((o) => !o)} />
         {discountOpen && (
-          <div className="px-4 pb-4 pt-3 border-t border-line-subtle space-y-1.5">
+          <div className="py-3 space-y-1">
             {DISCOUNT_OPTIONS.map((pct) => (
               <button
                 key={pct}
                 type="button"
                 onClick={() => toggle("discount", String(pct), currentDiscount)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={`w-full text-left px-3 py-2 text-[10px] font-mono font-bold tracking-widest uppercase transition-colors cursor-pointer border-2 ${
                   currentDiscount === String(pct)
-                    ? "bg-primary text-white font-medium"
-                    : "text-content-base hover:bg-surface-subtle"
+                    ? "bg-primary text-white border-primary"
+                    : "bg-transparent text-[#0A0A0A] dark:text-[#FAFAFA] border-transparent hover:border-[#0A0A0A] dark:hover:border-[rgba(255,255,255,0.5)]"
                 }`}
               >
-                Desde {pct}% OFF
+                DESDE {pct}% OFF
               </button>
             ))}
           </div>
@@ -248,28 +222,28 @@ export default function FiltersPanel({
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <aside className="hidden md:block w-56 flex-shrink-0 sticky top-20 self-start">
+      <aside className="hidden md:block w-52 flex-shrink-0 sticky top-24 self-start">
         {filterContent}
       </aside>
 
       {/* ── Mobile toggle ── */}
-      <div className="md:hidden mb-2">
+      <div className="md:hidden mb-4">
         <button
           type="button"
           onClick={() => setMobileOpen((o) => !o)}
-          className="bg-white dark:bg-transparent flex items-center gap-2 px-4 py-2.5 border border-line rounded-xl text-sm text-content-base hover:bg-surface-hover transition-colors"
+          className="flex items-center gap-3 px-5 py-3 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] text-[10px] font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#0A0A0A] dark:hover:shadow-[3px_3px_0px_rgba(255,255,255,0.4)] transition-all duration-150 cursor-pointer"
         >
-          <SlidersHorizontal size={16} />
-          Filtros
+          <SlidersHorizontal size={14} strokeWidth={2.5} />
+          FILTROS
           {activeCount > 0 && (
-            <span className="bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            <span className="bg-primary text-white text-[10px] font-mono font-bold w-5 h-5 flex items-center justify-center border border-[#0A0A0A]">
               {activeCount}
             </span>
           )}
         </button>
 
         {mobileOpen && (
-          <div className="mt-3 p-4 border border-line rounded-xl bg-surface-base shadow-sm">
+          <div className="mt-3 p-5 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] bg-white dark:bg-[#111111]">
             {filterContent}
           </div>
         )}

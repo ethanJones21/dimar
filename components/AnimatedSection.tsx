@@ -18,20 +18,22 @@ export default function AnimatedSection({
   children,
   className,
   delay = 0,
-  y = 24,
+  y = 32,
   as: Tag = "div",
 }: Props) {
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
       gsap.fromTo(
         ref.current,
         { opacity: 0, y },
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: 0.7,
           delay,
           ease: "power2.out",
           scrollTrigger: {

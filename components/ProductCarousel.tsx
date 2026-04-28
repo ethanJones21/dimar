@@ -18,10 +18,7 @@ export default function ProductCarousel({
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollBy({
-      left:
-        dir === "left"
-          ? -scrollRef.current.offsetWidth
-          : scrollRef.current.offsetWidth,
+      left: dir === "left" ? -scrollRef.current.offsetWidth : scrollRef.current.offsetWidth,
       behavior: "smooth",
     });
   };
@@ -29,21 +26,28 @@ export default function ProductCarousel({
   return (
     <div>
       {title && (
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-bold text-content-base">{title}</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2
+            className="font-display font-bold text-[#0A0A0A] dark:text-[#FAFAFA]"
+            style={{ fontSize: "clamp(1.25rem, 3vw, 2rem)", letterSpacing: "-0.02em", lineHeight: 1 }}
+          >
+            {title.toUpperCase()}
+          </h2>
           {showButtons && (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => scroll("left")}
-                className="bg-surface-base border border-line rounded-full p-1.5 hover:border-primary hover:text-primary transition-colors"
+                className="w-9 h-9 flex items-center justify-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors cursor-pointer"
+                aria-label="Anterior"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={16} strokeWidth={2.5} />
               </button>
               <button
                 onClick={() => scroll("right")}
-                className="bg-surface-base border border-line rounded-full p-1.5 hover:border-primary hover:text-primary transition-colors"
+                className="w-9 h-9 flex items-center justify-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] transition-colors cursor-pointer"
+                aria-label="Siguiente"
               >
-                <ChevronRight size={18} />
+                <ChevronRight size={16} strokeWidth={2.5} />
               </button>
             </div>
           )}
