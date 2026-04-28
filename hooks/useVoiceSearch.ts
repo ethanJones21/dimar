@@ -29,7 +29,7 @@ interface SpeechRecognitionErrorEvent {
   error: string;
 }
 
-export type VoiceState = "idle" | "listening" | "processing";
+export type VoiceState = "idle" | "preparing" | "listening" | "processing";
 
 type ErrorType = "permission" | "unsupported" | "network";
 
@@ -68,6 +68,8 @@ export function useVoiceSearch(
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
+    recognition.onaudiostart = () => setState("listening");
+
     recognition.onresult = (e: SpeechRecognitionEvent) => {
       const transcript = e.results[0][0].transcript;
       setState("idle");
@@ -90,19 +92,21 @@ export function useVoiceSearch(
     };
 
     recognition.onend = () => {
-      setState((s) => (s === "listening" ? "idle" : s));
+      setState((s) => (s === "listening" || s === "preparing" ? "idle" : s));
     };
 
-    setState("listening");
+    setState("preparing");
     recognition.start();
     return true;
   }, []);
 
   const startWhisper = useCallback(async () => {
+    setState("preparing");
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch {
+      setState("idle");
       onErrorRef.current?.("permission");
       return;
     }
@@ -111,11 +115,42 @@ export function useVoiceSearch(
     mediaRecorderRef.current = recorder;
     chunksRef.current = [];
 
+    // Silence detection via Web Audio API
+    const audioCtx = new AudioContext();
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    audioCtx.createMediaStreamSource(stream).connect(analyser);
+    const freqData = new Uint8Array(analyser.frequencyBinCount);
+    let silenceStart: number | null = null;
+    let hasSoundStarted = false;
+    let animFrame: number;
+
+    const checkSilence = () => {
+      analyser.getByteFrequencyData(freqData);
+      const avg = freqData.reduce((a, b) => a + b, 0) / freqData.length;
+
+      if (avg > 12) {
+        hasSoundStarted = true;
+        silenceStart = null;
+      } else if (hasSoundStarted) {
+        if (silenceStart === null) silenceStart = Date.now();
+        else if (Date.now() - silenceStart > 1200) {
+          if (mediaRecorderRef.current?.state === "recording") {
+            mediaRecorderRef.current.stop();
+          }
+          return;
+        }
+      }
+      animFrame = requestAnimationFrame(checkSilence);
+    };
+
     recorder.ondataavailable = (e) => {
       if (e.data.size > 0) chunksRef.current.push(e.data);
     };
 
     recorder.onstop = async () => {
+      cancelAnimationFrame(animFrame);
+      audioCtx.close();
       stream.getTracks().forEach((t) => t.stop());
       setState("processing");
 
@@ -138,13 +173,14 @@ export function useVoiceSearch(
 
     setState("listening");
     recorder.start();
+    checkSilence();
 
-    // Auto-stop after 8 seconds to avoid endless recording
+    // Fallback: máximo 10s si la detección de silencio falla
     setTimeout(() => {
       if (mediaRecorderRef.current?.state === "recording") {
         mediaRecorderRef.current.stop();
       }
-    }, 8000);
+    }, 10000);
   }, []);
   startWhisperRef.current = startWhisper;
 

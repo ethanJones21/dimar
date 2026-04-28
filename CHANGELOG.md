@@ -14,6 +14,22 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [0.12.0] — 2026-04-28
+
+### Añadido
+
+- **`VoiceSearchModal`** (`components/VoiceSearchModal.tsx`) — modal visual que muestra el estado de la búsqueda por voz (preparando / escuchando / procesando) con animación de onda; reemplaza los estados inline del botón micrófono en Navbar
+- **Estado `preparing`** en `useVoiceSearch` — distingue el momento previo a que el micrófono esté activo del estado `listening`; `onaudiostart` activa la transición real a "escuchando"
+- **Detección de silencio automática** en `useVoiceSearch` (Whisper path) — usa Web Audio API (`AnalyserNode`) para detener la grabación tras 1,2 s de silencio después de haber detectado voz; timeout de seguridad extendido a 10 s
+
+### Cambiado
+
+- **API de búsqueda por imagen** (`/api/image-search`) — reemplaza Gemini Vision por **Google Lens vía SerpAPI**; la imagen se sube primero a Cloudinary para obtener una URL pública, luego se consulta `engine=google_lens`; las palabras clave se extraen del campo `knowledge_graph.title` o `visual_matches[0].title`; variables de entorno cambiadas de `GOOGLE_GEMINI_API_KEY` a `SERPAPI_API_KEY` + `CLOUDINARY_UPLOAD_PRESET`
+- **API de transcripción** (`/api/transcribe`) — reemplaza OpenAI Whisper por **AssemblyAI**; flujo: upload binario → solicitud de transcripción → polling con delays variables (800 ms inicial, luego 300 ms × 7, incrementos hasta 500 ms); variable de entorno cambiada de `OPENAI_API_KEY` a `ASSEMBLY_API_KEY`
+- **Botón micrófono en Navbar** — el feedback visual se delega al `VoiceSearchModal`; el botón solo muestra rojo cuando el estado no es `idle`, sin animaciones inline ni texto dinámico de tooltip
+
+---
+
 ## [0.11.0] — 2026-04-26
 
 ### Añadido

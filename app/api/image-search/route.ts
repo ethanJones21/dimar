@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: "GOOGLE_GEMINI_API_KEY no configurada" }, { status: 500 });
+  const serpApiKey = process.env.SERPAPI_API_KEY;
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
+
+  if (!serpApiKey || !uploadPreset) {
+    return NextResponse.json({ error: "API keys no configuradas" }, { status: 500 });
   }
 
   const formData = await req.formData();
@@ -12,56 +14,51 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No se recibió imagen" }, { status: 400 });
   }
 
-  // Convertir a base64
-  const buffer = await file.arrayBuffer();
-  const base64 = Buffer.from(buffer).toString("base64");
-  const mimeType = file.type || "image/jpeg";
+  // 1. Subir a Cloudinary para obtener URL pública
+  const cloudForm = new FormData();
+  cloudForm.append("file", file);
+  cloudForm.append("upload_preset", uploadPreset);
 
-  const body = {
-    contents: [
-      {
-        parts: [
-          {
-            text: `Analiza esta imagen e identifica qué producto o tipo de producto es.
-Responde SOLO con 2 a 4 palabras clave en español para buscar ese producto en una tienda online.
-No expliques, no uses signos de puntuación, solo las palabras clave separadas por espacios.
-Ejemplos de respuesta: "audífonos bluetooth", "zapatillas running", "lámpara escritorio".`,
-          },
-          {
-            inline_data: {
-              mime_type: mimeType,
-              data: base64,
-            },
-          },
-        ],
-      },
-    ],
-    generationConfig: {
-      maxOutputTokens: 20,
-      temperature: 0.1,
-    },
-  };
+  const uploadRes = await fetch("https://api.cloudinary.com/v1_1/gigga/image/upload", {
+    method: "POST",
+    body: cloudForm,
+  });
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }
-  );
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => null);
-    const geminiCode = err?.error?.code ?? res.status;
-    if (geminiCode === 429) {
-      return NextResponse.json({ error: "quota_exceeded" }, { status: 429 });
-    }
-    return NextResponse.json({ error: "Gemini error" }, { status: 500 });
+  if (!uploadRes.ok) {
+    return NextResponse.json({ error: "Error al subir imagen" }, { status: 500 });
   }
 
-  const data = await res.json();
-  const keywords: string = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
+  const { secure_url: imageUrl } = (await uploadRes.json()) as { secure_url: string };
+
+  // 2. Google Lens via SerpAPI
+  const params = new URLSearchParams({
+    engine: "google_lens",
+    url: imageUrl,
+    api_key: serpApiKey,
+  });
+
+  const lensRes = await fetch(`https://serpapi.com/search?${params}`);
+
+  if (!lensRes.ok) {
+    if (lensRes.status === 429) {
+      return NextResponse.json({ error: "quota_exceeded" }, { status: 429 });
+    }
+    return NextResponse.json({ error: "Error en Google Lens" }, { status: 500 });
+  }
+
+  const lensData = await lensRes.json();
+
+  // 3. Extraer palabras clave del resultado
+  const title: string =
+    lensData.knowledge_graph?.title ||
+    lensData.visual_matches?.[0]?.title ||
+    "";
+
+  if (!title) {
+    return NextResponse.json({ keywords: null });
+  }
+
+  const keywords = title.split(/\s+/).slice(0, 4).join(" ").toLowerCase();
 
   return NextResponse.json({ keywords });
 }

@@ -24,6 +24,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { VoiceSearchModal } from "@/components/VoiceSearchModal";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { Category } from "@/types";
 
@@ -198,15 +199,13 @@ export default function Navbar() {
   const micButton = (
     <button
       type="button"
-      title={voiceState === "listening" ? "Detener" : "Buscar por voz"}
+      title="Buscar por voz"
       onClick={handleVoiceMic}
-      disabled={voiceState === "processing"}
+      disabled={voiceState !== "idle"}
       className={`p-1 cursor-pointer transition-colors ${
-        voiceState === "listening"
-          ? "text-red-500 animate-pulse"
-          : voiceState === "processing"
-            ? "text-primary animate-spin"
-            : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA]"
+        voiceState !== "idle"
+          ? "text-red-500"
+          : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA]"
       }`}
     >
       <Mic size={16} />
@@ -242,6 +241,8 @@ export default function Navbar() {
 
   return (
     <>
+      <VoiceSearchModal state={voiceState} onCancel={stopVoice} />
+
       {/* ── Marquee announcement bar ── */}
       <MarqueeBar />
 
