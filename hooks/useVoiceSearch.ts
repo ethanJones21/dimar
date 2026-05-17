@@ -7,6 +7,7 @@ interface SpeechRecognition extends EventTarget {
   lang: string;
   interimResults: boolean;
   maxAlternatives: number;
+  onaudiostart: (() => void) | null;
   onresult: ((e: SpeechRecognitionEvent) => void) | null;
   onerror: ((e: SpeechRecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
@@ -62,7 +63,7 @@ export function useVoiceSearch(
     const SR = win.SpeechRecognition ?? win.webkitSpeechRecognition;
     if (!SR) return false;
 
-    const recognition = new SR() as SpeechRecognition & { onaudiostart: (() => void) | null };
+    const recognition = new SR() as SpeechRecognition;
     recognitionRef.current = recognition;
     recognition.lang = "es-PE";
     recognition.interimResults = false;
