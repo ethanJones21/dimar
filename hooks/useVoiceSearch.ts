@@ -62,7 +62,7 @@ export function useVoiceSearch(
     const SR = win.SpeechRecognition ?? win.webkitSpeechRecognition;
     if (!SR) return false;
 
-    const recognition = new SR();
+    const recognition = new SR() as SpeechRecognition & { onaudiostart: (() => void) | null };
     recognitionRef.current = recognition;
     recognition.lang = "es-PE";
     recognition.interimResults = false;
