@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Playfair_Display, Source_Sans_3, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,9 +7,15 @@ import { Toaster } from "@/components/ui/Toaster";
 import CartDrawer from "@/components/CartDrawer";
 import { SITE_URL, SITE_NAME, SITE_DESC } from "@/lib/seo";
 
-const spaceGrotesk = Space_Grotesk({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-serif",
+  weight: ["400", "500", "600", "700"],
+});
+
+const sourceSans3 = Source_Sans_3({
+  subsets: ["latin"],
+  variable: "--font-sans",
   weight: ["300", "400", "500", "600", "700"],
 });
 
@@ -79,16 +85,9 @@ export default function RootLayout({
       style={cssVars}
       suppressHydrationWarning
     >
-      <head>
-        {/* Script anti-flash: aplica el tema ANTES de que React hidrate */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
-          }}
-        />
-      </head>
+      <head />
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-display antialiased`}
+        className={`${playfairDisplay.variable} ${sourceSans3.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <Navbar />
         <main className="min-h-screen">{children}</main>

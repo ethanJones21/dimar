@@ -15,7 +15,6 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
-import ThemeToggle from "@/components/ThemeToggle";
 import MarqueeBar from "@/components/MarqueeBar";
 import { useCartStore } from "@/lib/store/cart";
 import { toast } from "@/components/ui/Toaster";
@@ -205,7 +204,7 @@ export default function Navbar() {
       className={`p-1 cursor-pointer transition-colors ${
         voiceState !== "idle"
           ? "text-red-500"
-          : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA]"
+          : "text-[#888888] hover:text-[#0A0A0A]"
       }`}
     >
       <Mic size={16} />
@@ -215,13 +214,13 @@ export default function Navbar() {
   /* ─────────── Search bar (desktop) ─────────── */
   const searchBar = (
     <form onSubmit={handleSearch} className="flex items-center w-full">
-      <div className="flex w-full items-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] bg-white dark:bg-[#1A1A1A] h-11 px-4 gap-3 transition-colors focus-within:border-primary">
+      <div className="flex w-full items-center border-1 rounded-full bg-white h-11 px-4 gap-3 transition-colors focus-within:border-primary">
         <Search size={16} className="text-[#888888] flex-shrink-0" />
         <input
           value={query}
           onChange={handleQueryChange}
           placeholder="BUSCAR PRODUCTOS..."
-          className="flex-1 bg-transparent outline-none text-xs font-mono font-medium tracking-wider text-[#0A0A0A] dark:text-[#FAFAFA] placeholder:text-[#888888] min-w-0 uppercase"
+          className="flex-1 bg-transparent outline-none text-xs font-sans font-medium tracking-wider text-[#0A0A0A] placeholder:text-[#888888] min-w-0 uppercase"
         />
         <div className="flex items-center gap-2 flex-shrink-0">
           {micButton}
@@ -230,7 +229,7 @@ export default function Navbar() {
             title="Buscar por imagen"
             disabled={analyzingImage}
             onClick={() => imageInputRef.current?.click()}
-            className={`p-1 cursor-pointer transition-colors ${analyzingImage ? "text-primary animate-pulse" : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-[#FAFAFA]"}`}
+            className={`p-1 cursor-pointer transition-colors ${analyzingImage ? "text-primary animate-pulse" : "text-[#888888] hover:text-[#0A0A0A]"}`}
           >
             <Camera size={16} />
           </button>
@@ -247,15 +246,15 @@ export default function Navbar() {
       <MarqueeBar />
 
       {/* ── Main nav ── */}
-      <nav className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.7)] sticky top-0 z-50">
+      <nav className="bg-[#FAFAFA] border-b-2 border-[#E5E4E2] sticky top-0 z-50">
         {/* ══ Desktop ══ */}
         <div className="hidden md:grid grid-cols-[auto_1fr_auto] items-center h-16 max-w-7xl mx-auto px-4 gap-4">
           {/* Logo */}
           <Link
             href="/"
-            className="font-display font-bold text-2xl tracking-[-0.05em] text-[#0A0A0A] dark:text-[#FAFAFA] uppercase leading-none flex-shrink-0 hover:text-primary transition-colors duration-150 cursor-pointer"
+            className="font-serif font-bold text-xl tracking-[-0.01em] text-[#36454F] leading-none flex-shrink-0 hover:text-primary transition-colors duration-150 cursor-pointer"
           >
-            DIMAR
+            Dimar
           </Link>
 
           {/* Center: categories + search */}
@@ -264,7 +263,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setCatOpen((o) => !o)}
-                className="flex items-center gap-2 px-4 h-11 text-[#0A0A0A] dark:text-[#FAFAFA] font-bold text-xs tracking-widest uppercase transition-colors hover:text-primary cursor-pointer border-r-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]"
+                className="flex items-center gap-2 px-4 h-11 text-[#36454F] font-bold text-xs tracking-widest uppercase transition-colors hover:text-primary cursor-pointer"
               >
                 <Menu size={16} strokeWidth={2.5} />
                 CATEGORÍAS
@@ -276,13 +275,13 @@ export default function Navbar() {
               </button>
 
               {catOpen && (
-                <div className="absolute top-full left-0 mt-0 w-56 bg-[#FAFAFA] dark:bg-[#111111] border-2 border-t-0 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] py-1 z-50">
+                <div className="absolute top-full left-0 mt-0 w-56 bg-[#FAFAFA] border-2 border-t-0 border-[#E5E4E2] py-1 z-50">
                   {categories.map((cat) => (
                     <a
                       key={cat.id}
                       href={`/products?category=${cat.slug}`}
                       onClick={closeCat}
-                      className="flex items-center px-4 py-2.5 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                      className="flex items-center px-4 py-2.5 text-xs font-sans font-bold tracking-widest uppercase text-[#36454F] hover:text-[#0A0A0A] transition-colors cursor-pointer"
                     >
                       {cat.name}
                     </a>
@@ -308,17 +307,15 @@ export default function Navbar() {
             <button
               onClick={openCartDrawer}
               aria-label="Abrir carrito"
-              className="relative p-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
+              className="relative p-2 text-[#0A0A0A] hover:text-primary transition-colors cursor-pointer"
             >
               <ShoppingCart size={22} strokeWidth={2} />
               {mounted && itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-mono font-bold w-5 h-5 flex items-center justify-center border-2 border-[#0A0A0A]">
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-sans font-bold w-5 h-5 flex items-center justify-center border-2 border-[#0A0A0A]">
                   {itemCount}
                 </span>
               )}
             </button>
-
-            <ThemeToggle />
 
             {user ? (
               <div className="relative">
@@ -329,16 +326,16 @@ export default function Navbar() {
                 >
                   <Avatar className="w-7 h-7">
                     <AvatarImage src={undefined} />
-                    <AvatarFallback className="text-xs font-mono font-bold bg-[#2563EB] text-white dark:bg-white dark:text-black">
+                    <AvatarFallback className="text-xs font-sans font-bold bg-[#2563EB] text-white">
                       {user.email?.[0].toUpperCase() ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 mt-0 w-52 bg-[#FAFAFA] dark:bg-[#111111] py-0 z-50 border border-1 border-black">
-                    <div className="px-4 py-3 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
-                      <p className="text-[10px] font-mono text-[#888888] truncate uppercase tracking-widest">
+                  <div className="absolute right-0 mt-0 w-52 bg-[#FAFAFA] py-0 z-50 border border-1 border-black">
+                    <div className="px-4 py-3 border-b-2 border-[#0A0A0A]">
+                      <p className="text-[10px] font-sans text-[#888888] truncate uppercase tracking-widest">
                         {user.email}
                       </p>
                     </div>
@@ -350,16 +347,16 @@ export default function Navbar() {
                       <Link
                         key={href}
                         href={href}
-                        className="flex items-center px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                        className="flex items-center px-4 py-3 text-xs font-sans font-bold tracking-widest uppercase text-[#0A0A0A] hover:bg-primary hover:text-white transition-colors cursor-pointer"
                         onClick={() => setMenuOpen(false)}
                       >
                         {label}
                       </Link>
                     ))}
-                    <hr className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]" />
+                    <hr className="border-t-2 border-[#0A0A0A]" />
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-2 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-3 text-xs font-sans font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
                     >
                       <LogOut size={14} /> SALIR
                     </button>
@@ -386,19 +383,19 @@ export default function Navbar() {
         </div>
 
         {/* ══ Mobile ══ */}
-        <div className="md:hidden flex items-center h-14 px-4 gap-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]">
+        <div className="md:hidden flex items-center h-14 px-4 gap-2 border-[#0A0A0A]">
           <button
             type="button"
             aria-label="Abrir menú"
             onClick={() => setDrawerOpen(true)}
-            className="p-2 -ml-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
+            className="p-2 -ml-2 text-[#0A0A0A] hover:text-primary transition-colors cursor-pointer"
           >
             <Menu size={22} strokeWidth={2} />
           </button>
 
           <Link
             href="/"
-            className="font-display font-bold text-xl tracking-[-0.05em] text-[#0A0A0A] dark:text-[#FAFAFA] uppercase flex-shrink-0 cursor-pointer"
+            className="font-display font-bold text-xl tracking-[-0.05em] text-[#0A0A0A] uppercase flex-shrink-0 cursor-pointer"
           >
             DIMAR
           </Link>
@@ -409,7 +406,7 @@ export default function Navbar() {
             type="button"
             aria-label="Buscar"
             onClick={() => setSearchOpen(true)}
-            className="p-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
+            className="p-2 text-[#0A0A0A] hover:text-primary transition-colors cursor-pointer"
           >
             <Search size={20} strokeWidth={2} />
           </button>
@@ -417,17 +414,15 @@ export default function Navbar() {
           <button
             onClick={openCartDrawer}
             aria-label="Abrir carrito"
-            className="relative p-2 text-[#0A0A0A] dark:text-[#FAFAFA] hover:text-primary transition-colors cursor-pointer"
+            className="relative p-2 text-[#0A0A0A] hover:text-primary transition-colors cursor-pointer"
           >
             <ShoppingCart size={20} strokeWidth={2} />
             {mounted && itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-mono font-bold w-4 h-4 flex items-center justify-center border border-[#0A0A0A]">
+              <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-sans font-bold w-4 h-4 flex items-center justify-center border border-[#0A0A0A]">
                 {itemCount}
               </span>
             )}
           </button>
-
-          <ThemeToggle />
         </div>
       </nav>
 
@@ -446,29 +441,29 @@ export default function Navbar() {
           onClick={() => setSearchOpen(false)}
         />
 
-        <div className="relative bg-[#FAFAFA] dark:bg-[#111111] border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] px-4 pt-4 pb-6">
+        <div className="relative bg-[#FAFAFA] border-b-4 border-[#0A0A0A] px-4 pt-4 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA]">
+            <p className="text-xs font-sans font-bold tracking-widest uppercase text-[#0A0A0A]">
               BUSCAR
             </p>
             <button
               type="button"
               onClick={() => setSearchOpen(false)}
-              className="p-2 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] text-[#0A0A0A] dark:text-[#FAFAFA] transition-colors cursor-pointer"
+              className="p-2 border-2 border-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white text-[#0A0A0A] transition-colors cursor-pointer"
             >
               <X size={18} />
             </button>
           </div>
 
           <form onSubmit={handleSearch} className="flex items-center w-full">
-            <div className="flex w-full items-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] bg-white dark:bg-[#1A1A1A] h-12 px-4 gap-3 focus-within:border-primary">
+            <div className="flex w-full items-center border-2 border-[#0A0A0A] bg-white h-12 px-4 gap-3 focus-within:border-primary">
               <Search size={16} className="text-[#888888] flex-shrink-0" />
               <input
                 ref={mobileInputRef}
                 value={query}
                 onChange={handleQueryChange}
                 placeholder="BUSCA PRODUCTOS..."
-                className="flex-1 bg-transparent outline-none text-xs font-mono font-bold tracking-wider uppercase text-[#0A0A0A] dark:text-[#FAFAFA] placeholder:text-[#888888] min-w-0"
+                className="flex-1 bg-transparent outline-none text-xs font-sans font-bold tracking-wider uppercase text-[#0A0A0A] placeholder:text-[#888888] min-w-0"
               />
               <div className="flex items-center gap-2 flex-shrink-0">
                 {micButton}
@@ -483,7 +478,7 @@ export default function Navbar() {
                   type="button"
                   disabled={analyzingImage}
                   onClick={() => imageInputRef.current?.click()}
-                  className={`p-1 cursor-pointer ${analyzingImage ? "text-primary animate-pulse" : "text-[#888888] hover:text-[#0A0A0A] dark:hover:text-white"}`}
+                  className={`p-1 cursor-pointer ${analyzingImage ? "text-primary animate-pulse" : "text-[#888888] hover:text-[#0A0A0A]"}`}
                 >
                   <Camera size={16} />
                 </button>
@@ -498,7 +493,7 @@ export default function Navbar() {
                   key={cat.id}
                   href={`/products?category=${cat.slug}`}
                   onClick={() => setSearchOpen(false)}
-                  className="text-[10px] font-mono font-bold tracking-widest uppercase px-3 py-1.5 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:border-primary hover:text-white transition-colors cursor-pointer"
+                  className="text-[10px] font-sans font-bold tracking-widest uppercase px-3 py-1.5 border-2 border-[#0A0A0A] text-[#0A0A0A] hover:bg-primary hover:border-primary hover:text-white transition-colors cursor-pointer"
                 >
                   {cat.name}
                 </a>
@@ -521,22 +516,22 @@ export default function Navbar() {
       />
 
       <aside
-        className={`fixed top-0 left-0 h-full w-72 bg-[#FAFAFA] dark:bg-[#0A0A0A] z-[70] border-r-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-full w-72 bg-[#FAFAFA] z-[70] border-r-4 border-[#0A0A0A] flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
           drawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between px-4 h-14 border-b-4 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.5)] flex-shrink-0">
+        <div className="flex items-center justify-between px-4 h-14 border-b-4 border-[#0A0A0A] flex-shrink-0">
           <Link
             href="/"
             onClick={closeDrawer}
-            className="font-display font-bold text-xl tracking-[-0.05em] uppercase text-[#0A0A0A] dark:text-[#FAFAFA] cursor-pointer"
+            className="font-display font-bold text-xl tracking-[-0.05em] uppercase text-[#0A0A0A] cursor-pointer"
           >
             DIMAR
           </Link>
           <button
             onClick={closeDrawer}
             aria-label="Cerrar menú"
-            className="p-1.5 border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)] hover:bg-[#0A0A0A] hover:text-white dark:hover:bg-white dark:hover:text-[#0A0A0A] text-[#0A0A0A] dark:text-[#FAFAFA] transition-colors cursor-pointer"
+            className="p-1.5 border-2 border-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white text-[#0A0A0A] transition-colors cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -544,20 +539,20 @@ export default function Navbar() {
 
         <div className="flex-1 overflow-y-auto">
           {user ? (
-            <div className="px-4 py-4 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)]">
+            <div className="px-4 py-4 border-b-2 border-[#0A0A0A]">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary flex items-center justify-center border-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.6)]">
-                  <span className="text-white font-mono font-bold text-sm">
+                <div className="w-8 h-8 bg-primary flex items-center justify-center border-2 border-[#0A0A0A]">
+                  <span className="text-white font-sans font-bold text-sm">
                     {user.email?.[0].toUpperCase() ?? "U"}
                   </span>
                 </div>
-                <p className="text-[10px] font-mono text-[#888888] truncate uppercase tracking-widest">
+                <p className="text-[10px] font-sans text-[#888888] truncate uppercase tracking-widest">
                   {user.email}
                 </p>
               </div>
             </div>
           ) : (
-            <div className="px-4 py-4 border-b-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] flex flex-col gap-2">
+            <div className="px-4 py-4 border-b-2 border-[#0A0A0A] flex flex-col gap-2">
               <Link
                 href="/auth/login"
                 className="btn-secondary text-xs py-2 text-center"
@@ -576,7 +571,7 @@ export default function Navbar() {
           )}
 
           <div className="py-2">
-            <p className="px-4 pt-3 pb-1 text-[10px] font-mono font-bold text-[#888888] uppercase tracking-widest">
+            <p className="px-4 pt-3 pb-1 text-[10px] font-sans font-bold text-[#888888] uppercase tracking-widest">
               CATEGORÍAS
             </p>
             {categories.map((cat) => (
@@ -584,7 +579,7 @@ export default function Navbar() {
                 key={cat.id}
                 href={`/products?category=${cat.slug}`}
                 onClick={closeDrawer}
-                className="flex items-center px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white border-b border-[rgba(0,0,0,0.06)] dark:border-[rgba(255,255,255,0.06)] transition-colors cursor-pointer"
+                className="flex items-center px-4 py-3 text-xs font-sans font-bold tracking-widest uppercase text-[#0A0A0A] hover:bg-primary hover:text-white border-b border-[rgba(0,0,0,0.06)] transition-colors cursor-pointer"
               >
                 {cat.name}
               </a>
@@ -592,8 +587,8 @@ export default function Navbar() {
           </div>
 
           {user && (
-            <div className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] py-2">
-              <p className="px-4 pt-3 pb-1 text-[10px] font-mono font-bold text-[#888888] uppercase tracking-widest">
+            <div className="border-t-2 border-[#0A0A0A] py-2">
+              <p className="px-4 pt-3 pb-1 text-[10px] font-sans font-bold text-[#888888] uppercase tracking-widest">
                 MI CUENTA
               </p>
               {[
@@ -605,32 +600,25 @@ export default function Navbar() {
                   key={href}
                   href={href}
                   onClick={closeDrawer}
-                  className="flex items-center gap-3 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-[#0A0A0A] dark:text-[#FAFAFA] hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                  className="flex items-center gap-3 px-4 py-3 text-xs font-sans font-bold tracking-widest uppercase text-[#0A0A0A] hover:bg-primary hover:text-white transition-colors cursor-pointer"
                 >
                   <Icon size={15} />
                   {label}
                 </Link>
               ))}
-              <hr className="border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] my-1" />
+              <hr className="border-t-2 border-[#0A0A0A] my-1" />
               <button
                 onClick={() => {
                   closeDrawer();
                   handleSignOut();
                 }}
-                className="flex items-center gap-3 px-4 py-3 text-xs font-mono font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
+                className="flex items-center gap-3 px-4 py-3 text-xs font-sans font-bold tracking-widest uppercase text-red-600 hover:bg-red-600 hover:text-white w-full text-left transition-colors cursor-pointer"
               >
                 <LogOut size={15} />
                 CERRAR SESIÓN
               </button>
             </div>
           )}
-        </div>
-
-        <div className="flex-shrink-0 px-4 py-3 border-t-2 border-[#0A0A0A] dark:border-[rgba(255,255,255,0.2)] flex items-center justify-between">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#888888]">
-            TEMA
-          </span>
-          <ThemeToggle />
         </div>
       </aside>
     </>

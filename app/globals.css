@@ -7,40 +7,38 @@
    Tokens, utilities, and component classes.
 ═══════════════════════════════════════════════════════ */
 
-@layer base {
+/* @layer base {
   :root {
-    /* Surface tokens — light (paper) */
-    --bg-page: #FAFAFA;
-    --bg-surface: #FFFFFF;
-    --bg-subtle: #F0F0F0;
-    --bg-hover: #E8E8E8;
-    --fg-base: #0A0A0A;
+    --bg-page: #fafafa;
+    --bg-surface: #ffffff;
+    --bg-subtle: #f0f0f0;
+    --bg-hover: #e8e8e8;
+    --fg-base: #0a0a0a;
     --fg-muted: #444444;
     --fg-subtle: #888888;
-    --border-base: #0A0A0A;
-    --border-subtle: #D4D4D4;
+    --border-base: #0a0a0a;
+    --border-subtle: #d4d4d4;
 
-    /* Brutalist constants */
-    --brutalist-ink: #0A0A0A;
-    --brutalist-paper: #FAFAFA;
-    --brutalist-shadow: 5px 5px 0px #0A0A0A;
-    --brutalist-shadow-sm: 3px 3px 0px #0A0A0A;
-    --brutalist-shadow-lg: 8px 8px 0px #0A0A0A;
-    --brutalist-shadow-primary: 5px 5px 0px var(--color-primary, #2563EB);
-    --brutalist-shadow-secondary: 5px 5px 0px var(--color-secondary, #7C3AED);
+    --brutalist-ink: #0a0a0a;
+    --brutalist-paper: #fafafa;
+    --brutalist-shadow: 5px 5px 0px #0a0a0a;
+    --brutalist-shadow-sm: 3px 3px 0px #0a0a0a;
+    --brutalist-shadow-lg: 8px 8px 0px #0a0a0a;
+    --brutalist-shadow-primary: 5px 5px 0px var(--color-primary, #2563eb);
+    --brutalist-shadow-secondary: 5px 5px 0px var(--color-secondary, #7c3aed);
   }
 
   html.dark {
-    --bg-page: #0A0A0A;
+    --bg-page: #0a0a0a;
     --bg-surface: #111111;
-    --bg-subtle: #1A1A1A;
+    --bg-subtle: #1a1a1a;
     --bg-hover: #222222;
-    --fg-base: #FAFAFA;
-    --fg-muted: #AAAAAA;
+    --fg-base: #fafafa;
+    --fg-muted: #aaaaaa;
     --fg-subtle: #666666;
     --border-base: rgba(255, 255, 255, 0.65);
     --border-subtle: rgba(255, 255, 255, 0.12);
-    --brutalist-ink: #FAFAFA;
+    --brutalist-ink: #fafafa;
     --brutalist-shadow: 5px 5px 0px rgba(255, 255, 255, 0.5);
     --brutalist-shadow-sm: 3px 3px 0px rgba(255, 255, 255, 0.4);
     --brutalist-shadow-lg: 8px 8px 0px rgba(255, 255, 255, 0.4);
@@ -49,32 +47,39 @@
   body {
     background-color: var(--bg-page);
     color: var(--fg-base);
-    font-family: var(--font-display), system-ui, sans-serif;
+    font-family: var(--font-sans), system-ui, sans-serif;
     transition:
       background-color 0.2s ease,
       color 0.2s ease;
   }
 
   ::selection {
-    background-color: var(--color-primary, #2563EB);
-    color: #FFFFFF;
+    background-color: var(--color-primary, #2563eb);
+    color: #ffffff;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-primary, #2563EB);
+    outline: 2px solid var(--color-primary, #2563eb);
     outline-offset: 2px;
   }
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg-subtle); }
-  ::-webkit-scrollbar-thumb { background: var(--border-base); }
-}
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-subtle);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-base);
+  }
+} */
 
 /* ═══════════════════════════════════════════════════════
    MARQUEE ANIMATION
 ═══════════════════════════════════════════════════════ */
 
-@keyframes marquee {
+/* @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
@@ -88,13 +93,13 @@
   .marquee-track {
     animation: none;
   }
-}
+} */
 
 /* ═══════════════════════════════════════════════════════
    BRUTALIST UTILITY CLASSES
 ═══════════════════════════════════════════════════════ */
 
-@layer utilities {
+/* @layer utilities {
   .brut-shadow-sm {
     box-shadow: var(--brutalist-shadow-sm);
   }
@@ -134,14 +139,13 @@
     font-weight: 700;
     letter-spacing: -0.01em;
   }
-}
+} */
 
 /* ═══════════════════════════════════════════════════════
    COMPONENT CLASSES — Brutalist
 ═══════════════════════════════════════════════════════ */
-
+/* 
 @layer components {
-  /* ── Buttons ── */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
            bg-[#2563EB] text-white
@@ -197,7 +201,6 @@
     box-shadow: 5px 5px 0px rgba(255, 255, 255, 0.5);
   }
 
-  /* ── Input ── */
   .input {
     @apply w-full bg-white text-[#0A0A0A]
            border-2 border-[#0A0A0A]
@@ -221,7 +224,6 @@
     color: #666666;
   }
 
-  /* ── Card ── */
   .card {
     @apply bg-white border-2 border-[#0A0A0A] overflow-hidden
            transition-all duration-150 ease-out;
@@ -238,4 +240,63 @@
   html.dark .card:hover {
     box-shadow: 5px 5px 0px rgba(255, 255, 255, 0.4);
   }
+} */
+
+/* ═══════════════════════════════════════════════════════
+   THEME TOKENS — migrado a tailwind.config.ts (extend)
+   @theme es de Tailwind v4; este proyecto usa v3.4, así que
+   fonts, colors, boxShadow, borderRadius y blur ahora viven
+   en tailwind.config.ts en vez de aquí.
+═══════════════════════════════════════════════════════ */
+
+/* @theme {
+  --font-sans: "Source Sans 3", system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+
+  --color-dimar-charcoal: #36454f;
+  --color-dimar-blue: #7bafd4;
+  --color-dimar-blue-dark: #6aa0c9;
+  --color-dimar-cream: #fafaf9;
+  --color-dimar-border: #e5e4e2;
+
+  --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.05);
+  --shadow-hero: 0 20px 60px rgba(0, 0, 0, 0.25);
+  --shadow-cta: 0 8px 24px rgba(123, 175, 212, 0.45);
+  --shadow-bar: 0 8px 40px rgba(0, 0, 0, 0.1);
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --blur-sm: 8px;
+  --blur-md: 12px;
+} */
+
+/* Clases custom del proyecto */
+.font-serif {
+  font-family: "Playfair Display", Georgia, serif;
+}
+.font-sans {
+  font-family: "Source Sans 3", system-ui, sans-serif;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.ulink {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.35s ease;
+}
+.ulink:hover {
+  background-size: 100% 1px;
 }

@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dimar — Tienda Online Lima, Perú</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont/tabler-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body
+    class="font-sans bg-[#FAFAF9] text-[#36454F] antialiased selection:bg-[#7BAFD4] selection:text-white overflow-x-hidden"
+  >
+    <!-- HEADER -->
+    <header
+      class="sticky top-0 z-50 bg-[#FAFAF9]/85 backdrop-blur-md border-b border-[#E5E4E2]"
+    >
+      <nav
+        class="max-w-[1240px] mx-auto px-8 h-[72px] grid grid-cols-[1fr_auto_1fr] items-center gap-6"
+      >
+        <a
+          href="#"
+          class="font-serif text-[26px] font-bold tracking-[-0.01em] text-[#36454F] leading-none"
+        >
+          Dimar
+        </a>
+        <div
+          class="hidden md:flex items-center w-[420px] h-11 rounded-full bg-white border border-[#E5E4E2] px-5 gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus-within:border-[#7BAFD4] transition-colors"
+        >
+          <i class="ti ti-search text-[18px] text-[#9aa3a9]"></i>
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            class="flex-1 bg-transparent outline-none text-[14px] text-[#36454F] placeholder:text-[#9aa3a9]"
+          />
+        </div>
+        <div class="flex items-center justify-end gap-6 text-[#36454F]">
+          <button
+            class="hidden lg:flex items-center gap-1.5 text-[14px] font-medium hover:text-[#7BAFD4] transition-colors"
+          >
+            Categorías
+            <i class="ti ti-chevron-down text-[16px]"></i>
+          </button>
+          <button
+            class="relative hover:text-[#7BAFD4] transition-colors text-[21px] leading-none"
+          >
+            <i class="ti ti-shopping-cart"></i>
+            <span
+              class="absolute -top-2 -right-2.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#7BAFD4] text-white text-[10px] font-semibold flex items-center justify-center"
+            >
+              2
+            </span>
+          </button>
+          <button
+            class="hover:text-[#7BAFD4] transition-colors text-[21px] leading-none"
+          >
+            <i class="ti ti-heart"></i>
+          </button>
+          <img
+            src="https://i.pravatar.cc/64?u=dimar-andrea"
+            alt="Cuenta"
+            decoding="async"
+            loading="lazy"
+            class="w-9 h-9 rounded-full object-cover border border-[#E5E4E2]"
+          />
+        </div>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section
+      class="relative h-[85vh] min-h-[600px] w-full overflow-hidden flex items-center justify-center"
+    >
+      <img
+        src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1600&auto=format&fit=crop"
+        alt="Hero background"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/30 to-black/55"
+      ></div>
+      <div
+        class="relative z-10 mx-6 max-w-[680px] text-center backdrop-blur-md bg-white/15 border border-white/25 rounded-2xl px-10 py-12 md:px-14 md:py-16 shadow-[0_20px_60px_rgba(0,0,0,0.25)]"
+      >
+        <p
+          class="text-white/80 text-[11px] font-semibold tracking-[0.32em] uppercase mb-6"
+        >
+          Tienda Dimar — Lima, Perú
+        </p>
+        <h1
+          class="font-serif text-white font-bold leading-[1.02] tracking-[-0.02em]"
+          style="font-size: clamp(2.6rem, 5.5vw, 4.5rem)"
+        >
+          Descubre tu estilo. Dimar.
+        </h1>
+        <p
+          class="text-white/85 text-[16px] md:text-[17px] mt-6 max-w-[460px] mx-auto leading-relaxed"
+        >
+          Curaduría de productos de calidad con envío rápido a todo el Perú.
+        </p>
+        <div
+          class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-5"
+        >
+          <a
+            href="#"
+            class="inline-flex items-center gap-2 bg-[#7BAFD4] hover:bg-[#6aa0c9] text-white text-[14px] font-semibold rounded-full px-8 py-3.5 shadow-[0_8px_24px_rgba(123,175,212,0.45)] transition-colors"
+          >
+            Explorar catálogo
+            <i class="ti ti-arrow-right text-[16px]"></i>
+          </a>
+          <a href="#" class="text-white text-[14px] font-medium ulink">
+            Ver novedades
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGES BAR -->
+    <div class="relative z-20 max-w-[1000px] mx-auto px-6 -mt-12">
+      <div
+        class="bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.10)] divide-x divide-[#E5E4E2] flex flex-wrap md:flex-nowrap"
+      >
+        <div
+          class="flex items-center gap-3.5 px-4 md:px-6 text-[26px] text-[#36454F]"
+        >
+          <i class="ti ti-truck"></i>
+          <div class="leading-tight">
+            <p class="font-sans text-[13px] font-semibold">Envío gratis</p>
+            <p class="text-[12px] text-[#7c858b]">En pedidos +S/150</p>
+          </div>
+        </div>
+        <div
+          class="flex items-center gap-3.5 px-4 md:px-6 text-[26px] text-[#36454F]"
+        >
+          <i class="ti ti-shield"></i>
+          <div class="leading-tight">
+            <p class="font-sans text-[13px] font-semibold">Compra segura</p>
+            <p class="text-[12px] text-[#7c858b]">Datos protegidos</p>
+          </div>
+        </div>
+        <div
+          class="flex items-center gap-3.5 px-4 md:px-6 text-[26px] text-[#36454F]"
+        >
+          <i class="ti ti-refresh"></i>
+          <div class="leading-tight">
+            <p class="font-sans text-[13px] font-semibold">30 días</p>
+            <p class="text-[12px] text-[#7c858b]">Cambios y devoluciones</p>
+          </div>
+        </div>
+        <div
+          class="flex items-center gap-3.5 px-4 md:px-6 text-[26px] text-[#36454F]"
+        >
+          <i class="ti ti-headphones"></i>
+          <div class="leading-tight">
+            <p class="font-sans text-[13px] font-semibold">Soporte 24/7</p>
+            <p class="text-[12px] text-[#7c858b]">Siempre disponible</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORÍAS -->
+    <section class="pt-24 pb-20">
+      <div class="max-w-[1240px] mx-auto px-8 mb-10">
+        <p
+          class="text-[11px] font-semibold tracking-[0.3em] uppercase text-[#7BAFD4] mb-3"
+        >
+          Navegar por
+        </p>
+        <div class="flex items-end justify-between">
+          <h2
+            class="font-serif font-bold text-[#36454F] tracking-[-0.02em]"
+            style="font-size: clamp(2rem, 3.6vw, 3rem)"
+          >
+            Categorías
+          </h2>
+          <a
+            href="#"
+            class="hidden sm:inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#36454F] ulink"
+          >
+            Ver todo
+            <i class="ti ti-arrow-right text-[15px]"></i>
+          </a>
+        </div>
+      </div>
+      <div
+        class="flex gap-5 overflow-x-auto hide-scrollbar px-8 snap-x snap-mandatory max-w-[1240px] mx-auto"
+      >
+        <!-- Electrónica -->
+        <a
+          href="#"
+          class="group relative shrink-0 w-56 h-72 rounded-xl overflow-hidden snap-start"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&auto=format&fit=crop"
+            alt="Electrónica"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
+          ></div>
+          <p
+            class="absolute bottom-5 left-0 right-0 text-center text-white font-serif text-[20px] font-semibold"
+          >
+            Electrónica
+          </p>
+        </a>
+        <!-- Ropa -->
+        <a
+          href="#"
+          class="group relative shrink-0 w-56 h-72 rounded-xl overflow-hidden snap-start"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&auto=format&fit=crop"
+            alt="Ropa"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
+          ></div>
+          <p
+            class="absolute bottom-5 left-0 right-0 text-center text-white font-serif text-[20px] font-semibold"
+          >
+            Ropa
+          </p>
+        </a>
+        <!-- Hogar -->
+        <a
+          href="#"
+          class="group relative shrink-0 w-56 h-72 rounded-xl overflow-hidden snap-start"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&auto=format&fit=crop"
+            alt="Hogar"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
+          ></div>
+          <p
+            class="absolute bottom-5 left-0 right-0 text-center text-white font-serif text-[20px] font-semibold"
+          >
+            Hogar
+          </p>
+        </a>
+        <!-- Deportes -->
+        <a
+          href="#"
+          class="group relative shrink-0 w-56 h-72 rounded-xl overflow-hidden snap-start"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=400&auto=format&fit=crop"
+            alt="Deportes"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
+          ></div>
+          <p
+            class="absolute bottom-5 left-0 right-0 text-center text-white font-serif text-[20px] font-semibold"
+          >
+            Deportes
+          </p>
+        </a>
+        <!-- Libros -->
+        <a
+          href="#"
+          class="group relative shrink-0 w-56 h-72 rounded-xl overflow-hidden snap-start"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&auto=format&fit=crop"
+            alt="Libros"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
+          ></div>
+          <p
+            class="absolute bottom-5 left-0 right-0 text-center text-white font-serif text-[20px] font-semibold"
+          >
+            Libros
+          </p>
+        </a>
+        <!-- Belleza -->
+        <a
+          href="#"
+          class="group relative shrink-0 w-56 h-72 rounded-xl overflow-hidden snap-start"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=400&auto=format&fit=crop"
+            alt="Belleza"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"
+          ></div>
+          <p
+            class="absolute bottom-5 left-0 right-0 text-center text-white font-serif text-[20px] font-semibold"
+          >
+            Belleza
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <!-- MISIÓN -->
+    <section class="py-28 border-t border-[#E5E4E2]">
+      <div
+        class="max-w-[1240px] mx-auto px-8 grid md:grid-cols-2 gap-16 md:gap-24 items-start"
+      >
+        <div>
+          <p
+            class="text-[11px] font-semibold tracking-[0.3em] uppercase text-[#7BAFD4] mb-8"
+          >
+            Nuestra misión
+          </p>
+          <blockquote
+            class="font-serif italic font-medium text-[#36454F] leading-[1.12] tracking-[-0.01em] relative"
+            style="font-size: clamp(2.1rem, 4.4vw, 3.6rem)"
+          >
+            <span
+              class="text-[#7BAFD4] not-italic leading-none select-none"
+              aria-hidden="true"
+              >"</span
+            >
+            Calidad sin compromiso. Desde la selección hasta tu puerta.
+          </blockquote>
+        </div>
+        <div class="md:pt-20">
+          <p class="text-[16px] leading-[1.8] text-[#5b656b]">
+            En Dimar creemos que acceder a buenos productos no debería ser
+            complicado. Cubrimos desde la selección hasta la entrega en tu
+            puerta.
+          </p>
+          <a
+            href="#"
+            class="inline-flex items-center gap-1.5 mt-7 text-[14px] font-semibold text-[#36454F] ulink"
+          >
+            Conoce más
+            <i class="ti ti-arrow-up-right text-[16px]"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS DESTACADOS -->
+    <section class="py-24 bg-white border-y border-[#E5E4E2]">
+      <div class="max-w-[1240px] mx-auto px-8">
+        <div class="flex items-end justify-between mb-12">
+          <div>
+            <p
+              class="text-[11px] font-semibold tracking-[0.3em] uppercase text-[#7BAFD4] mb-3"
+            >
+              Selección especial
+            </p>
+            <h2
+              class="font-serif font-bold text-[#36454F] tracking-[-0.02em]"
+              style="font-size: clamp(2rem, 3.6vw, 3rem)"
+            >
+              Destacados
+            </h2>
+          </div>
+          <a
+            href="#"
+            class="hidden sm:inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#36454F] ulink"
+          >
+            Ver todos
+            <i class="ti ti-arrow-right text-[15px]"></i>
+          </a>
+        </div>
+        <div
+          class="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-7 [column-fill:balance]"
+        >
+          <!-- Zapatillas Urban Pro -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop"
+                alt="Zapatillas Urban Pro"
+                class="w-full h-[300px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+              <span
+                class="absolute top-3 left-3 bg-[#7BAFD4] text-white text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                >-20%</span
+              >
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Zapatillas Urban Pro
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 199.90</span
+                >
+                <span class="text-[13px] text-[#9aa3a9] line-through"
+                  >S/ 249.90</span
+                >
+              </div>
+            </div>
+          </article>
+          <!-- Sérum Facial Glow -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&auto=format&fit=crop"
+                alt="Sérum Facial Glow"
+                class="w-full h-[420px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Sérum Facial Glow
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 89.90</span
+                >
+              </div>
+            </div>
+          </article>
+          <!-- Audífonos Inalámbricos -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop"
+                alt="Audífonos Inalámbricos"
+                class="w-full h-[340px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Audífonos Inalámbricos
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 329.00</span
+                >
+              </div>
+            </div>
+          </article>
+          <!-- Set de Skincare -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&auto=format&fit=crop"
+                alt="Set de Skincare"
+                class="w-full h-[300px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+              <span
+                class="absolute top-3 left-3 bg-[#7BAFD4] text-white text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                >-15%</span
+              >
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Set de Skincare
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 149.90</span
+                >
+                <span class="text-[13px] text-[#9aa3a9] line-through"
+                  >S/ 175.90</span
+                >
+              </div>
+            </div>
+          </article>
+          <!-- Cámara Compacta -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&auto=format&fit=crop"
+                alt="Cámara Compacta"
+                class="w-full h-[400px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Cámara Compacta
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 1,290.00</span
+                >
+              </div>
+            </div>
+          </article>
+          <!-- Difusor Aromático -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1602928321679-560bb453f190?w=600&auto=format&fit=crop"
+                alt="Difusor Aromático"
+                class="w-full h-[320px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Difusor Aromático
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 119.90</span
+                >
+              </div>
+            </div>
+          </article>
+          <!-- Lámpara Minimal -->
+          <article
+            class="break-inside-avoid mb-7 bg-[#FAFAF9] rounded-2xl overflow-hidden reveal"
+          >
+            <div class="relative overflow-hidden rounded-xl">
+              <img
+                src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&auto=format&fit=crop"
+                alt="Lámpara Minimal"
+                class="w-full h-[280px] object-cover"
+              />
+              <button
+                class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/85 backdrop-blur-sm flex items-center justify-center text-[#36454F] hover:text-[#7BAFD4] text-[18px]"
+              >
+                <i class="ti ti-heart"></i>
+              </button>
+            </div>
+            <div class="px-2 pt-4 pb-2">
+              <p class="text-[15px] font-medium text-[#36454F]">
+                Lámpara Minimal
+              </p>
+              <div class="flex items-baseline gap-2 mt-1.5">
+                <span class="text-[16px] font-semibold text-[#36454F]"
+                  >S/ 159.00</span
+                >
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- GARANTÍA + BENEFICIOS -->
+    <section class="py-24">
+      <div class="max-w-[1240px] mx-auto px-8 grid md:grid-cols-2 gap-7">
+        <div class="relative rounded-2xl overflow-hidden min-h-[360px]">
+          <img
+            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop"
+            alt="30 días para cambios"
+            class="absolute inset-0 w-full h-full object-cover"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent"
+          ></div>
+          <div class="absolute bottom-0 left-0 p-10 max-w-md">
+            <p
+              class="text-white/75 text-[11px] font-semibold tracking-[0.28em] uppercase mb-3"
+            >
+              Garantía total
+            </p>
+            <h3
+              class="font-serif text-white font-bold leading-[1.05] tracking-[-0.01em]"
+              style="font-size: clamp(1.9rem, 3vw, 2.8rem)"
+            >
+              30 días para cambios
+            </h3>
+            <p class="text-white/80 text-[14px] mt-3 leading-relaxed">
+              Si no estás satisfecho, te devolvemos tu dinero sin preguntas.
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 mt-6 bg-white text-[#36454F] text-[13px] font-semibold rounded-full px-6 py-3 hover:bg-[#7BAFD4] hover:text-white transition-colors"
+            >
+              Ver productos
+              <i class="ti ti-arrow-right text-[15px]"></i>
+            </a>
+          </div>
+        </div>
+        <div class="grid grid-rows-2 gap-5">
+          <div
+            class="rounded-2xl bg-[#36454F] text-white p-8 flex flex-col justify-between"
+          >
+            <i class="ti ti-bolt text-[30px] text-[#7BAFD4]"></i>
+            <div>
+              <p
+                class="font-serif font-bold leading-[1.05]"
+                style="font-size: clamp(1.5rem, 2vw, 2rem)"
+              >
+                Envío Express en 24h
+              </p>
+              <p class="text-white/65 text-[13px] mt-2">
+                Pedidos antes de las 3 p.m.
+              </p>
+            </div>
+          </div>
+          <div
+            class="rounded-2xl bg-[#7BAFD4] text-white p-8 flex flex-col justify-between overflow-hidden relative"
+          >
+            <i class="ti ti-map-pin text-[30px] text-white/90"></i>
+            <p
+              class="font-sans font-semibold text-[18px] leading-snug relative z-10"
+            >
+              Cobertura en Lima Metropolitana
+            </p>
+            <div
+              class="absolute -bottom-8 -right-8 w-32 h-32 rounded-full border-2 border-white/20"
+            ></div>
+            <div
+              class="absolute -bottom-4 -right-4 w-20 h-20 rounded-full border-2 border-white/20"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEO SHOWCASE -->
+    <section class="relative">
+      <div class="absolute inset-x-0 top-0 h-1/2 bg-[#FAFAF9]"></div>
+      <div class="absolute inset-x-0 bottom-0 h-1/2 bg-[#36454F]"></div>
+      <div class="relative max-w-[1000px] mx-auto px-8 py-20">
+        <div class="mb-10">
+          <p
+            class="text-[11px] font-semibold tracking-[0.3em] uppercase text-[#7BAFD4] mb-3"
+          >
+            Experiencia Dimar
+          </p>
+          <h2
+            class="font-serif font-bold text-[#36454F] tracking-[-0.02em]"
+            style="font-size: clamp(2rem, 3.8vw, 3.2rem)"
+          >
+            Compra inteligente, vive mejor.
+          </h2>
+        </div>
+        <div
+          id="video-wrap"
+          class="relative rounded-2xl overflow-hidden cursor-pointer group aspect-video bg-black"
+        >
+          <video
+            id="dimar-vid"
+            src="https://www.w3schools.com/html/mov_bbb.mp4"
+            poster="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&auto=format&fit=crop"
+            class="w-full h-full object-cover"
+            muted
+            loop
+            playsinline
+          ></video>
+          <div
+            class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors"
+          ></div>
+          <button
+            id="play-btn"
+            class="absolute inset-0 flex items-center justify-center"
+          >
+            <span
+              class="w-20 h-20 rounded-full bg-white/25 backdrop-blur-md border border-white/40 flex items-center justify-center text-white text-[30px]"
+            >
+              <i class="ti ti-player-play-filled"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="bg-[#FAFAF9] py-28">
+      <div
+        class="max-w-[1000px] mx-auto px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-10"
+      >
+        <h2
+          class="font-serif font-bold text-[#36454F] tracking-[-0.03em] leading-none"
+          style="font-size: clamp(5rem, 16vw, 15rem)"
+        >
+          Únete
+        </h2>
+        <div class="mt-auto self-end w-full max-w-md text-right">
+          <p
+            class="text-[11px] font-semibold tracking-[0.28em] uppercase text-[#7BAFD4] mb-4"
+          >
+            No te pierdas nada
+          </p>
+          <div class="flex items-end gap-4 border-b-2 border-[#36454F] pb-2">
+            <input
+              type="email"
+              placeholder="tu@correo.com"
+              class="flex-1 bg-transparent outline-none text-[18px] text-[#36454F] placeholder:text-[#9aa3a9] text-left"
+            />
+            <button
+              class="text-[14px] font-semibold text-[#36454F] whitespace-nowrap ulink"
+            >
+              Suscribirse
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#36454F] text-white/90">
+      <div class="max-w-[1240px] mx-auto px-8 pt-16 pb-10">
+        <div
+          class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-10 border-b border-white/12"
+        >
+          <div>
+            <p
+              class="font-serif font-bold text-[52px] leading-none tracking-[-0.02em]"
+            >
+              Dimar
+            </p>
+          </div>
+          <p class="text-white/55 text-[14px] max-w-xs leading-relaxed">
+            Tu tienda online de confianza. Lima, Perú.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-10 py-12">
+          <div>
+            <p
+              class="text-[11px] font-semibold tracking-[0.22em] uppercase text-white/45 mb-5"
+            >
+              Tienda
+            </p>
+            <ul class="space-y-3 text-[14px] text-white/70">
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Todos los productos</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Categorías</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Ofertas</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Novedades</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="text-[11px] font-semibold tracking-[0.22em] uppercase text-white/45 mb-5"
+            >
+              Mi cuenta
+            </p>
+            <ul class="space-y-3 text-[14px] text-white/70">
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Mis pedidos</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Iniciar sesión</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Registrarse</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Mi carrito</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="text-[11px] font-semibold tracking-[0.22em] uppercase text-white/45 mb-5"
+            >
+              Ayuda
+            </p>
+            <ul class="space-y-3 text-[14px] text-white/70">
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Preguntas frecuentes</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Envíos y devoluciones</a
+                >
+              </li>
+              <li>
+                <a href="#" class="hover:text-white transition-colors"
+                  >Términos</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
